@@ -1,0 +1,25 @@
+# Environment secrets
+.env
+.env.*
+!.env.example
+frontend/.env
+backend/.env
+
+# Dependencies and builds
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+frontend/dist/
+
+# Runtime files
+backend/uploads/
+uploads/
+backend/verification-uploads/
+verification-uploads/
+*.log
+.DS_Store
+
+# Editor and test output
+.vscode/
+.idea/
+coverage/

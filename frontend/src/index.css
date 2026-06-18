@@ -1,0 +1,156 @@
+/* ─── Fonts ─── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+/* ─── Design tokens ─── */
+:root {
+  --brand: #9b4dca;
+  --brand-2: #c084fc;
+  --brand-3: #7c3aed;
+  --brand-light: rgba(155, 77, 202, 0.08);
+  --brand-border: rgba(155, 77, 202, 0.28);
+  --gold: #f59e0b;
+  --green: #22c55e;
+  --red: #ef4444;
+
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #fff;
+  --bg-subtle: #faf9fc;
+  --border: #e5e4e7;
+  --code-bg: #f4f3ec;
+
+  --sans: 'Inter', system-ui, sans-serif;
+  --heading: 'Playfair Display', Georgia, serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.07);
+  --shadow: 0 8px 24px rgba(0,0,0,.11);
+  --shadow-lg: 0 20px 48px rgba(0,0,0,.14);
+  --transition: .18s ease;
+
+  font: 16px/1.6 var(--sans);
+  letter-spacing: 0.1px;
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #9ca3af;
+    --text-h: #f3f4f6;
+    --bg: #16171d;
+    --bg-subtle: #1e1f27;
+    --border: #2e303a;
+    --code-bg: #1f2028;
+    --brand-light: rgba(155,77,202,.12);
+    --brand-border: rgba(192,132,252,.35);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,.25);
+    --shadow: 0 8px 24px rgba(0,0,0,.35);
+    --shadow-lg: 0 20px 48px rgba(0,0,0,.45);
+  }
+}
+
+body { margin: 0; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+}
+
+img, svg, video, canvas {
+  max-width: 100%;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  border-inline: none;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+  #root { border-inline: none; }
+}
+
+/* ─── Typography ─── */
+h1, h2, h3, h4 { font-family: var(--heading); color: var(--text-h); margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3.2rem); letter-spacing: -0.03em; line-height: 1.15; }
+h2 { font-size: clamp(1.3rem, 2.5vw, 1.8rem); line-height: 1.25; letter-spacing: -0.02em; }
+h3 { font-size: 1.1rem; }
+p  { margin: 0; }
+
+code, .counter { font-family: var(--mono); display: inline-flex; border-radius: 4px; color: var(--text-h); }
+code { font-size: 14px; line-height: 1.4; padding: 4px 8px; background: var(--code-bg); }
+
+/* ─── Scroll to top btn (rendered by App) ─── */
+.scroll-top {
+  position: fixed;
+  bottom: 88px;
+  right: 24px;
+  z-index: 300;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  opacity: 0; pointer-events: none;
+}
+.scroll-top.visible { opacity: 1; pointer-events: auto; }
+.scroll-top:hover { background: var(--brand-3); transform: translateY(-2px); }
+
+/* ─── Sticky mobile book bar ─── */
+.sticky-book {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  padding: 12px 20px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 16px rgba(0,0,0,.1);
+}
+.sticky-book button {
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+}
+@media (max-width: 767px) { .sticky-book { display: block; } }
+
+/* ─── Toast ─── */
+.toast-container {
+  position: fixed; top: 80px; right: 20px; z-index: 999;
+  display: flex; flex-direction: column; gap: 10px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--text-h); color: var(--bg);
+  padding: 12px 18px; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 500;
+  box-shadow: var(--shadow);
+  animation: toast-in .25s ease;
+  pointer-events: auto;
+  max-width: 300px;
+}
+.toast.success { background: #16a34a; }
+.toast.error   { background: var(--red); }
+@keyframes toast-in { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:none; } }
