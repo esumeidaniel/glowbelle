@@ -2,18 +2,19 @@ import { Camera, Users, MessageCircle } from 'lucide-react';
 
 export default function Footer({ setPage, user }) {
   const customerLinks = {
-    Services: [['services', 'All Services'], ['services', "Women's Hair"], ['services', "Men's Grooming"], ['services', "Kids' Care"], ['services', 'Bridal'], ['services', 'Spa & Wellness']],
-    Company: [['about', 'About us'], ['stylists', 'Our stylists'], ['gallery', 'Gallery'], ['offers', 'Offers'], ['contact', 'Contact']],
-    Account: [['login', 'Log in'], ['login', 'Register'], ['bookings', 'My bookings'], ['profile', 'My profile'], ['offers', 'Loyalty rewards']],
-    Legal: [['privacy', 'Privacy policy'], ['terms', 'Terms & conditions'], ['cancellation', 'Cancellation policy'], ['refund', 'Refund policy'], ['contact', 'Help / FAQ']],
+    Explore: [['services', 'Services'], ['stylists', 'Stylists'], ['gallery', 'Gallery']],
+    Account: [['bookings', 'Bookings'], ['profile', 'Profile'], ['offers', 'Offers']],
+    Help: [['about', 'About'], ['contact', 'Contact'], ['terms', 'Terms']],
   };
   const publicLinks = {
-    Start: [['home', 'Dashboard'], ['login', 'Customer login'], ['stylist-apply', 'Professional application']],
-    Legal: [['privacy', 'Privacy policy'], ['terms', 'Terms & conditions'], ['cancellation', 'Cancellation policy'], ['refund', 'Refund policy']],
+    Start: [['home', 'Home'], ['services', 'Services'], ['login', 'Log in']],
+    Business: [['stylist-apply', 'For professionals'], ['stylists', 'Stylists'], ['gallery', 'Gallery']],
+    Help: [['about', 'About'], ['contact', 'Contact'], ['terms', 'Terms']],
   };
   const staffLinks = {
-    Dashboard: [[user?.role === 'admin' ? 'admin' : 'stylist', user?.role === 'admin' ? 'Admin dashboard' : 'Stylist dashboard'], ['profile', 'My profile']],
-    Legal: [['privacy', 'Privacy policy'], ['terms', 'Terms & conditions'], ['cancellation', 'Cancellation policy'], ['refund', 'Refund policy']],
+    Dashboard: [[user?.role === 'admin' ? 'admin' : 'stylist', user?.role === 'admin' ? 'Admin' : 'Stylist'], ['profile', 'Profile']],
+    Public: [['services', 'Services'], ['gallery', 'Gallery'], ['offers', 'Offers']],
+    Help: [['contact', 'Contact'], ['terms', 'Terms'], ['privacy', 'Privacy']],
   };
   const links = user?.role === 'customer' ? customerLinks : user ? staffLinks : publicLinks;
 
