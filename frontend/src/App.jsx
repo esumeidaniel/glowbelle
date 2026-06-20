@@ -57,27 +57,6 @@ function ToastContainer() {
   );
 }
 
-function MobileCustomerNav({ page, setPage, user }) {
-  if (user?.role !== 'customer') return null;
-  const items = [
-    ['home', 'Home'],
-    ['services', 'Services'],
-    ['booking', 'Book'],
-    ['offers', 'Offers'],
-    ['gallery', 'Gallery'],
-  ];
-  return (
-    <nav className="mobile-customer-nav" aria-label="Customer quick navigation">
-      {items.map(([id, label]) => (
-        <button key={id} className={page === id ? 'active' : ''} onClick={() => setPage(id)}>
-          <span>{label.slice(0, 1)}</span>
-          {label}
-        </button>
-      ))}
-    </nav>
-  );
-}
-
 export default function App() {
   const [page, setPage]   = useState('home');
   const [nav,  setNav]    = useState({});
@@ -178,8 +157,6 @@ export default function App() {
       >
         ↑
       </button>
-
-      <MobileCustomerNav page={page} setPage={navigate} user={user} />
     </>
   );
 }

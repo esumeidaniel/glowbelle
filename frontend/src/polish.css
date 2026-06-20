@@ -1352,10 +1352,6 @@ select:focus {
   transform: none;
 }
 
-.mobile-customer-nav {
-  display: none;
-}
-
 .stylist-card::before {
   content: '';
   position: absolute;
@@ -1979,65 +1975,5 @@ select:focus {
     align-items: flex-start;
     flex-direction: column;
     gap: 6px;
-  }
-}
-
-@media (max-width: 767px) {
-  .mobile-customer-nav {
-    position: fixed;
-    left: 10px;
-    right: 10px;
-    bottom: calc(10px + env(safe-area-inset-bottom));
-    z-index: 260;
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 4px;
-    padding: 8px;
-    border: 1px solid color-mix(in srgb, var(--border) 78%, var(--brand-border));
-    border-radius: 24px;
-    background: color-mix(in srgb, var(--bg) 86%, transparent);
-    box-shadow: 0 20px 70px rgba(0,0,0,.22);
-    backdrop-filter: blur(18px);
-  }
-
-  .mobile-customer-nav button {
-    display: grid;
-    justify-items: center;
-    gap: 2px;
-    min-width: 0;
-    border: none;
-    border-radius: 18px;
-    padding: 8px 4px;
-    background: transparent;
-    color: var(--text);
-    font-size: 10px;
-    font-weight: 800;
-    cursor: pointer;
-  }
-
-  .mobile-customer-nav span {
-    width: 22px;
-    height: 22px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: var(--brand-light);
-    color: var(--brand);
-    font-size: 11px;
-  }
-
-  .mobile-customer-nav button.active {
-    background: var(--brand-light);
-    color: var(--brand);
-  }
-
-  .mobile-customer-nav button.active span {
-    background: var(--brand);
-    color: #fff;
-  }
-
-  main {
-    padding-bottom: 82px;
   }
 }
