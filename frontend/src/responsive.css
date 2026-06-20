@@ -24,7 +24,6 @@ svg {
 .market-hero,
 .trend-board,
 .experience-board,
-.market-flow-section,
 .split-feature-section,
 .pro-command-section,
 .social-proof-showcase,
@@ -120,7 +119,6 @@ svg {
   .market-hero,
   .trend-board,
   .experience-board,
-  .market-flow-section,
   .split-feature-section,
   .pro-command-section,
   .social-proof-showcase,
@@ -189,7 +187,6 @@ svg {
   .hero,
   .trend-board,
   .experience-board,
-  .market-flow-section,
   .split-feature-section,
   .pro-command-section,
   .social-proof-showcase,
@@ -226,7 +223,7 @@ svg {
   .dash-cards,
   .dash-grid,
   .why {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .service-art {

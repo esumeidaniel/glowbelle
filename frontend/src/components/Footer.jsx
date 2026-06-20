@@ -7,8 +7,8 @@ export default function Footer({ setPage, user }) {
     Help: [['about', 'About'], ['contact', 'Contact'], ['terms', 'Terms']],
   };
   const publicLinks = {
-    Explore: [['home', 'Home'], ['services', 'Services'], ['gallery', 'Gallery']],
-    Account: [['login', 'Log in'], ['booking', 'Book'], ['stylist-apply', 'For professionals']],
+    Start: [['home', 'Home'], ['services', 'Services'], ['login', 'Log in']],
+    Business: [['stylist-apply', 'For professionals'], ['stylists', 'Stylists'], ['gallery', 'Gallery']],
     Help: [['about', 'About'], ['contact', 'Contact'], ['terms', 'Terms']],
   };
   const staffLinks = {

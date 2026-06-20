@@ -148,34 +148,9 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  min-width: 240px;
+  min-width: 180px;
   overflow: hidden;
   z-index: 200;
-}
-.dropdown-user-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
-  background: color-mix(in srgb, var(--brand-light) 52%, var(--bg));
-}
-.dropdown-user-card strong,
-.dropdown-user-card small {
-  display: block;
-  max-width: 165px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.dropdown-user-card strong {
-  color: var(--text-h);
-  font-size: 14px;
-}
-.dropdown-user-card small {
-  margin-top: 2px;
-  color: var(--text);
-  font-size: 12px;
 }
 .user-dropdown button {
   width: 100%;
@@ -2223,7 +2198,8 @@ textarea { min-height: 90px; resize: vertical; margin-top: 4px; }
   .dashboard aside { display: none; }
   .profile-layout { grid-template-columns: 1fr; }
   .detail-layout { grid-template-columns: 1fr; }
-  .footer-top { grid-template-columns: 1fr 1fr; }
+  .footer-top { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .footer-brand { grid-column: 1 / -1; }
   .offers-strip-inner { flex-direction: column; text-align: center; }
   .loyalty-inner { flex-direction: column; }
   .stylist-modal { flex-direction: column; align-items: center; text-align: center; }
@@ -2238,11 +2214,11 @@ textarea { min-height: 90px; resize: vertical; margin-top: 4px; }
   .hero-card { width: 100%; display: flex; justify-content: center; }
   .phone-preview { width: 100%; max-width: 300px; }
   .grid.six { grid-template-columns: repeat(2, 1fr); }
-  .grid.three { grid-template-columns: 1fr; }
-  .grid.services { grid-template-columns: 1fr; }
+  .grid.three { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid.services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
   .grid.four { grid-template-columns: repeat(2, 1fr); }
-  .why { grid-template-columns: 1fr; }
+  .why { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grid, .booking-layout, .booking-cards, .confirm-card, .contact-layout, .toolbar { padding-left: 16px; padding-right: 16px; }
   .section-title, .tabs, .page-hero, .detail-breadcrumb, .detail-layout, .gallery-filters, .offers-filters, .gallery-grid, .branch-selector { padding-left: 16px; padding-right: 16px; }
   .nav { display: none; flex-direction: column; position: fixed; inset: 64px 0 0; background: var(--bg); padding: 16px; z-index: 99; gap: 4px; overflow-y: auto; }
@@ -2255,12 +2231,12 @@ textarea { min-height: 90px; resize: vertical; margin-top: 4px; }
   .booking-card { flex-direction: column; align-items: flex-start; gap: 12px; }
   .dash-cards { grid-template-columns: repeat(2, 1fr); }
   .contact-cards { grid-template-columns: 1fr; }
-  .footer-top { grid-template-columns: repeat(3, minmax(82px, 1fr)); gap: 16px; padding: 24px 16px 12px; }
+  .footer-top { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 24px 16px 12px; }
   .footer-brand { grid-column: 1 / -1; }
   .footer-brand p { margin-bottom: 10px; line-height: 1.45; }
   .footer-col h4 { margin-bottom: 6px; }
   .footer-col { gap: 0; }
-  .footer-col button { padding: 4px 0; font-size: 12px; line-height: 1.25; }
+  .footer-col button { padding: 3px 0; font-size: 12px; }
   .footer-bottom { padding: 12px 16px 18px; flex-direction: column; align-items: flex-start; }
   .footer-badges { flex-wrap: wrap; }
   .auth-tabs button { font-size: 13px; }
@@ -3426,21 +3402,6 @@ table {
     overscroll-behavior: contain;
   }
 
-  .footer-top {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .footer-col h4 {
-    font-size: 12px;
-  }
-
-  .footer-col button {
-    font-size: 11px;
-  }
-
   .nav button {
     min-height: 38px;
     padding: 7px 12px;
@@ -3969,7 +3930,6 @@ main,
 .proof-strip,
 .service-marquee,
 .experience-board,
-.market-flow-section,
 .split-feature-section,
 .offers-strip,
 .launch-cta,
@@ -3982,7 +3942,6 @@ main,
 
 .market-hero,
 .experience-board,
-.market-flow-section,
 .split-feature-section,
 .grid,
 .section-title,
@@ -4003,7 +3962,6 @@ main,
 
 .market-hero,
 .experience-board,
-.market-flow-section,
 .split-feature-section,
 .grid,
 .section-title,
