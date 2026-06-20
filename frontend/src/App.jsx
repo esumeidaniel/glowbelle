@@ -23,6 +23,7 @@ import { glowbelleApi, setToken } from './api.js';
 import { setToastHandler } from './toast.js';
 import './App.css';
 import './polish.css';
+import './responsive.css';
 
 const SHOW_BOOK_CTA = ['home','services','service-detail','stylists','gallery','offers','about'];
 const PUBLIC_PAGES = ['home', 'login', 'stylist-apply', 'privacy', 'terms', 'cancellation', 'refund'];
