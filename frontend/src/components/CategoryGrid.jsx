@@ -1,6 +1,6 @@
 import { ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { glowbelleApi } from '../api.js';
+import { assetUrl, glowbelleApi } from '../api.js';
 
 const CATEGORY_ACCENTS = {
   barbering: ['✂', 'Precision cuts'],
@@ -48,9 +48,12 @@ export default function CategoryGrid({ setPage }) {
       {categories.map((category) => {
         const id = category.slug || category.id || category._id;
         const [icon, label] = CATEGORY_ACCENTS[id] || CATEGORY_ACCENTS.other;
+        const imageUrl = category.coverImageUrl || category.imageUrl || category.displayImageUrl || '';
         return (
           <button className="category-card" key={id} onClick={() => setPage('services', { cat: id })}>
-            <span className="category-icon">{icon}</span>
+            {imageUrl
+              ? <span className="category-media"><img src={assetUrl(imageUrl)} alt={category.title} /></span>
+              : <span className="category-icon">{icon}</span>}
             <small>{label}</small>
             <h3>{category.title}</h3>
             <p>{category.description || 'Browse live services in this category.'}</p>

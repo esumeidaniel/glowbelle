@@ -227,11 +227,15 @@ svg {
   }
 
   .service-art {
-    height: 150px;
+    height: clamp(155px, 34vw, 220px);
   }
 
   .category-card {
     min-height: auto;
+  }
+
+  .category-media {
+    height: clamp(100px, 28vw, 150px);
   }
 
   .toolbar,
@@ -311,6 +315,26 @@ svg {
   .mobile-customer-nav {
     left: 8px;
     right: 8px;
+  }
+}
+
+@media (max-width: 520px) {
+  .service-body {
+    padding: 12px;
+  }
+
+  .service-desc {
+    -webkit-line-clamp: 2;
+  }
+
+  .stylist-avatar-wrap .avatar {
+    width: 76px !important;
+    height: 76px !important;
+  }
+
+  .modal-profile-visual .avatar {
+    width: 104px !important;
+    height: 104px !important;
   }
 }
 
