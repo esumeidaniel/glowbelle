@@ -1,17 +1,14 @@
-import { Sparkles, ChevronRight, Shield, Zap, Search, CalendarCheck, BadgeCheck, BriefcaseBusiness, WalletCards, SlidersHorizontal, BellRing, MapPin, Clock3, TrendingUp, Store, Images, Scissors } from 'lucide-react';
+import { Sparkles, ChevronRight, Search, CalendarCheck, BadgeCheck, BriefcaseBusiness, WalletCards, MapPin, Clock3, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import CategoryGrid from './CategoryGrid.jsx';
 import SectionTitle from './SectionTitle.jsx';
 import ServiceGrid from './ServiceGrid.jsx';
-import Stylists from './Stylists.jsx';
-import WhyChoose from './WhyChoose.jsx';
 import { glowbelleApi } from '../api.js';
-import { reviews, testimonials } from '../data.js';
 import { attachProviderCounts } from '../marketplace.js';
 import { money } from '../utils.js';
 
 const floatingServices = ['Silk press', 'Knotless braids', 'Fade & beard', 'Bridal glam', 'Nails', 'Massage', 'Locs', 'Facials'];
-const trendingLooks = ['Destination nails', 'French highlights', 'Chrome ocean pedi', 'Riviera bob', 'Soft glam', 'Fresh fade', 'Medusa lashes', 'Boho braids'];
+const bookingSteps = ['Choose a service', 'Compare verified professionals', 'Pick your date and time', 'Pay at the salon'];
 
 function CustomerHomeDashboard({ user, setPage, featured, activeOffers }) {
   const firstName = user?.name?.split(' ')?.[0] || 'there';
@@ -182,89 +179,14 @@ export default function HomePage({ setPage, user }) {
 
       <section className="trend-board">
         <div className="trend-copy">
-          <span className="eyebrow"><TrendingUp size={14} /> What customers are looking for</span>
-          <h2>Trends, services and professionals in one booking flow.</h2>
-          <p>A mature beauty marketplace does more than list services. It helps customers discover ideas, compare professionals and move straight into booking.</p>
+          <span className="eyebrow"><TrendingUp size={14} /> Simple booking flow</span>
+          <h2>Find a service, choose a professional, and book with confidence.</h2>
+          <p>GlowBelle keeps the public dashboard focused: customers discover beauty services quickly, while approved professionals manage their own services, prices and availability.</p>
         </div>
         <div className="trend-cloud">
-          {trendingLooks.map(item => <button key={item} onClick={() => setPage('services')}>{item}</button>)}
+          {bookingSteps.map(item => <button key={item} onClick={() => setPage(item === 'Choose a service' ? 'services' : 'booking')}>{item}</button>)}
         </div>
       </section>
-
-      <section className="experience-board">
-        <div className="experience-copy">
-          <span className="eyebrow">A marketplace that feels personal</span>
-          <h2>Everything customers need to choose with confidence.</h2>
-          <p>GlowBelle is designed around service-first discovery. Customers do not need to guess who can do what: they select a category, compare verified professionals, view work samples, and book directly.</p>
-        </div>
-        <div className="experience-panels">
-          <article className="experience-panel feature">
-            <span>01</span>
-            <h3>Search by service, stylist, or location</h3>
-            <p>Customers can move from a service category to the right professional without confusion.</p>
-          </article>
-          <article className="experience-panel">
-            <span>02</span>
-            <h3>Profiles carry the trust</h3>
-            <p>Verified badge, portfolio, availability, prices, reviews, and business details sit together.</p>
-          </article>
-          <article className="experience-panel">
-            <span>03</span>
-            <h3>Stylists manage their own business</h3>
-            <p>Professionals control services, pricing, schedules, gallery posts, and discounts after approval.</p>
-          </article>
-        </div>
-      </section>
-
-      <section className="split-feature-section">
-        <div className="split-feature-card dark">
-          <span className="eyebrow">For customers</span>
-          <h2>Book without calling around.</h2>
-          <p>Search services, pick a verified professional, choose your time and send the appointment request straight to the stylist.</p>
-          <ul>
-            <li><BadgeCheck size={16} /> Approved professionals only</li>
-            <li><SlidersHorizontal size={16} /> Services and prices shown clearly</li>
-            <li><BellRing size={16} /> Booking notifications sent instantly</li>
-          </ul>
-          <button onClick={() => setPage('booking')}>Start booking</button>
-        </div>
-        <div className="split-feature-card light">
-          <span className="eyebrow">For professionals</span>
-          <h2>Run your beauty business online.</h2>
-          <p>After admin approval, stylists control their public profile, service menu, prices, bookings, portfolio and discounts.</p>
-          <ul>
-            <li><Shield size={16} /> Verification builds customer trust</li>
-            <li><Zap size={16} /> Direct orders without admin approval</li>
-            <li><WalletCards size={16} /> Customers pay directly at the salon</li>
-          </ul>
-          <button onClick={() => setPage('stylist-apply')}>Apply as professional</button>
-        </div>
-      </section>
-
-      <section className="pro-command-section">
-        <div className="pro-command-card">
-          <div>
-            <span className="eyebrow"><Store size={14} /> Professional command center</span>
-            <h2>Stylists do the business work. Admin protects the marketplace.</h2>
-            <p>Approved professionals manage the things customers care about: services, prices, portfolio media, discounts, booking status and availability.</p>
-          </div>
-          <div className="command-grid">
-            <div><Scissors size={18} /> <strong>Services & prices</strong><span>Publish skills with your own price and duration.</span></div>
-            <div><CalendarCheck size={18} /> <strong>Availability</strong><span>Set working days, closed dates and appointment times.</span></div>
-            <div><Images size={18} /> <strong>Portfolio</strong><span>Upload salon work, shop tours, photos and videos.</span></div>
-            <div><BellRing size={18} /> <strong>Bookings</strong><span>Receive customer orders directly and update status.</span></div>
-          </div>
-        </div>
-      </section>
-
-      <div className="proof-strip upgraded">
-        {[
-          ['Verified', 'Business approval before public listing'],
-          ['Direct', 'Customers book the chosen professional'],
-          ['Flexible', 'Professional controls prices and services'],
-          ['Secure', 'Role-based dashboards and protected data'],
-        ].map(([val, label]) => <div className="proof-item" key={label}><strong>{val}</strong><span>{label}</span></div>)}
-      </div>
 
       <SectionTitle title="Choose a category" text="A marketplace for hair, grooming, beauty, spa and event styling." />
       <CategoryGrid setPage={setPage} />
@@ -274,38 +196,6 @@ export default function HomePage({ setPage, user }) {
         ? <ServiceGrid items={featured} setPage={setPage} />
         : <div className="empty-state"><span>✦</span><h3>Services are being prepared</h3><p>Featured services will appear here as soon as they are published by admin.</p></div>}
       <div style={{ textAlign: 'center', padding: '0 32px 32px' }}><button className="view-all-btn" onClick={() => setPage('services')}>View all services <ChevronRight size={16} /></button></div>
-
-      <WhyChoose />
-
-      <section className="social-proof-showcase">
-        <div className="proof-copy">
-          <span className="eyebrow">Customer confidence</span>
-          <h2>A beauty experience built around confidence.</h2>
-          <p>Reviews, portfolio work and booking history help customers choose with confidence. GlowBelle is designed to make those trust signals clear as the marketplace grows.</p>
-        </div>
-        <div className="review-stack">
-          {reviews.slice(0, 3).map(review => (
-            <article className="review-card" key={review.id}>
-              <div className="review-stars">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</div>
-              <p>{review.text}</p>
-              <strong>{review.name}</strong>
-              <span>{review.service} · {review.stylist}</span>
-            </article>
-          ))}
-        </div>
-        <div className="testimonial-strip">
-          {testimonials.map(item => (
-            <div key={item.name}>
-              <p>{item.text}</p>
-              <strong>{item.name}</strong>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <SectionTitle title="Verified professionals" text="Approved stylists and beauty businesses appear here after verification." />
-      <Stylists setPage={setPage} preview />
-      <div style={{ textAlign: 'center', padding: '0 32px 32px' }}><button className="view-all-btn" onClick={() => setPage('stylists')}>Meet all professionals <ChevronRight size={16} /></button></div>
 
       <section className="offers-strip premium-offers">
         <div className="offers-strip-inner">
@@ -320,16 +210,6 @@ export default function HomePage({ setPage, user }) {
               ? activeOffers.map(o => <div className="offer-chip" key={o.id}><strong>{o.title}</strong><span>{o.price}</span><code>{o.code}</code></div>)
               : <div className="offer-chip"><strong>No active offers yet</strong><span>Admin or stylists can publish offers</span><code>LIVE</code></div>}
           </div>
-        </div>
-      </section>
-
-      <section className="launch-cta">
-        <span>✨</span>
-        <h2>Customers book. Professionals grow. Admin protects trust.</h2>
-        <p>This is the GlowBelle marketplace model: simple on the front, controlled and secure behind the scenes.</p>
-        <div className="actions" style={{ justifyContent: 'center' }}>
-          <button onClick={() => setPage('booking')}>Book a service</button>
-          <button className="secondary" onClick={() => setPage('stylist-apply')}>Join as professional</button>
         </div>
       </section>
     </>
