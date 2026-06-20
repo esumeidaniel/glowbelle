@@ -2230,7 +2230,8 @@ textarea { min-height: 90px; resize: vertical; margin-top: 4px; }
   .booking-card { flex-direction: column; align-items: flex-start; gap: 12px; }
   .dash-cards { grid-template-columns: repeat(2, 1fr); }
   .contact-cards { grid-template-columns: 1fr; }
-  .footer-top { grid-template-columns: 1fr; gap: 14px; padding: 24px 16px 12px; }
+  .footer-top { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 24px 16px 12px; }
+  .footer-brand { grid-column: 1 / -1; }
   .footer-brand p { margin-bottom: 10px; line-height: 1.45; }
   .footer-col h4 { margin-bottom: 6px; }
   .footer-col { gap: 0; }
@@ -2260,6 +2261,20 @@ textarea { min-height: 90px; resize: vertical; margin-top: 4px; }
     background: var(--bg);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    gap: 10px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .header .brand {
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 8px;
+  }
+
+  .header-right {
+    margin-left: 0;
+    padding-left: 8px;
   }
 
   .nav {
@@ -2317,7 +2332,18 @@ textarea { min-height: 90px; resize: vertical; margin-top: 4px; }
     border: 1px solid var(--brand-border);
     color: var(--brand);
   }
-  .hamb { display: flex; }
+  .hamb {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
+    box-shadow: 0 8px 22px rgba(0,0,0,.08);
+  }
   .book-now { display: none; }
   .login-btn { display: none; }
 }

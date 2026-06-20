@@ -63,9 +63,9 @@ function MobileCustomerNav({ page, setPage, user }) {
   const items = [
     ['home', 'Home'],
     ['services', 'Services'],
-    ['stylists', 'Stylists'],
-    ['bookings', 'Bookings'],
-    ['profile', 'Profile'],
+    ['booking', 'Book'],
+    ['offers', 'Offers'],
+    ['gallery', 'Gallery'],
   ];
   return (
     <nav className="mobile-customer-nav" aria-label="Customer quick navigation">

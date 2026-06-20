@@ -70,13 +70,10 @@ export default function Header({ page, setPage, user, setUser }) {
   }, []);
 
   const customerLinks = [
-    ['home', 'Home'],
     ['services', 'Services'],
     ['booking', 'Book'],
     ['offers', 'Offers'],
     ['gallery', 'Gallery'],
-    ['bookings', 'My Bookings'],
-    ['profile', 'Account'],
   ];
   const publicLinks = [
     ['home', 'Dashboard'],
@@ -107,6 +104,19 @@ export default function Header({ page, setPage, user, setUser }) {
       {open && <div className="nav-backdrop" onClick={() => setOpen(false)} />}
 
       <header className={`header${scrolled ? ' scrolled' : ''}`}>
+        <button
+          className="hamb"
+          onClick={() => {
+            if (!open) restoreScrollOnClose.current = true;
+            setOpen(!open);
+          }}
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-expanded={open}
+          aria-controls="site-menu"
+        >
+          {open ? <X /> : <Menu />}
+        </button>
+
         <button className="brand" onClick={() => go('home')}>
           <span className="logo">GB</span>
           <span>GlowBelle</span>
@@ -122,13 +132,9 @@ export default function Header({ page, setPage, user, setUser }) {
               {label}
             </button>
           ))}
-          {user?.role === 'customer' && <button onClick={logout}><LogOut size={14} /> Logout</button>}
           {(user?.role === 'admin' || user?.role === 'stylist') && <div className="nav-divider" />}
           {user?.role === 'admin' && <button onClick={() => go('admin')} className="nav-dash"><Shield size={13} /> Admin</button>}
           {user?.role === 'stylist' && <button onClick={() => go('stylist')} className="nav-dash"><LayoutDashboard size={13} /> Stylist</button>}
-          <div className="nav-mobile-actions">
-            {user?.role === 'customer' && <button onClick={() => go('booking')} className="nav-book">Book Now</button>}
-          </div>
         </nav>
 
         <div className="header-right">
@@ -152,19 +158,6 @@ export default function Header({ page, setPage, user, setUser }) {
               )}
             </div>
           ) : null}
-          {user?.role === 'customer' && <button className="book-now" onClick={() => go('booking')}>Book Now</button>}
-          <button
-            className="hamb"
-            onClick={() => {
-              if (!open) restoreScrollOnClose.current = true;
-              setOpen(!open);
-            }}
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            aria-expanded={open}
-            aria-controls="site-menu"
-          >
-            {open ? <X /> : <Menu />}
-          </button>
         </div>
       </header>
     </>
