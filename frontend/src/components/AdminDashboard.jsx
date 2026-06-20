@@ -14,6 +14,7 @@ const NAV = [
 
 const STATUS_COL = {
   confirmed: '#16a34a', pending: '#d97706', completed: '#6366f1', cancelled: '#dc2626', 'no-show': '#64748b', paid: '#16a34a', failed: '#dc2626', refunded: '#6366f1',
+  approved: '#16a34a', rejected: '#dc2626', suspended: '#64748b',
 };
 
 function niceDate(value, time) {
@@ -42,6 +43,26 @@ const EMPTY_SERVICE = {
   isFeatured: false,
   isActive: true,
 };
+
+function StatusPill({ status: value }) {
+  const color = STATUS_COL[value] || '#64748b';
+  return <span className="status-pill" style={{ '--status-color': color }}>{value}</span>;
+}
+
+function AdminTable({ headers, children }) {
+  return (
+    <div className="admin-table-wrap">
+      <table className="admin-table">
+        <thead><tr>{headers.map(header => <th key={header}>{header}</th>)}</tr></thead>
+        <tbody>{children}</tbody>
+      </table>
+    </div>
+  );
+}
+
+function ActionGroup({ children }) {
+  return <div className="action-group">{children}</div>;
+}
 
 export default function AdminDashboard({ onLogout }) {
   const [tab, setTab] = useState('overview');
@@ -225,7 +246,7 @@ export default function AdminDashboard({ onLogout }) {
               {bookings.slice(0, 6).map(b => (
                 <div className="dash-row" key={b._id}>
                   <div><strong>{b.customer?.name || b.guest?.name || 'Guest'}</strong><p style={{ margin: 0, fontSize: 12 }}>{b.service?.title} · {niceDate(b.appointmentDate, b.startTime)}</p></div>
-                  <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 999, background: (STATUS_COL[b.status] || '#64748b') + '20', color: STATUS_COL[b.status] || '#64748b' }}>{b.status}</span>
+                  <StatusPill status={b.status} />
                 </div>
               ))}
             </section>
@@ -243,44 +264,36 @@ export default function AdminDashboard({ onLogout }) {
               </select>
               <button onClick={loadDashboard}>Search</button>
             </div>
-            <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
-                <thead style={{ background: 'var(--brand-light)' }}><tr>{['ID', 'Customer', 'Service', 'Stylist', 'Date/Time', 'Amount', 'Payment', 'Status', 'Actions'].map(h => <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 600, color: 'var(--brand)' }}>{h}</th>)}</tr></thead>
-                <tbody>
+            <AdminTable headers={['ID', 'Customer', 'Service', 'Stylist', 'Date/Time', 'Amount', 'Payment', 'Status', 'Actions']}>
                   {bookings.map(b => (
-                    <tr key={b._id} style={{ borderTop: '1px solid var(--border)' }}>
-                      <td style={{ padding: '12px 16px', fontFamily: 'monospace', fontSize: 12 }}>{b.bookingNumber}</td>
-                      <td style={{ padding: '12px 16px' }}><strong>{b.customer?.name || b.guest?.name || 'Guest'}</strong><br /><small>{b.customer?.phone || b.guest?.phone}</small></td>
-                      <td style={{ padding: '12px 16px' }}>{b.service?.title}</td>
-                      <td style={{ padding: '12px 16px' }}>{b.stylist?.name || 'Any'}</td>
-                      <td style={{ padding: '12px 16px', fontSize: 12 }}>{niceDate(b.appointmentDate, b.startTime)}</td>
-                      <td style={{ padding: '12px 16px' }}>{money(b.total)}</td>
-                      <td style={{ padding: '12px 16px' }}>{b.paymentStatus}</td>
-                      <td style={{ padding: '12px 16px' }}><span style={{ padding: '2px 8px', borderRadius: 999, fontSize: 12, background: (STATUS_COL[b.status] || '#64748b') + '20', color: STATUS_COL[b.status] || '#64748b' }}>{b.status}</span></td>
-                      <td style={{ padding: '12px 16px' }}>
-                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    <tr key={b._id}>
+                      <td className="mono-cell">{b.bookingNumber}</td>
+                      <td><strong>{b.customer?.name || b.guest?.name || 'Guest'}</strong><br /><small>{b.customer?.phone || b.guest?.phone}</small></td>
+                      <td>{b.service?.title}</td>
+                      <td>{b.stylist?.name || 'Any'}</td>
+                      <td className="muted-cell">{niceDate(b.appointmentDate, b.startTime)}</td>
+                      <td>{money(b.total)}</td>
+                      <td>{b.paymentStatus}</td>
+                      <td><StatusPill status={b.status} /></td>
+                      <td>
+                        <ActionGroup>
                           {b.status === 'pending' && <button onClick={() => changeBooking(b._id, 'confirmed')}>Confirm</button>}
                           {['pending', 'confirmed'].includes(b.status) && <button onClick={() => changeBooking(b._id, 'cancelled')}>Cancel</button>}
                           {b.status === 'confirmed' && <button onClick={() => changeBooking(b._id, 'completed')}>Complete</button>}
-                        </div>
+                        </ActionGroup>
                       </td>
                     </tr>
                   ))}
-                </tbody>
-              </table>
-            </div>
+            </AdminTable>
           </div>
         )}
 
         {tab === 'customers' && (
           <div>
             <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}><input placeholder="Search customer name, email or phone" value={search} onChange={e => setSearch(e.target.value)} style={{ flex: 1, padding: 12 }} /><button onClick={loadDashboard}>Search</button></div>
-            <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
-                <thead style={{ background: 'var(--brand-light)' }}><tr>{['Customer', 'Email', 'Phone', 'Spent', 'Points', 'Joined'].map(h => <th key={h} style={{ padding: '12px 16px', textAlign: 'left' }}>{h}</th>)}</tr></thead>
-                <tbody>{customers.map(c => <tr key={c._id} style={{ borderTop: '1px solid var(--border)' }}><td style={{ padding: '12px 16px' }}>{c.name}</td><td>{c.email}</td><td>{c.phone}</td><td>{money(c.totalSpent || 0)}</td><td>{c.loyaltyPoints || 0}</td><td>{new Date(c.createdAt).toLocaleDateString()}</td></tr>)}</tbody>
-              </table>
-            </div>
+            <AdminTable headers={['Customer', 'Email', 'Phone', 'Spent', 'Points', 'Joined']}>
+              {customers.map(c => <tr key={c._id}><td>{c.name}</td><td>{c.email}</td><td>{c.phone}</td><td>{money(c.totalSpent || 0)}</td><td>{c.loyaltyPoints || 0}</td><td>{new Date(c.createdAt).toLocaleDateString()}</td></tr>)}
+            </AdminTable>
           </div>
         )}
 
@@ -299,7 +312,7 @@ export default function AdminDashboard({ onLogout }) {
                   <button className="text-btn" onClick={() => downloadAdminDocument(application._id, 'address')}>View address proof</button>
                   <button className="text-btn" onClick={() => downloadAdminDocument(application._id, 'workspace')}>View workspace</button>
                 </div>
-                <span className="status" style={{ marginTop: 10 }}>{application.approvalStatus}</span>
+                <div style={{ marginTop: 10 }}><StatusPill status={application.approvalStatus} /></div>
                 {application.reviewNote && <p>Review note: {application.reviewNote}</p>}
               </div>
               <div className="booking-actions">

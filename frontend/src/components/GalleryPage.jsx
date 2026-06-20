@@ -82,7 +82,7 @@ export default function GalleryPage({ setPage }) {
 
       {loading && <div className="empty-state"><span>⌛</span><h3>Loading gallery</h3><p>Fetching published gallery items from the backend.</p></div>}
       {!loading && loadError && <div className="empty-state"><span>⚠</span><h3>Gallery could not load</h3><p>{loadError}</p></div>}
-      {!loading && usingDemo && <div className="soft-launch-banner"><strong>Sample gallery preview.</strong><span>These placeholders keep the launch page full. Real stylist photos and videos will replace them as professionals upload portfolio media.</span></div>}
+      {!loading && usingDemo && <div className="soft-launch-banner"><strong>Gallery preview.</strong><span>Portfolio examples keep this page useful while verified professionals begin uploading their own work.</span></div>}
       {!loading && !loadError && !filtered.length && <div className="empty-state"><span>✦</span><h3>No gallery items yet</h3><p>Stylist portfolio uploads, shop videos, and featured work will appear here.</p></div>}
       {!loading && !loadError && filtered.length > 0 && <div className="gallery-grid">
         {filtered.map(item => (
@@ -93,7 +93,7 @@ export default function GalleryPage({ setPage }) {
                 : <img src={item.imageUrl} alt={item.label || 'Gallery work'} />
               : <span className="gallery-emoji">{item.emoji}</span>}
             <div className="gallery-overlay">
-              {item.demo && <small>Sample preview</small>}
+              {item.demo && <small>Preview</small>}
               <span>{item.label}</span>
               {item.stylist?.name && <small>By {item.stylist.name}</small>}
               <button disabled={item.demo} onClick={e => { e.stopPropagation(); if (!item.demo) setPage('booking'); }}>{item.demo ? 'Preview only' : 'Book this look'}</button>

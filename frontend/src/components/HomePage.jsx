@@ -223,9 +223,9 @@ export default function HomePage({ setPage }) {
 
       <section className="social-proof-showcase">
         <div className="proof-copy">
-          <span className="eyebrow">Launch trust content</span>
+          <span className="eyebrow">Customer confidence</span>
           <h2>A beauty experience built around confidence.</h2>
-          <p>Use real reviews as customers begin booking. Until then, this section gives the brand a more complete marketplace feel and shows the kind of trust signals GlowBelle supports.</p>
+          <p>Reviews, portfolio work and booking history help customers choose with confidence. GlowBelle is designed to make those trust signals clear as the marketplace grows.</p>
         </div>
         <div className="review-stack">
           {reviews.slice(0, 3).map(review => (
