@@ -14,7 +14,7 @@ export default function AboutPage({ setPage }) {
           GlowBelle helps customers discover approved salon professionals, view their services and prices, and book appointments directly. Professionals apply with identity and business evidence before they can publish their profile.
         </p>
         <p style={{ lineHeight: 1.8, color: 'var(--text)', fontSize: 16, marginTop: 16 }}>
-          The platform owner does not manage every appointment. The admin role exists to verify businesses, review reports, protect customers, and keep the marketplace trustworthy.
+          The platform does not manage every appointment. GlowBelle verifies businesses, reviews reports, protects customers, and keeps the marketplace trustworthy.
         </p>
       </section>
 
@@ -23,7 +23,7 @@ export default function AboutPage({ setPage }) {
         {[
           { icon: <Heart />, title: 'For customers', text: 'Simple booking with approved professionals and server-verified pricing.' },
           { icon: <Sparkles />, title: 'For stylists', text: 'A business profile, custom service pricing, direct orders, portfolio and discounts.' },
-          { icon: <ShieldCheck />, title: 'For trust', text: 'Admin approval, private verification documents and role-based access.' },
+          { icon: <ShieldCheck />, title: 'For trust', text: 'Business approval, private verification documents and protected access.' },
         ].map(item => (
           <div className="offer" key={item.title} style={{ textAlign: 'center', alignItems: 'center' }}>
             <div style={{ color: 'var(--brand)', marginBottom: 8 }}>{item.icon}</div>
@@ -37,8 +37,8 @@ export default function AboutPage({ setPage }) {
       <section className="why">
         {[
           [<ShieldCheck />, 'Verification first', 'Stylists must be approved before customers can book them.'],
-          [<Users />, 'Clear roles', 'Customers, stylists and admins see only the tools meant for them.'],
-          [<Heart />, 'Direct booking', 'Chosen stylists receive customer orders without admin approval.'],
+          [<Users />, 'Clear roles', 'Customers and professionals see only the tools meant for them.'],
+          [<Heart />, 'Direct booking', 'Chosen stylists receive customer orders directly.'],
         ].map(([icon, title, text]) => (
           <div key={title} style={{ padding: 20, textAlign: 'center' }}>
             <div style={{ color: 'var(--brand)', marginBottom: 8 }}>{icon}</div>

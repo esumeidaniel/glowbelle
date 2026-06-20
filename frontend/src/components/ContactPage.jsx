@@ -7,9 +7,9 @@ import { glowbelleApi } from '../api.js';
 const FAQS = [
   { q: 'Can I choose my stylist?', a: 'Yes. Customers choose from approved stylists who have published services and availability.' },
   { q: 'Can a stylist join the platform?', a: 'Yes. A stylist must apply with identity, business address and workspace evidence before approval.' },
-  { q: 'Who receives a booking?', a: 'The selected stylist receives the order directly. Admin keeps oversight for safety and support.' },
+  { q: 'Who receives a booking?', a: 'The selected stylist receives the order directly. GlowBelle keeps marketplace oversight for safety and support.' },
   { q: 'Who sets service prices?', a: 'Approved stylists set their own services, prices and durations in their business dashboard.' },
-  { q: 'How are disputes handled?', a: 'Use the contact form. Admin can review reports and take action on unsafe or inaccurate businesses.' },
+  { q: 'How are disputes handled?', a: 'Use the contact form. GlowBelle can review reports and take action on unsafe or inaccurate businesses.' },
 ];
 
 export default function ContactPage() {
@@ -45,7 +45,7 @@ export default function ContactPage() {
 
       <div className="contact-layout">
         <div className="contact-cards">
-          <Info icon={<Mail />} title="Support" text="Use the form to reach the platform admin." />
+          <Info icon={<Mail />} title="Support" text="Use the form to reach GlowBelle support." />
           <Info icon={<MapPin />} title="Business verification" text="Stylists must apply and be approved before appearing to customers." />
         </div>
 

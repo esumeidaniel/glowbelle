@@ -71,8 +71,8 @@ export default function OffersPage({ setPage }) {
 
       {loading && <div className="empty-state"><span>⌛</span><h3>Loading active offers</h3><p>Fetching promotions from the backend.</p></div>}
       {!loading && loadError && <div className="empty-state"><span>⚠</span><h3>Offers could not load</h3><p>{loadError}</p></div>}
-      {!loading && usingDemo && <div className="soft-launch-banner"><strong>Offer preview.</strong><span>Featured promotion examples appear here until admin or verified stylists publish active offers.</span></div>}
-      {!loading && !loadError && !filtered.length && <div className="empty-state"><span>✦</span><h3>No active offers</h3><p>Admin-managed offers will appear here when published.</p></div>}
+      {!loading && usingDemo && <div className="soft-launch-banner"><strong>Offer preview.</strong><span>Featured promotion examples appear here until GlowBelle or verified stylists publish active offers.</span></div>}
+      {!loading && !loadError && !filtered.length && <div className="empty-state"><span>✦</span><h3>No active offers</h3><p>Marketplace offers will appear here when published.</p></div>}
       {!loading && !loadError && filtered.length > 0 && <div className="grid three" style={{ paddingBottom: 48 }}>
         {filtered.map(offer => (
           <article className="offer" key={offer.id}>
@@ -95,7 +95,7 @@ export default function OffersPage({ setPage }) {
         ))}
       </div>}
 
-      <section className="loyalty-section"><div className="loyalty-inner"><div><span className="pill">Marketplace offers</span><h2>Real discounts from GlowBelle and verified stylists</h2><p>Admin can publish platform-wide offers, and approved stylists can publish their own service discounts.</p></div></div></section>
+      <section className="loyalty-section"><div className="loyalty-inner"><div><span className="pill">Marketplace offers</span><h2>Real discounts from GlowBelle and verified stylists</h2><p>GlowBelle can publish platform-wide offers, and approved stylists can publish their own service discounts.</p></div></div></section>
     </>
   );
 }

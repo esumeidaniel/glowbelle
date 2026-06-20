@@ -193,11 +193,11 @@ export default function LoginPage({ setPage, setUser }) {
       <section className="auth-showcase">
         <span className="pill"><BadgeCheck size={16} /> Role-aware beauty marketplace</span>
         <h1>One website. Three clean experiences.</h1>
-        <p>Customers book services, approved professionals manage their business, and admin keeps the marketplace trusted without mixing dashboards.</p>
+        <p>Customers book services, approved professionals manage their business, and GlowBelle keeps the marketplace trusted without mixing dashboards.</p>
         <div className="auth-benefits">
           <div><CalendarCheck size={18} /><span>Customers book verified stylists directly</span></div>
           <div><BriefcaseBusiness size={18} /><span>Professionals manage bookings, prices and portfolios</span></div>
-          <div><ShieldCheck size={18} /><span>Admin approves real businesses before they go live</span></div>
+          <div><ShieldCheck size={18} /><span>Real businesses are approved before they go live</span></div>
         </div>
       </section>
       <div className="login-card">
@@ -302,7 +302,7 @@ export default function LoginPage({ setPage, setUser }) {
         </p>
         {audience === 'business' && <div className="business-auth-note">
           <strong>New professional?</strong>
-          <span>Apply with your ID, business address and workspace evidence. Admin approval is required before customers can book you.</span>
+          <span>Apply with your ID, business address and workspace evidence. Approval is required before customers can book you.</span>
           <button className="text-btn" type="button" onClick={() => setPage('stylist-apply')}>Start professional application</button>
         </div>}
       </div>

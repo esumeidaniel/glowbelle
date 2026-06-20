@@ -13,7 +13,7 @@ const policies = {
     ['Payments', 'GlowBelle currently uses Pay at Salon only. Customers pay the professional directly after the service.'],
   ]],
   cancellation: ['Cancellation Policy', [
-    ['Changes and cancellations', 'Customers should cancel or reschedule before the appointment starts so the professional can manage their calendar. Repeated cancellations may be reviewed by admin.'],
+    ['Changes and cancellations', 'Customers should cancel or reschedule before the appointment starts so the professional can manage their calendar. Repeated cancellations may be reviewed by GlowBelle.'],
     ['Late arrival', 'Late arrival may shorten or require rescheduling an appointment so later customers are not delayed.'],
   ]],
   refund: ['Refund Policy', [

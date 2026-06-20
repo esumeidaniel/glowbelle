@@ -139,7 +139,7 @@ export default function BookingPage({ setPage, nav, user }) {
       <div className="empty-state">
         <span>{catalogError ? '⚠' : '✦'}</span>
         <h3>{catalogError ? 'Booking catalog could not load' : 'No active services yet'}</h3>
-        <p>{catalogError || 'Add active services from the admin dashboard before customers start booking.'}</p>
+        <p>{catalogError || 'Active services will appear here as soon as they are published.'}</p>
         <button onClick={() => setPage('services')}>View services</button>
       </div>
     </>;

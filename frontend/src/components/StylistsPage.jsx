@@ -68,7 +68,7 @@ export default function StylistsPage({ setPage }) {
       </section>
       {loading && <div className="empty-state"><span>⌛</span><h3>Loading verified professionals</h3><p>Fetching approved stylist profiles from the backend.</p></div>}
       {!loading && loadError && <div className="empty-state"><span>⚠</span><h3>Professionals could not load</h3><p>{loadError}</p></div>}
-      {!loading && !loadError && !stylists.length && <div className="empty-state"><span>✦</span><h3>No approved professionals yet</h3><p>Approved stylist profiles will appear here after admin verification.</p></div>}
+      {!loading && !loadError && !stylists.length && <div className="empty-state"><span>✦</span><h3>No approved professionals yet</h3><p>Approved stylist profiles will appear here after verification.</p></div>}
       {!loading && !loadError && stylists.length > 0 && <div className="grid four" style={{ paddingBottom: 48 }}>
         {stylists.map(st => (
           <div className="stylist-card" key={st.id} onClick={() => setSelected(st)}>

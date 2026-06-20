@@ -125,7 +125,7 @@ export default function ServicesPage({ setPage, nav }) {
         <div className="empty-state">
           <span>🔍</span>
           <h3>No services found</h3>
-          <p>{items.length ? 'Try adjusting your search or filters.' : 'Services will appear here as soon as admin publishes them.'}</p>
+          <p>{items.length ? 'Try adjusting your search or filters.' : 'Services will appear here as soon as they are published.'}</p>
           <button onClick={() => { setQ(''); setCat('all'); setMaxPrice(100000); }}>Clear filters</button>
         </div>
       )}

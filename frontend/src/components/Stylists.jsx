@@ -43,7 +43,7 @@ export default function Stylists({ setPage, preview }) {
   const shown = preview ? stylists.slice(0, 4) : stylists;
   if (loading) return <div className="empty-state"><span>⌛</span><h3>Loading verified professionals</h3><p>Fetching approved stylists from the backend.</p></div>;
   if (loadError) return <div className="empty-state"><span>⚠</span><h3>Professionals could not load</h3><p>{loadError}</p></div>;
-  if (!shown.length) return <div className="empty-state"><span>✦</span><h3>No approved professionals yet</h3><p>Approved stylist profiles will appear here after admin verification.</p></div>;
+  if (!shown.length) return <div className="empty-state"><span>✦</span><h3>No approved professionals yet</h3><p>Approved stylist profiles will appear here after verification.</p></div>;
 
   return (
     <div className="grid four">

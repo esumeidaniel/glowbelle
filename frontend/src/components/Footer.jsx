@@ -49,7 +49,7 @@ export default function Footer({ setPage, user }) {
         <div className="footer-badges">
           <span>🔒 Secure booking</span>
           <span>✅ Verified professionals</span>
-          <span>🧾 Admin-reviewed businesses</span>
+          <span>🧾 Reviewed businesses</span>
         </div>
       </div>
     </footer>

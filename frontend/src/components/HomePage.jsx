@@ -140,7 +140,7 @@ export default function HomePage({ setPage, user }) {
           </div>
 
           <div className="hero-trust-rail" aria-label="GlowBelle marketplace highlights">
-            <div><strong>Verified</strong><span>Professionals reviewed by admin</span></div>
+            <div><strong>Verified</strong><span>Professionals reviewed before listing</span></div>
             <div><strong>Direct</strong><span>Bookings go to the chosen stylist</span></div>
             <div><strong>Simple</strong><span>Pay at salon after service</span></div>
           </div>
@@ -151,7 +151,7 @@ export default function HomePage({ setPage, user }) {
             <div className="showcase-top"><span /> <span /> <span /></div>
             <div className="booking-live-badge"><BadgeCheck size={14} /> Verified pro</div>
             <h3>{previewService?.title || 'Live service preview'}</h3>
-            <p>{previewService ? 'Pulled from your backend catalog' : 'Publish services from admin to fill this card'}</p>
+            <p>{previewService ? 'Pulled from your live catalog' : 'Published services will fill this card'}</p>
             <div className="preview-line"><CalendarCheck size={15} /> Today · 2:30 PM</div>
             <div className="preview-line"><WalletCards size={15} /> Pay at salon</div>
             <div className="price-row"><strong>{previewService ? money(previewService.price) : 'Live price'}</strong><span>Booking sent</span></div>
@@ -159,7 +159,7 @@ export default function HomePage({ setPage, user }) {
           <div className="showcase-card pro-card-preview">
             <h4>Professional dashboard</h4>
             <div className="mini-stat"><span>Orders</span><strong>Live</strong></div>
-            <div className="mini-stat"><span>Services</span><strong>Admin</strong></div>
+            <div className="mini-stat"><span>Services</span><strong>Approved</strong></div>
             <div className="mini-stat"><span>Payment</span><strong>At salon</strong></div>
           </div>
           <div className="showcase-schedule">
@@ -194,7 +194,7 @@ export default function HomePage({ setPage, user }) {
       <SectionTitle title="Featured services" text="Services are loaded from your backend catalog when available." />
       {featured.length > 0
         ? <ServiceGrid items={featured} setPage={setPage} />
-        : <div className="empty-state"><span>✦</span><h3>Services are being prepared</h3><p>Featured services will appear here as soon as they are published by admin.</p></div>}
+        : <div className="empty-state"><span>✦</span><h3>Services are being prepared</h3><p>Featured services will appear here as soon as they are published.</p></div>}
       <div style={{ textAlign: 'center', padding: '0 32px 32px' }}><button className="view-all-btn" onClick={() => setPage('services')}>View all services <ChevronRight size={16} /></button></div>
 
       <section className="offers-strip premium-offers">
@@ -208,7 +208,7 @@ export default function HomePage({ setPage, user }) {
           <div className="offer-chips">
             {activeOffers.length > 0
               ? activeOffers.map(o => <div className="offer-chip" key={o.id}><strong>{o.title}</strong><span>{o.price}</span><code>{o.code}</code></div>)
-              : <div className="offer-chip"><strong>No active offers yet</strong><span>Admin or stylists can publish offers</span><code>LIVE</code></div>}
+              : <div className="offer-chip"><strong>No active offers yet</strong><span>GlowBelle and stylists can publish offers</span><code>LIVE</code></div>}
           </div>
         </div>
       </section>

@@ -280,7 +280,7 @@ export default function StylistDashboard({ onLogout }) {
   if (loading) return <div className="note-box">Loading your business account…</div>;
   if (!profile) return <div className="note-box">No stylist application is linked to this account.</div>;
   if (profile.approvalStatus !== 'approved') {
-    return <div className="legal-page"><h1>Application {profile.approvalStatus}</h1><div className="note-box prep">{profile.approvalStatus === 'pending' ? 'An administrator is reviewing your identity, address, and workspace evidence. Your profile is hidden from customers until approval.' : profile.reviewNote || 'Contact support for information about this decision.'}</div></div>;
+    return <div className="legal-page"><h1>Application {profile.approvalStatus}</h1><div className="note-box prep">{profile.approvalStatus === 'pending' ? 'GlowBelle is reviewing your identity, address, and workspace evidence. Your profile is hidden from customers until approval.' : profile.reviewNote || 'Contact support for information about this decision.'}</div></div>;
   }
 
   const todayKey = new Date().toDateString();
