@@ -1,9 +1,13 @@
-import { Star } from 'lucide-react';
+import { BadgeCheck, MapPin, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Avatar from './Avatar.jsx';
 import { glowbelleApi } from '../api.js';
 
 function normalizeStylist(item) {
+  const rawLocation = item.location || item.businessAddress || item.city;
+  const location = typeof rawLocation === 'string'
+    ? rawLocation
+    : [rawLocation?.city, rawLocation?.state, rawLocation?.country].filter(Boolean).join(', ');
   return {
     ...item,
     id: item.code || item.id || item._id,
@@ -11,6 +15,7 @@ function normalizeStylist(item) {
     rating: item.rating || 0,
     jobs: item.jobs || 0,
     available: item.available !== false,
+    location: location || 'Location added after approval',
   };
 }
 
@@ -44,12 +49,16 @@ export default function Stylists({ setPage, preview }) {
     <div className="grid four">
       {shown.map(st => (
         <div className="stylist-card" key={st.id}>
-          <Avatar name={st.name} src={st.avatarUrl} />
+          <div className="stylist-avatar-wrap">
+            <Avatar name={st.name} src={st.avatarUrl} />
+            <span><BadgeCheck size={13} /></span>
+          </div>
           <h3>{st.name}</h3>
-          <p>{st.role}</p>
-          <span><Star size={14} /> {st.rating} · {st.jobs} clients</span>
-          <div>{st.skills.slice(0, 3).map(s => <small key={s}>{s}</small>)}</div>
-          {!st.available && <div className="unavail-tag" style={{ marginBottom: 8 }}>Unavailable today</div>}
+          <p>{st.role || 'Beauty professional'}</p>
+          <span className="stylist-rating"><Star size={14} /> {st.rating || 'New'} · {st.jobs} clients</span>
+          <div className="stylist-location"><MapPin size={13} /> {st.location}</div>
+          <div className="stylist-skills">{st.skills.slice(0, 3).map(s => <small key={s}>{s}</small>)}</div>
+          <div className={st.available ? 'avail-tag' : 'unavail-tag'}>{st.available ? 'Available for booking' : 'Unavailable today'}</div>
           <button onClick={() => setPage('booking', { stylistId: st.id })}>Book {st.name.split(' ')[0]}</button>
         </div>
       ))}

@@ -67,6 +67,12 @@ export default function HomePage({ setPage }) {
             <button onClick={() => setPage('services')}>Explore marketplace <ChevronRight size={15} /></button>
             <button className="secondary" onClick={() => setPage('login')}>Sign in</button>
           </div>
+
+          <div className="hero-trust-rail" aria-label="GlowBelle marketplace highlights">
+            <div><strong>Verified</strong><span>Professionals reviewed by admin</span></div>
+            <div><strong>Direct</strong><span>Bookings go to the chosen stylist</span></div>
+            <div><strong>Simple</strong><span>Pay at salon after service</span></div>
+          </div>
         </div>
 
         <div className="market-showcase" aria-label="GlowBelle marketplace preview">
@@ -84,6 +90,11 @@ export default function HomePage({ setPage }) {
             <div className="mini-stat"><span>Orders</span><strong>Live</strong></div>
             <div className="mini-stat"><span>Services</span><strong>Admin</strong></div>
             <div className="mini-stat"><span>Payment</span><strong>At salon</strong></div>
+          </div>
+          <div className="showcase-schedule">
+            <span>Today</span>
+            <strong>3 open slots</strong>
+            <small>Availability updates from stylist dashboards</small>
           </div>
           <div className="floating-chip chip-a">Verified ID</div>
           <div className="floating-chip chip-b">Direct booking</div>
