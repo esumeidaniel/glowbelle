@@ -60,6 +60,19 @@ export default function ServicesPage({ setPage, nav }) {
   return (
     <>
       <PageHero title="Services for everyone" text="Women, men, children, bridal, spa and home-service bookings in one place." icon={<Scissors />} />
+
+      <section className="market-page-intro services-intro">
+        <div>
+          <span className="eyebrow">Service-first discovery</span>
+          <h2>Choose the service first. GlowBelle shows who can do it.</h2>
+          <p>Browse the live catalog, filter by category and price, then book directly with a verified professional who has published that exact service.</p>
+        </div>
+        <div className="intro-stats">
+          <div><strong>{items.length || 'Live'}</strong><span>Services in catalog</span></div>
+          <div><strong>{items.filter(item => item.providerCount > 0).length || 'Soon'}</strong><span>Ready to book</span></div>
+          <div><strong>Pay later</strong><span>Pay at salon</span></div>
+        </div>
+      </section>
       
       <div className="toolbar">
         <label className="search-label">

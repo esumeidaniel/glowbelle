@@ -1,4 +1,4 @@
-import { Star, Users, Briefcase, CalendarDays } from 'lucide-react';
+import { BadgeCheck, MapPin, Star, Users, Briefcase, CalendarDays } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Avatar from './Avatar.jsx';
 import PageHero from './PageHero.jsx';
@@ -9,6 +9,10 @@ function isVideoMedia(item) {
 }
 
 function normalizeStylist(item) {
+  const rawLocation = item.location || item.businessAddress || item.city;
+  const location = typeof rawLocation === 'string'
+    ? rawLocation
+    : [rawLocation?.city, rawLocation?.state, rawLocation?.country].filter(Boolean).join(', ');
   return {
     ...item,
     id: item.code || item.id || item._id,
@@ -19,6 +23,7 @@ function normalizeStylist(item) {
     jobs: item.jobs || 0,
     rating: item.rating || 0,
     available: item.available !== false,
+    location: location || 'Location added after approval',
     priceRange: item.priceRange || (item.offerings?.length ? 'Prices listed per service' : 'Ask for pricing'),
   };
 }
@@ -49,18 +54,34 @@ export default function StylistsPage({ setPage }) {
   return (
     <>
       <PageHero title="Our professionals" text="Meet our verified team of stylists, barbers, makeup artists and spa therapists." icon={<Users />} />
+      <section className="market-page-intro stylists-intro">
+        <div>
+          <span className="eyebrow">Verified professional network</span>
+          <h2>Compare work, availability and services before booking.</h2>
+          <p>Each public profile is built from the stylist dashboard: services, prices, gallery media, availability and business details stay connected.</p>
+        </div>
+        <div className="intro-stats">
+          <div><strong>{stylists.length || '0'}</strong><span>Approved profiles</span></div>
+          <div><strong>{stylists.filter(item => item.available).length || '0'}</strong><span>Available now</span></div>
+          <div><strong>Direct</strong><span>Book chosen stylist</span></div>
+        </div>
+      </section>
       {loading && <div className="empty-state"><span>⌛</span><h3>Loading verified professionals</h3><p>Fetching approved stylist profiles from the backend.</p></div>}
       {!loading && loadError && <div className="empty-state"><span>⚠</span><h3>Professionals could not load</h3><p>{loadError}</p></div>}
       {!loading && !loadError && !stylists.length && <div className="empty-state"><span>✦</span><h3>No approved professionals yet</h3><p>Approved stylist profiles will appear here after admin verification.</p></div>}
       {!loading && !loadError && stylists.length > 0 && <div className="grid four" style={{ paddingBottom: 48 }}>
         {stylists.map(st => (
           <div className="stylist-card" key={st.id} onClick={() => setSelected(st)}>
-            <Avatar name={st.name} src={st.avatarUrl} size={72} />
+            <div className="stylist-avatar-wrap">
+              <Avatar name={st.name} src={st.avatarUrl} size={72} />
+              <span><BadgeCheck size={13} /></span>
+            </div>
             <h3>{st.name}</h3>
-            <p>{st.role}</p>
-            <span><Star size={14} /> {st.rating || 'New'} · {st.jobs} bookings</span>
-            <div>{st.skills.map(s => <small key={s}>{s}</small>)}</div>
-            {!st.available && <div className="unavail-tag">Unavailable today</div>}
+            <p>{st.role || 'Beauty professional'}</p>
+            <span className="stylist-rating"><Star size={14} /> {st.rating || 'New'} · {st.jobs} bookings</span>
+            <div className="stylist-location"><MapPin size={13} /> {st.location}</div>
+            <div className="stylist-skills">{st.skills.slice(0, 4).map(s => <small key={s}>{s}</small>)}</div>
+            <div className={st.available ? 'avail-tag' : 'unavail-tag'}>{st.available ? 'Available for booking' : 'Unavailable today'}</div>
             <button onClick={e => { e.stopPropagation(); setPage('booking', { stylistId: st.id }); }}>Book {st.name.split(' ')[0]}</button>
           </div>
         ))}
@@ -71,7 +92,10 @@ export default function StylistsPage({ setPage }) {
           <div className="modal-card wide" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={() => setSelected(null)}>✕</button>
             <div className="stylist-modal">
-              <Avatar name={selected.name} src={selected.avatarUrl} size={88} />
+              <div className="modal-profile-visual">
+                <Avatar name={selected.name} src={selected.avatarUrl} size={96} />
+                <span><BadgeCheck size={15} /> Verified professional</span>
+              </div>
               <div className="stylist-modal-info">
                 <h2>{selected.name}</h2>
                 <p className="stylist-role">{selected.role}</p>
