@@ -147,6 +147,13 @@ export default function Header({ page, setPage, user, setUser }) {
               </button>
               {dropdown && (
                 <div className="user-dropdown">
+                  <div className="dropdown-user-card">
+                    <span className="avatar-sm">{user.name?.[0] ?? '?'}</span>
+                    <div>
+                      <strong>{user.name || 'GlowBelle user'}</strong>
+                      {user.email && <small>{user.email}</small>}
+                    </div>
+                  </div>
                   <button onClick={() => go('profile')}><User size={14} /> My Profile</button>
                   {user.role === 'customer' && <button onClick={() => go('bookings')}><Calendar size={14} /> My Bookings</button>}
                   {user.role === 'admin' && <button onClick={() => go('admin')}><Shield size={14} /> Admin Dashboard</button>}

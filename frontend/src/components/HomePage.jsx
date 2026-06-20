@@ -1,4 +1,4 @@
-import { Sparkles, ChevronRight, Shield, Zap, Search, CalendarCheck, BadgeCheck, BriefcaseBusiness, WalletCards, SlidersHorizontal, BellRing, MapPin, Clock3, TrendingUp, Store, Images, Scissors } from 'lucide-react';
+import { Sparkles, ChevronRight, Search, CalendarCheck, BadgeCheck, BriefcaseBusiness, WalletCards, MapPin, Clock3, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import CategoryGrid from './CategoryGrid.jsx';
 import SectionTitle from './SectionTitle.jsx';
@@ -191,80 +191,27 @@ export default function HomePage({ setPage, user }) {
         </div>
       </section>
 
-      <section className="experience-board">
-        <div className="experience-copy">
-          <span className="eyebrow">A marketplace that feels personal</span>
-          <h2>Everything customers need to choose with confidence.</h2>
-          <p>GlowBelle is designed around service-first discovery. Customers do not need to guess who can do what: they select a category, compare verified professionals, view work samples, and book directly.</p>
+      <section className="market-flow-section">
+        <div className="market-flow-copy">
+          <span className="eyebrow"><BadgeCheck size={14} /> Simple marketplace flow</span>
+          <h2>Choose a service. Compare verified professionals. Book directly.</h2>
+          <p>GlowBelle keeps the customer journey clear while giving approved professionals control of their services, portfolio, prices, availability and discounts.</p>
         </div>
-        <div className="experience-panels">
-          <article className="experience-panel feature">
-            <span>01</span>
-            <h3>Search by service, stylist, or location</h3>
-            <p>Customers can move from a service category to the right professional without confusion.</p>
-          </article>
-          <article className="experience-panel">
-            <span>02</span>
-            <h3>Profiles carry the trust</h3>
-            <p>Verified badge, portfolio, availability, prices, reviews, and business details sit together.</p>
-          </article>
-          <article className="experience-panel">
-            <span>03</span>
-            <h3>Stylists manage their own business</h3>
-            <p>Professionals control services, pricing, schedules, gallery posts, and discounts after approval.</p>
-          </article>
+        <div className="market-flow-grid">
+          {[
+            ['01', 'Explore', 'Find services, offers and real stylist work samples.'],
+            ['02', 'Choose', 'Compare profiles, prices, availability and portfolios.'],
+            ['03', 'Book', 'Send the appointment request to the selected professional.'],
+            ['04', 'Pay later', 'Pay the stylist directly at the salon after service.'],
+          ].map(([step, title, text]) => (
+            <article className="market-flow-card" key={step}>
+              <span>{step}</span>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </article>
+          ))}
         </div>
       </section>
-
-      <section className="split-feature-section">
-        <div className="split-feature-card dark">
-          <span className="eyebrow">For customers</span>
-          <h2>Book without calling around.</h2>
-          <p>Search services, pick a verified professional, choose your time and send the appointment request straight to the stylist.</p>
-          <ul>
-            <li><BadgeCheck size={16} /> Approved professionals only</li>
-            <li><SlidersHorizontal size={16} /> Services and prices shown clearly</li>
-            <li><BellRing size={16} /> Booking notifications sent instantly</li>
-          </ul>
-          <button onClick={() => setPage('booking')}>Start booking</button>
-        </div>
-        <div className="split-feature-card light">
-          <span className="eyebrow">For professionals</span>
-          <h2>Run your beauty business online.</h2>
-          <p>After admin approval, stylists control their public profile, service menu, prices, bookings, portfolio and discounts.</p>
-          <ul>
-            <li><Shield size={16} /> Verification builds customer trust</li>
-            <li><Zap size={16} /> Direct orders without admin approval</li>
-            <li><WalletCards size={16} /> Customers pay directly at the salon</li>
-          </ul>
-          <button onClick={() => setPage('stylist-apply')}>Apply as professional</button>
-        </div>
-      </section>
-
-      <section className="pro-command-section">
-        <div className="pro-command-card">
-          <div>
-            <span className="eyebrow"><Store size={14} /> Professional command center</span>
-            <h2>Stylists do the business work. Admin protects the marketplace.</h2>
-            <p>Approved professionals manage the things customers care about: services, prices, portfolio media, discounts, booking status and availability.</p>
-          </div>
-          <div className="command-grid">
-            <div><Scissors size={18} /> <strong>Services & prices</strong><span>Publish skills with your own price and duration.</span></div>
-            <div><CalendarCheck size={18} /> <strong>Availability</strong><span>Set working days, closed dates and appointment times.</span></div>
-            <div><Images size={18} /> <strong>Portfolio</strong><span>Upload salon work, shop tours, photos and videos.</span></div>
-            <div><BellRing size={18} /> <strong>Bookings</strong><span>Receive customer orders directly and update status.</span></div>
-          </div>
-        </div>
-      </section>
-
-      <div className="proof-strip upgraded">
-        {[
-          ['Verified', 'Business approval before public listing'],
-          ['Direct', 'Customers book the chosen professional'],
-          ['Flexible', 'Professional controls prices and services'],
-          ['Secure', 'Role-based dashboards and protected data'],
-        ].map(([val, label]) => <div className="proof-item" key={label}><strong>{val}</strong><span>{label}</span></div>)}
-      </div>
 
       <SectionTitle title="Choose a category" text="A marketplace for hair, grooming, beauty, spa and event styling." />
       <CategoryGrid setPage={setPage} />

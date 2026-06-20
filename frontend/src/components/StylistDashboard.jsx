@@ -20,6 +20,18 @@ const NAV = [
   ['notifications', <Bell size={16} />, 'Notifications'],
 ];
 
+const TAB_HELP = {
+  today: 'Today’s active appointments and customer requests.',
+  upcoming: 'Future bookings that still need attention.',
+  completed: 'Finished appointments and service history.',
+  profile: 'The business details customers see before booking.',
+  services: 'Choose services, set prices, add photos and descriptions.',
+  discounts: 'Publish simple promos for customers.',
+  availability: 'Control your working days, hours and closed dates.',
+  portfolio: 'Upload work samples that appear publicly.',
+  notifications: 'Choose booking and status email preferences.',
+};
+
 const EMPTY_OFFER = {
   title: '',
   code: '',
@@ -307,7 +319,7 @@ export default function StylistDashboard({ onLogout }) {
           <div>
             <span className="dashboard-kicker">Approved professional workspace</span>
             <h1>{NAV.find(item => item[0] === tab)?.[2]}</h1>
-            <p>Manage bookings, prices, availability, portfolio work, discounts and notifications from one place.</p>
+            <p>{TAB_HELP[tab] || 'Manage your GlowBelle business workspace.'}</p>
           </div>
           <div className="dash-hero-actions">
             <button onClick={load}>{loading ? 'Refreshing…' : 'Refresh dashboard'}</button>
@@ -320,10 +332,23 @@ export default function StylistDashboard({ onLogout }) {
           <div className="dash-card"><p>Today</p><h2>{todayBookings.length}</h2><span>Appointments due today</span></div>
           <div className="dash-card"><p>Upcoming</p><h2>{upcomingBookings.length}</h2><span>Active customer orders</span></div>
           <div className="dash-card"><p>Completed</p><h2>{bookings.filter(b => b.status === 'completed').length}</h2><span>Finished bookings</span></div>
-          <div className="dash-card"><p>Services live</p><h2>{activeOfferings.length}</h2><span>Public offers enabled</span></div>
+          <div className="dash-card"><p>Services live</p><h2>{activeOfferings.length}</h2><span>Bookable by customers</span></div>
         </div>
-        {tab === 'profile' && <section style={{ marginTop: 24 }}>
-          <div className="note-box prep">This is the profile customers see when choosing a professional. Keep your name, store name, title, photo and bio clear.</div>
+        <div className="pro-quick-actions">
+          {[
+            ['services', 'Services & prices', 'Update public services'],
+            ['availability', 'Availability', 'Set working time'],
+            ['portfolio', 'Portfolio', 'Add work samples'],
+            ['discounts', 'Discounts', 'Market your offers'],
+          ].map(([id, title, text]) => (
+            <button key={id} className={tab === id ? 'active' : ''} onClick={() => setTab(id)}>
+              <strong>{title}</strong>
+              <span>{text}</span>
+            </button>
+          ))}
+        </div>
+        {tab === 'profile' && <section className="dashboard-section">
+          <div className="note-box prep">Customers use this profile to decide whether to book you. Keep it clear and trustworthy.</div>
           <form onSubmit={saveProfile} className="profile-edit-form">
             <div className="profile-photo-edit">
               <Avatar name={profileForm.name || profile.name} src={profile.avatarUrl} size={96} />
@@ -342,7 +367,7 @@ export default function StylistDashboard({ onLogout }) {
             <button>Save profile</button>
           </form>
         </section>}
-        {['today', 'upcoming', 'completed'].includes(tab) && <section style={{ marginTop: 24 }}>
+        {['today', 'upcoming', 'completed'].includes(tab) && <section className="dashboard-section">
           {visible.length === 0 && <div className="empty-state"><Calendar /><h3>No {tab} appointments</h3></div>}
           {visible.map(booking => {
             const customer = booking.customer || booking.guest || {};
@@ -353,8 +378,8 @@ export default function StylistDashboard({ onLogout }) {
             </div>;
           })}
         </section>}
-        {tab === 'services' && <section style={{ marginTop: 24 }}>
-          <div className="note-box prep">Simple launch setup: tick a service, add your price, upload one clear photo, write a short description, then save. Customers will see this photo on the service card.</div>
+        {tab === 'services' && <section className="dashboard-section">
+          <div className="note-box prep">Tick the services you offer, set your price, add one clear photo, then save.</div>
           {services.map(service => {
             const offering = offerings.find(item => item.serviceId === service._id);
             return <div className="dash-row stylist-offering-row" key={service._id}>
@@ -373,8 +398,8 @@ export default function StylistDashboard({ onLogout }) {
           })}
           <button onClick={saveOfferings}>Save services and prices</button>
         </section>}
-        {tab === 'discounts' && <section style={{ marginTop: 24 }}>
-          <div className="note-box prep">Create your own promo codes for customers. A discount can apply to all your services, or only one service you currently offer.</div>
+        {tab === 'discounts' && <section className="dashboard-section">
+          <div className="note-box prep">Create promo codes for all services or one selected service.</div>
           <form onSubmit={saveOffer} className="discount-form">
             <div className="two-col">
               <input required placeholder="Discount title, e.g. Weekend braids deal" value={offerForm.title} onChange={event => setOfferForm(current => ({ ...current, title: event.target.value }))} />
@@ -420,8 +445,8 @@ export default function StylistDashboard({ onLogout }) {
             </div>)}
           </div>
         </section>}
-        {tab === 'availability' && <section style={{ marginTop: 24 }}>
-          <div className="note-box prep">Set the days and times you normally work. Customers cannot book outside these hours or on closed dates.</div>
+        {tab === 'availability' && <section className="dashboard-section">
+          <div className="note-box prep">Customers can only book inside these working hours and open dates.</div>
           <div className="availability-list">
             {availability.map(item => (
               <div className="availability-row" key={item.day}>
@@ -440,8 +465,8 @@ export default function StylistDashboard({ onLogout }) {
           {closedDates.map(item => <div className="dash-row" key={item.date}><div><strong>{item.date}</strong><p style={{ margin: 0 }}>{item.reason || 'Closed'}</p></div><button onClick={() => setClosedDates(current => current.filter(date => date.date !== item.date))}>Remove</button></div>)}
           <button onClick={saveAvailability} style={{ marginTop: 16 }}>Save availability</button>
         </section>}
-        {tab === 'portfolio' && <section style={{ marginTop: 24 }}>
-          <div className="note-box prep">Upload photos or short videos of hairstyles, makeup, designs, your shop, or previous work customers can trust. These appear on your public profile and in the customer gallery.</div>
+        {tab === 'portfolio' && <section className="dashboard-section">
+          <div className="note-box prep">Upload photos or short videos. They appear on your public profile and customer gallery.</div>
           <form onSubmit={uploadPortfolio} className="portfolio-upload-form">
             <input placeholder="Title, e.g. Bridal glam, Knotless braids, Shop tour" value={portfolioTitle} onChange={event => setPortfolioTitle(event.target.value)} />
             <input type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime" onChange={event => setPortfolioFile(event.target.files?.[0] || null)} />
@@ -460,8 +485,8 @@ export default function StylistDashboard({ onLogout }) {
             </div>)}
           </div>
         </section>}
-        {tab === 'notifications' && <section style={{ marginTop: 24 }}>
-          <div className="note-box prep">Booking email notifications are already sent when a customer books you. Choose which notifications you want to receive.</div>
+        {tab === 'notifications' && <section className="dashboard-section">
+          <div className="note-box prep">Choose the email notifications you want to receive.</div>
           {[
             ['bookingEmails', 'New booking emails', 'Receive an email when a customer books you.'],
             ['statusEmails', 'Booking status updates', 'Receive updates when booking status changes.'],

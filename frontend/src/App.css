@@ -148,9 +148,34 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  min-width: 180px;
+  min-width: 240px;
   overflow: hidden;
   z-index: 200;
+}
+.dropdown-user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--brand-light) 52%, var(--bg));
+}
+.dropdown-user-card strong,
+.dropdown-user-card small {
+  display: block;
+  max-width: 165px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dropdown-user-card strong {
+  color: var(--text-h);
+  font-size: 14px;
+}
+.dropdown-user-card small {
+  margin-top: 2px;
+  color: var(--text);
+  font-size: 12px;
 }
 .user-dropdown button {
   width: 100%;
@@ -2230,12 +2255,12 @@ textarea { min-height: 90px; resize: vertical; margin-top: 4px; }
   .booking-card { flex-direction: column; align-items: flex-start; gap: 12px; }
   .dash-cards { grid-template-columns: repeat(2, 1fr); }
   .contact-cards { grid-template-columns: 1fr; }
-  .footer-top { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 24px 16px 12px; }
+  .footer-top { grid-template-columns: repeat(3, minmax(82px, 1fr)); gap: 16px; padding: 24px 16px 12px; }
   .footer-brand { grid-column: 1 / -1; }
   .footer-brand p { margin-bottom: 10px; line-height: 1.45; }
   .footer-col h4 { margin-bottom: 6px; }
   .footer-col { gap: 0; }
-  .footer-col button { padding: 3px 0; font-size: 12px; }
+  .footer-col button { padding: 4px 0; font-size: 12px; line-height: 1.25; }
   .footer-bottom { padding: 12px 16px 18px; flex-direction: column; align-items: flex-start; }
   .footer-badges { flex-wrap: wrap; }
   .auth-tabs button { font-size: 13px; }
@@ -3401,6 +3426,21 @@ table {
     overscroll-behavior: contain;
   }
 
+  .footer-top {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .footer-col h4 {
+    font-size: 12px;
+  }
+
+  .footer-col button {
+    font-size: 11px;
+  }
+
   .nav button {
     min-height: 38px;
     padding: 7px 12px;
@@ -3929,6 +3969,7 @@ main,
 .proof-strip,
 .service-marquee,
 .experience-board,
+.market-flow-section,
 .split-feature-section,
 .offers-strip,
 .launch-cta,
@@ -3941,6 +3982,7 @@ main,
 
 .market-hero,
 .experience-board,
+.market-flow-section,
 .split-feature-section,
 .grid,
 .section-title,
@@ -3961,6 +4003,7 @@ main,
 
 .market-hero,
 .experience-board,
+.market-flow-section,
 .split-feature-section,
 .grid,
 .section-title,
