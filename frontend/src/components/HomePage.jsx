@@ -1,4 +1,4 @@
-import { Sparkles, ChevronRight, Shield, Zap, Search, CalendarCheck, BadgeCheck, BriefcaseBusiness, WalletCards, SlidersHorizontal, BellRing } from 'lucide-react';
+import { Sparkles, ChevronRight, Shield, Zap, Search, CalendarCheck, BadgeCheck, BriefcaseBusiness, WalletCards, SlidersHorizontal, BellRing, MapPin, Clock3, TrendingUp, Store, Images, Scissors } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import CategoryGrid from './CategoryGrid.jsx';
 import SectionTitle from './SectionTitle.jsx';
@@ -11,6 +11,7 @@ import { attachProviderCounts } from '../marketplace.js';
 import { money } from '../utils.js';
 
 const floatingServices = ['Silk press', 'Knotless braids', 'Fade & beard', 'Bridal glam', 'Nails', 'Massage', 'Locs', 'Facials'];
+const trendingLooks = ['Destination nails', 'French highlights', 'Chrome ocean pedi', 'Riviera bob', 'Soft glam', 'Fresh fade', 'Medusa lashes', 'Boho braids'];
 
 export default function HomePage({ setPage }) {
   const [featured, setFeatured] = useState([]);
@@ -50,6 +51,22 @@ export default function HomePage({ setPage }) {
           <span className="pill"><Sparkles size={16} /> Beauty marketplace for customers and professionals</span>
           <h1>Find the right beauty professional. Book in minutes.</h1>
           <p>GlowBelle connects customers with verified stylists and salon businesses. Professionals publish their services, prices and availability; customers book directly.</p>
+
+          <div className="market-search-console" aria-label="Find beauty services">
+            <button onClick={() => setPage('services')}>
+              <Search size={18} />
+              <span><small>What</small><strong>Search services, looks, stylists</strong></span>
+            </button>
+            <button onClick={() => setPage('stylists')}>
+              <MapPin size={18} />
+              <span><small>Where</small><strong>Find verified professionals nearby</strong></span>
+            </button>
+            <button onClick={() => setPage('booking')}>
+              <Clock3 size={18} />
+              <span><small>When</small><strong>Pick date, time and stylist</strong></span>
+            </button>
+            <button className="console-submit" onClick={() => setPage('services')}>Search</button>
+          </div>
 
           <div className="role-entry-grid">
             <button className="role-entry customer" onClick={() => setPage('booking')}>
@@ -107,6 +124,17 @@ export default function HomePage({ setPage }) {
         <div>{floatingServices.concat(floatingServices).map((item, index) => <span key={`${item}-${index}`}>{item}</span>)}</div>
       </section>
 
+      <section className="trend-board">
+        <div className="trend-copy">
+          <span className="eyebrow"><TrendingUp size={14} /> What customers are looking for</span>
+          <h2>Trends, services and professionals in one booking flow.</h2>
+          <p>A mature beauty marketplace does more than list services. It helps customers discover ideas, compare professionals and move straight into booking.</p>
+        </div>
+        <div className="trend-cloud">
+          {trendingLooks.map(item => <button key={item} onClick={() => setPage('services')}>{item}</button>)}
+        </div>
+      </section>
+
       <section className="experience-board">
         <div className="experience-copy">
           <span className="eyebrow">A marketplace that feels personal</span>
@@ -154,6 +182,22 @@ export default function HomePage({ setPage }) {
             <li><WalletCards size={16} /> Customers pay directly at the salon</li>
           </ul>
           <button onClick={() => setPage('stylist-apply')}>Apply as professional</button>
+        </div>
+      </section>
+
+      <section className="pro-command-section">
+        <div className="pro-command-card">
+          <div>
+            <span className="eyebrow"><Store size={14} /> Professional command center</span>
+            <h2>Stylists do the business work. Admin protects the marketplace.</h2>
+            <p>Approved professionals manage the things customers care about: services, prices, portfolio media, discounts, booking status and availability.</p>
+          </div>
+          <div className="command-grid">
+            <div><Scissors size={18} /> <strong>Services & prices</strong><span>Publish skills with your own price and duration.</span></div>
+            <div><CalendarCheck size={18} /> <strong>Availability</strong><span>Set working days, closed dates and appointment times.</span></div>
+            <div><Images size={18} /> <strong>Portfolio</strong><span>Upload salon work, shop tours, photos and videos.</span></div>
+            <div><BellRing size={18} /> <strong>Bookings</strong><span>Receive customer orders directly and update status.</span></div>
+          </div>
         </div>
       </section>
 
