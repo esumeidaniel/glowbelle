@@ -1438,6 +1438,151 @@ select:focus {
     var(--code-bg, #f8f9fa);
 }
 
+.customer-home {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(34px, 6vw, 72px) 0;
+  display: grid;
+  gap: 18px;
+}
+
+.customer-home-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 22px;
+  align-items: end;
+  padding: clamp(24px, 4vw, 42px);
+  border: 1px solid color-mix(in srgb, var(--border) 75%, var(--brand-border));
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at top right, rgba(155, 77, 202, .28), transparent 22rem),
+    linear-gradient(135deg, color-mix(in srgb, var(--bg) 84%, #fff), color-mix(in srgb, var(--brand-light) 54%, var(--bg)));
+  box-shadow: 0 24px 70px rgba(0,0,0,.12);
+}
+
+.customer-home-hero::after {
+  content: "";
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  right: -70px;
+  top: -80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  pointer-events: none;
+}
+
+.customer-home-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.customer-home-hero h1 {
+  margin: 10px 0 10px;
+  font-size: clamp(2.15rem, 5vw, 4.25rem);
+  letter-spacing: -.055em;
+  line-height: .95;
+}
+
+.customer-home-hero p {
+  max-width: 640px;
+  margin: 0;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.customer-home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.customer-home-actions button,
+.customer-dashboard-card button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border: none;
+  border-radius: 999px;
+  padding: 11px 18px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.customer-home-actions button.secondary {
+  border: 1px solid var(--brand-border);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  color: var(--text-h);
+}
+
+.customer-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.customer-dashboard-card {
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  background: color-mix(in srgb, var(--card) 92%, var(--bg));
+  box-shadow: 0 16px 46px rgba(0,0,0,.08);
+}
+
+.customer-dashboard-card.highlight {
+  grid-column: span 2;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--brand) 18%, var(--card)), var(--card));
+}
+
+.customer-dashboard-card span {
+  display: inline-flex;
+  margin-bottom: 12px;
+  color: var(--brand);
+  font-size: .76rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.customer-dashboard-card h2,
+.customer-dashboard-card h3 {
+  margin: 0 0 8px;
+  color: var(--text-h);
+  line-height: 1.1;
+}
+
+.customer-dashboard-card h2 {
+  font-size: clamp(1.55rem, 3vw, 2.35rem);
+}
+
+.customer-dashboard-card h3 {
+  font-size: 1.1rem;
+}
+
+.customer-dashboard-card p {
+  min-height: 72px;
+  margin: 0 0 18px;
+  color: var(--text);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.customer-dashboard-card button {
+  min-height: 38px;
+  padding: 9px 14px;
+  font-size: .9rem;
+}
+
 @media (max-width: 1100px) {
   .header .book-now,
   .header .login-btn {
@@ -1483,9 +1628,49 @@ select:focus {
   .command-grid {
     grid-template-columns: 1fr;
   }
+
+  .customer-home-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-home-actions {
+    justify-content: flex-start;
+  }
+
+  .customer-dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 560px) {
+  .customer-home {
+    width: min(100% - 24px, 1180px);
+    padding-top: 24px;
+  }
+
+  .customer-home-hero,
+  .customer-dashboard-card {
+    border-radius: 22px;
+  }
+
+  .customer-home-actions,
+  .customer-home-actions button,
+  .customer-dashboard-card button {
+    width: 100%;
+  }
+
+  .customer-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-dashboard-card.highlight {
+    grid-column: auto;
+  }
+
+  .customer-dashboard-card p {
+    min-height: 0;
+  }
+
   .market-hero-copy h1 {
     font-size: clamp(2.15rem, 12vw, 3.2rem);
   }

@@ -1,5 +1,6 @@
 import { Menu, X, User, LogOut, ChevronDown, Calendar, LayoutDashboard, Shield } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import { setToken } from '../api.js';
 
 export default function Header({ page, setPage, user, setUser }) {
   const [open,     setOpen]     = useState(false);
@@ -69,22 +70,18 @@ export default function Header({ page, setPage, user, setUser }) {
   }, []);
 
   const customerLinks = [
-    ['home', 'Dashboard'],
+    ['home', 'Home'],
     ['services', 'Services'],
-    ['stylists', 'Stylists'],
-    ['gallery', 'Gallery'],
+    ['booking', 'Book'],
     ['offers', 'Offers'],
-    ['about', 'About'],
-    ['contact', 'Contact'],
+    ['gallery', 'Gallery'],
+    ['bookings', 'My Bookings'],
+    ['profile', 'Account'],
   ];
   const publicLinks = [
     ['home', 'Dashboard'],
-    ['services', 'Services'],
-    ['stylists', 'Stylists'],
-    ['gallery', 'Gallery'],
-    ['offers', 'Offers'],
-    ['about', 'About'],
-    ['contact', 'Contact'],
+    ['booking', 'Book'],
+    ['login', 'Account'],
   ];
   const staffLinks = [['home', 'Dashboard']];
   const links = user?.role === 'customer' ? customerLinks : user ? staffLinks : publicLinks;
@@ -96,6 +93,12 @@ export default function Header({ page, setPage, user, setUser }) {
     if (id === 'home' && user?.role === 'admin') setPage('admin');
     else if (id === 'home' && user?.role === 'stylist') setPage('stylist');
     else setPage(id);
+  }
+
+  function logout() {
+    setToken(null);
+    setUser(null);
+    go('home');
   }
 
   return (
@@ -119,12 +122,11 @@ export default function Header({ page, setPage, user, setUser }) {
               {label}
             </button>
           ))}
+          {user?.role === 'customer' && <button onClick={logout}><LogOut size={14} /> Logout</button>}
           {(user?.role === 'admin' || user?.role === 'stylist') && <div className="nav-divider" />}
           {user?.role === 'admin' && <button onClick={() => go('admin')} className="nav-dash"><Shield size={13} /> Admin</button>}
           {user?.role === 'stylist' && <button onClick={() => go('stylist')} className="nav-dash"><LayoutDashboard size={13} /> Stylist</button>}
           <div className="nav-mobile-actions">
-            {!user && <button onClick={() => go('login')} className="nav-login">Log In</button>}
-            {!user && <button onClick={() => go('booking')} className="nav-book">Book Now</button>}
             {user?.role === 'customer' && <button onClick={() => go('booking')} className="nav-book">Book Now</button>}
           </div>
         </nav>
@@ -143,16 +145,14 @@ export default function Header({ page, setPage, user, setUser }) {
                   {user.role === 'customer' && <button onClick={() => go('bookings')}><Calendar size={14} /> My Bookings</button>}
                   {user.role === 'admin' && <button onClick={() => go('admin')}><Shield size={14} /> Admin Dashboard</button>}
                   {user.role === 'stylist' && <button onClick={() => go('stylist')}><LayoutDashboard size={14} /> Stylist Dashboard</button>}
-                  <button onClick={() => { setUser(null); localStorage.removeItem('glowbelle_token'); go('home'); }} className="logout">
+                  <button onClick={logout} className="logout">
                     <LogOut size={14} /> Log Out
                   </button>
                 </div>
               )}
             </div>
-          ) : (
-            <button className="login-btn" onClick={() => go('login')}>Log In</button>
-          )}
-          {(!user || user?.role === 'customer') && <button className="book-now" onClick={() => go('booking')}>Book Now</button>}
+          ) : null}
+          {user?.role === 'customer' && <button className="book-now" onClick={() => go('booking')}>Book Now</button>}
           <button
             className="hamb"
             onClick={() => {

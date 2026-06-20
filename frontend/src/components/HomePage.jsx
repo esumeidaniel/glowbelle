@@ -13,7 +13,59 @@ import { money } from '../utils.js';
 const floatingServices = ['Silk press', 'Knotless braids', 'Fade & beard', 'Bridal glam', 'Nails', 'Massage', 'Locs', 'Facials'];
 const trendingLooks = ['Destination nails', 'French highlights', 'Chrome ocean pedi', 'Riviera bob', 'Soft glam', 'Fresh fade', 'Medusa lashes', 'Boho braids'];
 
-export default function HomePage({ setPage }) {
+function CustomerHomeDashboard({ user, setPage, featured, activeOffers }) {
+  const firstName = user?.name?.split(' ')?.[0] || 'there';
+  const previewService = featured[0];
+  const nextOffer = activeOffers[0];
+
+  return (
+    <section className="customer-home">
+      <div className="customer-home-hero">
+        <div>
+          <span className="eyebrow"><Sparkles size={14} /> Customer dashboard</span>
+          <h1>Welcome back, {firstName}.</h1>
+          <p>Your GlowBelle dashboard is ready. Book a service, check your appointments, or update your account in one place.</p>
+        </div>
+        <div className="customer-home-actions">
+          <button onClick={() => setPage('booking')}><CalendarCheck size={16} /> Book appointment</button>
+          <button className="secondary" onClick={() => setPage('services')}><Search size={16} /> Browse services</button>
+        </div>
+      </div>
+
+      <div className="customer-dashboard-grid">
+        <article className="customer-dashboard-card highlight">
+          <span>Upcoming booking</span>
+          <h2>No upcoming booking yet</h2>
+          <p>When you book a stylist, your appointment summary and status will appear here.</p>
+          <button onClick={() => setPage('bookings')}>Open my bookings <ChevronRight size={15} /></button>
+        </article>
+
+        <article className="customer-dashboard-card">
+          <span>Quick booking</span>
+          <h3>{previewService?.title || 'Find your next service'}</h3>
+          <p>{previewService ? `Starting around ${money(previewService.price)}. Choose a verified stylist and send the booking request.` : 'Browse live categories and choose the service you need.'}</p>
+          <button onClick={() => setPage('services')}>Browse services</button>
+        </article>
+
+        <article className="customer-dashboard-card">
+          <span>Account</span>
+          <h3>Profile and preferences</h3>
+          <p>Keep your contact details, favorites, family members and notifications organized.</p>
+          <button onClick={() => setPage('profile')}>Open account</button>
+        </article>
+
+        <article className="customer-dashboard-card">
+          <span>Offers</span>
+          <h3>{nextOffer?.title || 'Fresh offers appear here'}</h3>
+          <p>{nextOffer ? `${nextOffer.price}${nextOffer.code ? ` with code ${nextOffer.code}` : ''}.` : 'Check discounts and promotions from GlowBelle and approved professionals.'}</p>
+          <button onClick={() => setPage('offers')}>View offers</button>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+export default function HomePage({ setPage, user }) {
   const [featured, setFeatured] = useState([]);
   const [activeOffers, setActiveOffers] = useState([]);
 
@@ -41,6 +93,10 @@ export default function HomePage({ setPage }) {
   }, []);
 
   const previewService = featured[0];
+
+  if (user?.role === 'customer') {
+    return <CustomerHomeDashboard user={user} setPage={setPage} featured={featured} activeOffers={activeOffers} />;
+  }
 
   return (
     <>
