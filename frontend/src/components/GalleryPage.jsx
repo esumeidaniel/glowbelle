@@ -2,6 +2,7 @@ import { Image as ImageIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import PageHero from './PageHero.jsx';
 import { assetUrl, glowbelleApi } from '../api.js';
+import { gallery as demoGallery } from '../data.js';
 
 const GALLERY_CATS = [
   { id: 'all', label: 'All' },
@@ -21,6 +22,7 @@ export default function GalleryPage({ setPage }) {
   const [cat, setCat] = useState('all');
   const [selected, setSelected] = useState(null);
   const [gallery, setGallery] = useState([]);
+  const [usingDemo, setUsingDemo] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
 
@@ -30,7 +32,7 @@ export default function GalleryPage({ setPage }) {
       setLoadError('');
       try {
         const response = await glowbelleApi.gallery();
-        setGallery((response.data || []).map(item => ({
+        const liveItems = (response.data || []).map(item => ({
           id: item._id || item.id,
           label: item.title,
           cat: item.category || 'all',
@@ -38,10 +40,18 @@ export default function GalleryPage({ setPage }) {
           imageUrl: item.imageUrl ? assetUrl(item.imageUrl) : '',
           mediaType: item.mediaType || 'image',
           stylist: item.stylist,
-        })));
-      } catch (err) {
-        setGallery([]);
-        setLoadError(err.message || 'Unable to load gallery.');
+        }));
+        if (liveItems.length) {
+          setGallery(liveItems);
+          setUsingDemo(false);
+        } else {
+          setGallery(demoGallery.map(item => ({ ...item, demo: true })));
+          setUsingDemo(true);
+        }
+      } catch {
+        setGallery(demoGallery.map(item => ({ ...item, demo: true })));
+        setUsingDemo(true);
+        setLoadError('');
       } finally {
         setLoading(false);
       }
@@ -72,6 +82,7 @@ export default function GalleryPage({ setPage }) {
 
       {loading && <div className="empty-state"><span>⌛</span><h3>Loading gallery</h3><p>Fetching published gallery items from the backend.</p></div>}
       {!loading && loadError && <div className="empty-state"><span>⚠</span><h3>Gallery could not load</h3><p>{loadError}</p></div>}
+      {!loading && usingDemo && <div className="soft-launch-banner"><strong>Sample gallery preview.</strong><span>These placeholders keep the launch page full. Real stylist photos and videos will replace them as professionals upload portfolio media.</span></div>}
       {!loading && !loadError && !filtered.length && <div className="empty-state"><span>✦</span><h3>No gallery items yet</h3><p>Stylist portfolio uploads, shop videos, and featured work will appear here.</p></div>}
       {!loading && !loadError && filtered.length > 0 && <div className="gallery-grid">
         {filtered.map(item => (
@@ -82,9 +93,10 @@ export default function GalleryPage({ setPage }) {
                 : <img src={item.imageUrl} alt={item.label || 'Gallery work'} />
               : <span className="gallery-emoji">{item.emoji}</span>}
             <div className="gallery-overlay">
+              {item.demo && <small>Sample preview</small>}
               <span>{item.label}</span>
               {item.stylist?.name && <small>By {item.stylist.name}</small>}
-              <button onClick={e => { e.stopPropagation(); setPage('booking'); }}>Book this look</button>
+              <button disabled={item.demo} onClick={e => { e.stopPropagation(); if (!item.demo) setPage('booking'); }}>{item.demo ? 'Preview only' : 'Book this look'}</button>
             </div>
           </div>
         ))}

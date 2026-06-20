@@ -3719,6 +3719,83 @@ table {
 .experience-panel.feature p {
   color: rgba(255,255,255,.78);
 }
+.social-proof-showcase {
+  display: grid;
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+  gap: clamp(22px, 4vw, 54px);
+  padding: clamp(34px, 5vw, 76px) clamp(18px, 5vw, 72px);
+  background:
+    radial-gradient(circle at 88% 8%, rgba(245,158,11,.12), transparent 18rem),
+    linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--bg) 90%, var(--brand-light)));
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.proof-copy {
+  align-self: center;
+}
+.proof-copy h2 {
+  max-width: 620px;
+  margin: 10px 0 14px;
+  font-size: clamp(2rem, 4.8vw, 4.1rem);
+  line-height: .98;
+  letter-spacing: -.06em;
+}
+.proof-copy p {
+  max-width: 560px;
+  color: var(--text);
+  line-height: 1.8;
+}
+.review-stack {
+  display: grid;
+  gap: 14px;
+}
+.review-card {
+  border: 1px solid color-mix(in srgb, var(--border) 78%, var(--brand-border));
+  border-radius: 26px;
+  padding: 22px;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  box-shadow: 0 16px 42px rgba(28,18,43,.08);
+  backdrop-filter: blur(12px);
+}
+.review-stars {
+  color: var(--gold);
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.review-card p {
+  color: var(--text-h);
+  line-height: 1.65;
+  margin-bottom: 14px;
+}
+.review-card strong,
+.review-card span {
+  display: block;
+}
+.review-card span {
+  color: var(--text);
+  font-size: 12px;
+  margin-top: 2px;
+}
+.testimonial-strip {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.testimonial-strip div {
+  border-radius: 22px;
+  padding: 18px;
+  background: var(--text-h);
+  color: var(--bg);
+}
+.testimonial-strip p {
+  color: color-mix(in srgb, var(--bg) 82%, transparent);
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+.testimonial-strip strong {
+  color: var(--bg);
+}
 .market-page-intro {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(260px, .78fr);
@@ -4938,6 +5015,13 @@ select:focus {
   border-color: color-mix(in srgb, var(--border) 82%, var(--brand-border));
 }
 
+.offer button:disabled,
+.copy-btn:disabled {
+  opacity: .65;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .stylist-card::before {
   content: '';
   position: absolute;
@@ -5083,6 +5167,14 @@ select:focus {
     grid-template-columns: 1fr;
   }
 
+  .social-proof-showcase {
+    grid-template-columns: 1fr;
+  }
+
+  .testimonial-strip {
+    grid-template-columns: 1fr;
+  }
+
   .market-page-intro {
     grid-template-columns: 1fr;
   }
@@ -5102,6 +5194,10 @@ select:focus {
   }
 
   .experience-board {
+    padding: 34px 14px;
+  }
+
+  .social-proof-showcase {
     padding: 34px 14px;
   }
 

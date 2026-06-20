@@ -6,6 +6,7 @@ import ServiceGrid from './ServiceGrid.jsx';
 import Stylists from './Stylists.jsx';
 import WhyChoose from './WhyChoose.jsx';
 import { glowbelleApi } from '../api.js';
+import { reviews, testimonials } from '../data.js';
 import { attachProviderCounts } from '../marketplace.js';
 import { money } from '../utils.js';
 
@@ -175,6 +176,32 @@ export default function HomePage({ setPage }) {
       <div style={{ textAlign: 'center', padding: '0 32px 32px' }}><button className="view-all-btn" onClick={() => setPage('services')}>View all services <ChevronRight size={16} /></button></div>
 
       <WhyChoose />
+
+      <section className="social-proof-showcase">
+        <div className="proof-copy">
+          <span className="eyebrow">Launch trust content</span>
+          <h2>A beauty experience built around confidence.</h2>
+          <p>Use real reviews as customers begin booking. Until then, this section gives the brand a more complete marketplace feel and shows the kind of trust signals GlowBelle supports.</p>
+        </div>
+        <div className="review-stack">
+          {reviews.slice(0, 3).map(review => (
+            <article className="review-card" key={review.id}>
+              <div className="review-stars">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</div>
+              <p>{review.text}</p>
+              <strong>{review.name}</strong>
+              <span>{review.service} · {review.stylist}</span>
+            </article>
+          ))}
+        </div>
+        <div className="testimonial-strip">
+          {testimonials.map(item => (
+            <div key={item.name}>
+              <p>{item.text}</p>
+              <strong>{item.name}</strong>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <SectionTitle title="Verified professionals" text="Approved stylists and beauty businesses appear here after verification." />
       <Stylists setPage={setPage} preview />
