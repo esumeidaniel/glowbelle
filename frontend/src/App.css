@@ -3356,6 +3356,64 @@ table {
     padding: 18px;
   }
 
+  .profile-layout {
+    width: 100%;
+    max-width: 100%;
+    padding: 14px;
+    gap: 14px;
+  }
+
+  .profile-nav,
+  .profile-main,
+  .profile-section {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .profile-nav {
+    padding: 14px;
+    border-radius: 22px;
+    overflow: hidden;
+  }
+
+  .profile-avatar-block {
+    align-items: center;
+    gap: 12px;
+    padding: 4px 4px 14px;
+  }
+
+  .profile-avatar-block .avatar {
+    width: 64px !important;
+    height: 64px !important;
+    flex: 0 0 64px;
+  }
+
+  .profile-nav-btn {
+    padding: 11px 12px;
+  }
+
+  .profile-section {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .profile-summary-card {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .profile-summary-card .avatar {
+    width: 64px !important;
+    height: 64px !important;
+    flex: 0 0 64px;
+  }
+
+  .profile-form input,
+  .profile-form select,
+  .profile-form textarea {
+    width: 100%;
+  }
+
   .login-page {
     padding: 28px 12px;
     align-items: flex-start;

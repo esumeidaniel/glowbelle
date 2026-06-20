@@ -14,6 +14,8 @@ function CustomerHomeDashboard({ user, setPage, featured, activeOffers }) {
   const firstName = user?.name?.split(' ')?.[0] || 'there';
   const previewService = featured[0];
   const nextOffer = activeOffers[0];
+  const serviceShortcuts = featured.slice(0, 3);
+  const fallbackShortcuts = ['Braids', 'Barbering', 'Nail Services'];
 
   return (
     <section className="customer-home">
@@ -21,7 +23,7 @@ function CustomerHomeDashboard({ user, setPage, featured, activeOffers }) {
         <div>
           <span className="eyebrow"><Sparkles size={14} /> Customer dashboard</span>
           <h1>Welcome back, {firstName}.</h1>
-          <p>Your GlowBelle dashboard is ready. Book a service, check your appointments, or update your account in one place.</p>
+          <p>Book faster, check your appointments, and jump straight into the services you care about.</p>
         </div>
         <div className="customer-home-actions">
           <button onClick={() => setPage('booking')}><CalendarCheck size={16} /> Book appointment</button>
@@ -45,10 +47,10 @@ function CustomerHomeDashboard({ user, setPage, featured, activeOffers }) {
         </article>
 
         <article className="customer-dashboard-card">
-          <span>Account</span>
-          <h3>Profile and preferences</h3>
-          <p>Keep your contact details, favorites, family members and notifications organized.</p>
-          <button onClick={() => setPage('profile')}>Open account</button>
+          <span>Profile</span>
+          <h3>Your details</h3>
+          <p>Update your name, phone number, family members, password and notification settings.</p>
+          <button onClick={() => setPage('profile')}>View profile</button>
         </article>
 
         <article className="customer-dashboard-card">
@@ -58,6 +60,32 @@ function CustomerHomeDashboard({ user, setPage, featured, activeOffers }) {
           <button onClick={() => setPage('offers')}>View offers</button>
         </article>
       </div>
+
+      <section className="customer-service-shortcuts">
+        <div className="customer-section-head">
+          <div>
+            <span className="eyebrow"><Search size={14} /> Popular services</span>
+            <h2>Choose a service and book quickly</h2>
+          </div>
+          <button className="text-btn" onClick={() => setPage('services')}>View all services <ChevronRight size={15} /></button>
+        </div>
+        <div className="customer-shortcut-grid">
+          {(serviceShortcuts.length ? serviceShortcuts : fallbackShortcuts).map(item => {
+            const isService = typeof item === 'object';
+            return (
+              <button
+                className="customer-service-shortcut"
+                key={isService ? item.id || item._id || item.title : item}
+                onClick={() => isService ? setPage('service-detail', { service: item, serviceId: item.id || item._id }) : setPage('services')}
+              >
+                <span>{isService ? item.tag || item.category || 'Service' : 'Category'}</span>
+                <strong>{isService ? item.title : item}</strong>
+                <small>{isService ? `${money(item.price)} · ${item.providerCount || 0} pro${item.providerCount === 1 ? '' : 's'}` : 'Browse available professionals'}</small>
+              </button>
+            );
+          })}
+        </div>
+      </section>
     </section>
   );
 }

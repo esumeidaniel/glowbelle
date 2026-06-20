@@ -1,4 +1,4 @@
-import { User, Bell, Star, Heart, Users, Trash2, Plus, KeyRound, Lock } from 'lucide-react';
+import { User, Bell, Star, Users, Trash2, Plus, KeyRound, Lock } from 'lucide-react';
 import { useState } from 'react';
 import Avatar from './Avatar.jsx';
 import PageHero from './PageHero.jsx';
@@ -23,6 +23,7 @@ function NotifRow({ label, checked, onChange }) {
 
 export default function ProfilePage({ setPage, user, setUser }) {
   const profile = user;
+  const businessName = profile.businessName || profile.business?.name || profile.stylistProfile?.business?.name || '';
   const [tab, setTab] = useState('profile');
   const [name, setName] = useState(profile.name);
   const email = profile.email;
@@ -186,7 +187,7 @@ export default function ProfilePage({ setPage, user, setUser }) {
 
   return (
     <>
-      <PageHero title="My profile" text="Manage your account, family members, favourites and notifications." icon={<User />} />
+      <PageHero title="My profile" text="Manage your personal details, bookings, family members and notification settings." icon={<User />} />
 
       <div className="profile-layout">
         <aside className="profile-nav">
@@ -198,7 +199,7 @@ export default function ProfilePage({ setPage, user, setUser }) {
               <span className="loyalty-pts">🏆 {profile.points || 450} pts</span>
             </div>
           </div>
-          {[['profile', <User size={16} />, 'My Profile'], ['family', <Users size={16} />, 'Family Members'], ['favorites', <Heart size={16} />, 'Favourites'], ['rewards', <Star size={16} />, 'Rewards'], ['notifications', <Bell size={16} />, 'Notifications']].map(([id, icon, label]) => (
+          {[['profile', <User size={16} />, 'My Profile'], ['family', <Users size={16} />, 'Family Members'], ['rewards', <Star size={16} />, 'Rewards'], ['notifications', <Bell size={16} />, 'Notifications']].map(([id, icon, label]) => (
             <button key={id} className={tab === id ? 'profile-nav-btn active' : 'profile-nav-btn'} onClick={() => setTab(id)}>
               {icon} {label}
             </button>
@@ -209,6 +210,15 @@ export default function ProfilePage({ setPage, user, setUser }) {
           {tab === 'profile' && (
             <div className="profile-section">
               <h2>Personal information</h2>
+              <div className="profile-summary-card">
+                <Avatar name={profile.name} size={72} />
+                <div>
+                  {businessName && <span>{businessName}</span>}
+                  <strong>{profile.name}</strong>
+                  <p>{profile.email}</p>
+                  <small>{profile.phone || 'No phone number added yet'}</small>
+                </div>
+              </div>
               <div className="profile-form">
                 <div className="form-row">
                   <label>Full name</label>
@@ -355,21 +365,10 @@ export default function ProfilePage({ setPage, user, setUser }) {
             </div>
           )}
 
-          {tab === 'favorites' && (
-            <div className="profile-section">
-              <h2>Saved favourites</h2>
-              <div className="empty-state" style={{ minHeight: 160 }}>
-                <span>❤️</span>
-                <h3>No favourites yet</h3>
-                <p>Tap the heart on any service or stylist to save them here.</p>
-                <button onClick={() => setPage('services')}>Browse services</button>
-              </div>
-            </div>
-          )}
-
           {tab === 'notifications' && (
             <div className="profile-section">
               <h2>Notification preferences</h2>
+              <p className="profile-section-note">Choose how GlowBelle should contact you about booking confirmations, reminders, offers and stylist availability.</p>
               <div className="notif-list">
                 <NotifRow label="Email confirmations" checked={notifications.emailConfirmations} onChange={value => setNotifications(p => ({ ...p, emailConfirmations: value }))} />
                 <NotifRow label="SMS reminders" checked={notifications.smsReminders} onChange={value => setNotifications(p => ({ ...p, smsReminders: value }))} />
