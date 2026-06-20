@@ -2,6 +2,25 @@ import { ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { glowbelleApi } from '../api.js';
 
+const CATEGORY_ACCENTS = {
+  barbering: ['✂', 'Precision cuts'],
+  braids: ['✦', 'Protective styles'],
+  'hair-styling': ['◐', 'Salon finish'],
+  'hair-coloring': ['◒', 'Colour work'],
+  'natural-hair': ['◇', 'Natural care'],
+  locs: ['◆', 'Loc care'],
+  nails: ['○', 'Nail studio'],
+  makeup: ['◌', 'Makeup artistry'],
+  lashes: ['◍', 'Lash sets'],
+  brows: ['◉', 'Brow shaping'],
+  'spa-massage': ['◦', 'Spa care'],
+  bridal: ['✧', 'Event ready'],
+  'kids-services': ['△', 'Kids care'],
+  'family-package': ['▣', 'Family booking'],
+  'home-service': ['⌂', 'Home visits'],
+  other: ['✺', 'More services'],
+};
+
 export default function CategoryGrid({ setPage }) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,12 +47,14 @@ export default function CategoryGrid({ setPage }) {
     <div className="grid six">
       {categories.map((category) => {
         const id = category.slug || category.id || category._id;
+        const [icon, label] = CATEGORY_ACCENTS[id] || CATEGORY_ACCENTS.other;
         return (
           <button className="category-card" key={id} onClick={() => setPage('services', { cat: id })}>
-            <span style={{ fontSize: 28 }}>✦</span>
+            <span className="category-icon">{icon}</span>
+            <small>{label}</small>
             <h3>{category.title}</h3>
             <p>{category.description || 'Browse live services in this category.'}</p>
-            <ChevronRight size={18} />
+            <span className="category-link">Explore <ChevronRight size={16} /></span>
           </button>
         );
       })}

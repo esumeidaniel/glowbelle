@@ -106,6 +106,31 @@ export default function HomePage({ setPage }) {
         <div>{floatingServices.concat(floatingServices).map((item, index) => <span key={`${item}-${index}`}>{item}</span>)}</div>
       </section>
 
+      <section className="experience-board">
+        <div className="experience-copy">
+          <span className="eyebrow">A marketplace that feels personal</span>
+          <h2>Everything customers need to choose with confidence.</h2>
+          <p>GlowBelle is designed around service-first discovery. Customers do not need to guess who can do what: they select a category, compare verified professionals, view work samples, and book directly.</p>
+        </div>
+        <div className="experience-panels">
+          <article className="experience-panel feature">
+            <span>01</span>
+            <h3>Search by service, stylist, or location</h3>
+            <p>Customers can move from a service category to the right professional without confusion.</p>
+          </article>
+          <article className="experience-panel">
+            <span>02</span>
+            <h3>Profiles carry the trust</h3>
+            <p>Verified badge, portfolio, availability, prices, reviews, and business details sit together.</p>
+          </article>
+          <article className="experience-panel">
+            <span>03</span>
+            <h3>Stylists manage their own business</h3>
+            <p>Professionals control services, pricing, schedules, gallery posts, and discounts after approval.</p>
+          </article>
+        </div>
+      </section>
+
       <section className="split-feature-section">
         <div className="split-feature-card dark">
           <span className="eyebrow">For customers</span>
