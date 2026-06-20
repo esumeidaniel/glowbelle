@@ -25,7 +25,6 @@ import './App.css';
 import './polish.css';
 import './responsive.css';
 
-const SHOW_BOOK_CTA = ['home','services','service-detail','stylists','gallery','offers','about'];
 const PUBLIC_PAGES = ['home', 'login', 'stylist-apply', 'privacy', 'terms', 'cancellation', 'refund'];
 const CUSTOMER_PAGES = ['home', 'services', 'service-detail', 'booking', 'bookings', 'gallery', 'offers', 'contact', 'confirm', 'success', 'stylists', 'profile', 'about', 'privacy', 'terms', 'cancellation', 'refund'];
 const STAFF_COMMON_PAGES = ['profile', 'privacy', 'terms', 'cancellation', 'refund'];
@@ -180,12 +179,6 @@ export default function App() {
         ↑
       </button>
 
-      {/* UPGRADE: Sticky mobile book CTA */}
-      {user?.role === 'customer' && SHOW_BOOK_CTA.includes(page) && (
-        <div className="sticky-book">
-          <button onClick={() => navigate('booking')}>Book appointment</button>
-        </div>
-      )}
       <MobileCustomerNav page={page} setPage={navigate} user={user} />
     </>
   );

@@ -116,26 +116,6 @@ code { font-size: 14px; line-height: 1.4; padding: 4px 8px; background: var(--co
 .scroll-top.visible { opacity: 1; pointer-events: auto; }
 .scroll-top:hover { background: var(--brand-3); transform: translateY(-2px); }
 
-/* ─── Sticky mobile book bar ─── */
-.sticky-book {
-  display: none;
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  z-index: 200;
-  padding: 12px 20px;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-  box-shadow: 0 -4px 16px rgba(0,0,0,.1);
-}
-.sticky-book button {
-  width: 100%;
-  padding: 14px;
-  font-size: 15px;
-  font-weight: 700;
-  border-radius: var(--radius-sm);
-}
-@media (max-width: 767px) { .sticky-book { display: block; } }
-
 /* ─── Toast ─── */
 .toast-container {
   position: fixed; top: 80px; right: 20px; z-index: 999;

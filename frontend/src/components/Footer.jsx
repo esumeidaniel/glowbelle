@@ -2,13 +2,13 @@ import { Camera, Users, MessageCircle } from 'lucide-react';
 
 export default function Footer({ setPage, user }) {
   const customerLinks = {
-    Explore: [['services', 'Services'], ['stylists', 'Stylists'], ['gallery', 'Gallery']],
-    Account: [['bookings', 'Bookings'], ['profile', 'Profile'], ['offers', 'Offers']],
+    Explore: [['services', 'Services'], ['stylists', 'Stylists'], ['gallery', 'Gallery'], ['offers', 'Offers']],
+    Account: [['bookings', 'Bookings'], ['profile', 'Profile'], ['booking', 'Book']],
     Help: [['about', 'About'], ['contact', 'Contact'], ['terms', 'Terms']],
   };
   const publicLinks = {
-    Start: [['home', 'Home'], ['services', 'Services'], ['login', 'Log in']],
-    Business: [['stylist-apply', 'For professionals'], ['stylists', 'Stylists'], ['gallery', 'Gallery']],
+    Explore: [['home', 'Home'], ['services', 'Services'], ['gallery', 'Gallery']],
+    Account: [['login', 'Log in'], ['booking', 'Book'], ['stylist-apply', 'For professionals']],
     Help: [['about', 'About'], ['contact', 'Contact'], ['terms', 'Terms']],
   };
   const staffLinks = {
@@ -28,9 +28,9 @@ export default function Footer({ setPage, user }) {
           </div>
           <p>A verified beauty marketplace for customers and independent salon professionals.</p>
           <div className="social-links">
-            <button type="button" aria-label="Instagram"><Camera size={18} /></button>
-            <button type="button" aria-label="Facebook"><Users size={18} /></button>
-            <button type="button" aria-label="Messages"><MessageCircle size={18} /></button>
+            <span aria-label="Instagram"><Camera size={18} /></span>
+            <span aria-label="Facebook"><Users size={18} /></span>
+            <span aria-label="Messages"><MessageCircle size={18} /></span>
           </div>
         </div>
 
