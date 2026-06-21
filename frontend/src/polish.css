@@ -223,6 +223,11 @@ select:focus {
   background: var(--code-bg);
 }
 
+.dash-wrapper {
+  min-height: 100svh;
+  background: var(--code-bg);
+}
+
 .dashboard aside {
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--bg) 94%, var(--brand-light)), var(--bg));
@@ -347,6 +352,40 @@ select:focus {
   box-shadow: var(--shadow-sm);
 }
 
+.admin-control-bar {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 20px;
+}
+
+.admin-control-bar input {
+  flex: 1;
+}
+
+.admin-search-field {
+  flex: 1 1 360px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0 12px;
+  background: var(--bg);
+}
+
+.admin-search-field svg {
+  color: var(--text);
+  flex: 0 0 auto;
+}
+
+.admin-search-field input {
+  border: none;
+  box-shadow: none !important;
+  background: transparent;
+  padding: 11px 0;
+}
+
 .dashboard-panel h3 {
   margin-bottom: 14px;
 }
@@ -363,6 +402,7 @@ select:focus {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  table-layout: auto;
 }
 
 .admin-table thead {
@@ -412,6 +452,27 @@ select:focus {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
+}
+
+.action-group button,
+.booking-actions button,
+.dash-row button {
+  min-height: 38px;
+}
+
+.offering-field {
+  display: grid;
+  gap: 6px;
+}
+
+.offering-field span {
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.offering-field.full {
+  grid-column: 1 / -1;
 }
 
 .dash-row {
