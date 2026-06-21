@@ -14,7 +14,7 @@ export default function ServiceGrid({ items, setPage }) {
           tag: raw.tag || raw.emoji || '',
           imageUrl: raw.displayImageUrl || raw.imageUrl || '',
           duration: raw.duration || `${raw.displayDurationMinutes || raw.durationMinutes || 60} min`,
-          desc: raw.desc || raw.shortDescription || raw.description || '',
+          desc: raw.displayDescription || raw.desc || raw.shortDescription || raw.description || '',
           rating: raw.rating || 'New',
           providerCount: raw.providerCount || 0,
           price: raw.displayPrice ?? raw.price,

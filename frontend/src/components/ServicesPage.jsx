@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import SectionTitle from './SectionTitle.jsx';
 import ServiceGrid from './ServiceGrid.jsx';
 import { glowbelleApi } from '../api.js';
-import { attachProviderCounts } from '../marketplace.js';
 import { SERVICE_CATEGORIES } from '../serviceCategories.js';
 import { money } from '../utils.js';
 
@@ -24,11 +23,10 @@ export default function ServicesPage({ setPage, nav }) {
       setLoadError('');
       try {
         const [servicesResponse, categoriesResponse] = await Promise.all([
-          glowbelleApi.services({ limit: 100 }),
+          glowbelleApi.services({ limit: 100, bookableOnly: true }),
           glowbelleApi.categories(),
         ]);
-        const stylistsResponse = await glowbelleApi.stylists({ available: true }).catch(() => ({ data: [] }));
-        setItems(attachProviderCounts(servicesResponse.data || [], stylistsResponse.data || []));
+        setItems(servicesResponse.data || []);
         const liveCategories = (categoriesResponse.data || []).map(category => ({
           id: category.slug || category.id || category._id,
           title: category.title,
@@ -48,11 +46,11 @@ export default function ServicesPage({ setPage, nav }) {
   let filtered = items.filter(s =>
     (cat === 'all' || (s.cat || s.category) === cat) &&
     s.title.toLowerCase().includes(q.toLowerCase()) &&
-    s.price <= maxPrice
+    (s.displayPrice ?? s.price) <= maxPrice
   );
 
-  if (sortBy === 'price-asc') filtered = [...filtered].sort((a, b) => a.price - b.price);
-  if (sortBy === 'price-desc') filtered = [...filtered].sort((a, b) => b.price - a.price);
+  if (sortBy === 'price-asc') filtered = [...filtered].sort((a, b) => (a.displayPrice ?? a.price) - (b.displayPrice ?? b.price));
+  if (sortBy === 'price-desc') filtered = [...filtered].sort((a, b) => (b.displayPrice ?? b.price) - (a.displayPrice ?? a.price));
   if (sortBy === 'rating') filtered = [...filtered].sort((a, b) => (b.rating || 0) - (a.rating || 0));
   if (sortBy === 'popular') filtered = [...filtered].sort((a, b) => (b.reviews || b.reviewsCount || 0) - (a.reviews || a.reviewsCount || 0));
 
@@ -111,7 +109,7 @@ export default function ServicesPage({ setPage, nav }) {
       {!loading && !loadError && items.length > 0 && items.every(item => !item.providerCount) && (
         <div className="soft-launch-banner">
           <strong>Professionals are being onboarded.</strong>
-          <span>You can browse the service catalog now. Booking opens as soon as approved stylists publish their prices, images and availability.</span>
+          <span>Booking opens as soon as approved stylists publish their prices, images and availability.</span>
         </div>
       )}
       {!loading && !loadError && filtered.length > 0 ? (
@@ -120,7 +118,7 @@ export default function ServicesPage({ setPage, nav }) {
         <div className="empty-state">
           <span>🔍</span>
           <h3>No services found</h3>
-          <p>{items.length ? 'Try adjusting your search or filters.' : 'Services will appear here as soon as they are published.'}</p>
+          <p>{items.length ? 'Try adjusting your search or filters.' : 'Services will appear here as soon as stylists publish their available services.'}</p>
           <button onClick={() => { setQ(''); setCat('all'); setMaxPrice(100000); }}>Clear filters</button>
         </div>
       )}

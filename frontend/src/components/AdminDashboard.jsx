@@ -35,6 +35,7 @@ const EMPTY_SERVICE = {
   title: '',
   category: 'hair-styling',
   emoji: '✦',
+  imageUrl: '',
   price: '',
   minPrice: '',
   maxPrice: '',
@@ -129,6 +130,7 @@ export default function AdminDashboard({ onLogout }) {
       title: service.title || '',
       category: service.category || 'women',
       emoji: service.emoji || '✦',
+      imageUrl: service.imageUrl || '',
       price: service.price ?? '',
       minPrice: service.minPrice ?? service.price ?? '',
       maxPrice: service.maxPrice ?? service.price ?? '',
@@ -159,6 +161,7 @@ export default function AdminDashboard({ onLogout }) {
         title: serviceForm.title,
         category: serviceForm.category,
         emoji: serviceForm.emoji,
+        imageUrl: serviceForm.imageUrl,
         price: Number(serviceForm.price),
         minPrice: Number(serviceForm.minPrice || serviceForm.price),
         maxPrice: Number(serviceForm.maxPrice || serviceForm.price),
@@ -352,6 +355,7 @@ export default function AdminDashboard({ onLogout }) {
                   <input type="number" min="0" placeholder="Maximum stylist price in ₦" value={serviceForm.maxPrice} onChange={e => setServiceForm(current => ({ ...current, maxPrice: e.target.value }))} />
                 </div>
                 <input required type="number" min="5" placeholder="Default duration in minutes" value={serviceForm.durationMinutes} onChange={e => setServiceForm(current => ({ ...current, durationMinutes: e.target.value }))} />
+                <input placeholder="Optional service image URL, e.g. https://..." value={serviceForm.imageUrl} onChange={e => setServiceForm(current => ({ ...current, imageUrl: e.target.value }))} />
                 <textarea placeholder="Short customer-facing description" value={serviceForm.shortDescription} onChange={e => setServiceForm(current => ({ ...current, shortDescription: e.target.value }))} />
                 <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
                   <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}><input type="checkbox" checked={serviceForm.isFeatured} onChange={e => setServiceForm(current => ({ ...current, isFeatured: e.target.checked }))} /> Featured on homepage</label>

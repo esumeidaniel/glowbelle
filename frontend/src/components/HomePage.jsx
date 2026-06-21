@@ -4,7 +4,6 @@ import CategoryGrid from './CategoryGrid.jsx';
 import SectionTitle from './SectionTitle.jsx';
 import ServiceGrid from './ServiceGrid.jsx';
 import { glowbelleApi } from '../api.js';
-import { attachProviderCounts } from '../marketplace.js';
 import { money } from '../utils.js';
 
 const floatingServices = ['Silk press', 'Knotless braids', 'Fade & beard', 'Bridal glam', 'Nails', 'Massage', 'Locs', 'Facials'];
@@ -42,7 +41,7 @@ function CustomerHomeDashboard({ user, setPage, featured, activeOffers }) {
         <article className="customer-dashboard-card">
           <span>Quick booking</span>
           <h3>{previewService?.title || 'Find your next service'}</h3>
-          <p>{previewService ? `Starting around ${money(previewService.price)}. Choose a verified stylist and send the booking request.` : 'Browse live categories and choose the service you need.'}</p>
+          <p>{previewService ? `Starting around ${money(previewService.displayPrice ?? previewService.price)}. Choose a verified stylist and send the booking request.` : 'Browse live categories and choose the service you need.'}</p>
           <button onClick={() => setPage('services')}>Browse services</button>
         </article>
 
@@ -80,7 +79,7 @@ function CustomerHomeDashboard({ user, setPage, featured, activeOffers }) {
               >
                 <span>{isService ? item.tag || item.category || 'Service' : 'Category'}</span>
                 <strong>{isService ? item.title : item}</strong>
-                <small>{isService ? `${money(item.price)} · ${item.providerCount || 0} pro${item.providerCount === 1 ? '' : 's'}` : 'Browse available professionals'}</small>
+                <small>{isService ? `${money(item.displayPrice ?? item.price)} · ${item.providerCount || 0} pro${item.providerCount === 1 ? '' : 's'}` : 'Browse available professionals'}</small>
               </button>
             );
           })}
@@ -98,11 +97,10 @@ export default function HomePage({ setPage, user }) {
     const id = window.setTimeout(async () => {
       try {
         const [servicesRes, offersRes] = await Promise.all([
-          glowbelleApi.services({ featured: true, limit: 6 }),
+          glowbelleApi.services({ limit: 8, sort: 'newest' }),
           glowbelleApi.offers(),
         ]);
-        const stylistsRes = await glowbelleApi.stylists({ available: true }).catch(() => ({ data: [] }));
-        setFeatured(attachProviderCounts(servicesRes.data || [], stylistsRes.data || []));
+        setFeatured(servicesRes.data || []);
         setActiveOffers((offersRes.data || []).slice(0, 3).map(offer => ({
           id: offer._id || offer.code,
           title: offer.title,
@@ -182,7 +180,7 @@ export default function HomePage({ setPage, user }) {
             <p>{previewService ? 'Pulled from your live catalog' : 'Published services will fill this card'}</p>
             <div className="preview-line"><CalendarCheck size={15} /> Today · 2:30 PM</div>
             <div className="preview-line"><WalletCards size={15} /> Pay at salon</div>
-            <div className="price-row"><strong>{previewService ? money(previewService.price) : 'Live price'}</strong><span>Booking sent</span></div>
+            <div className="price-row"><strong>{previewService ? money(previewService.displayPrice ?? previewService.price) : 'Live price'}</strong><span>Booking sent</span></div>
           </div>
           <div className="showcase-card pro-card-preview">
             <h4>Professional dashboard</h4>

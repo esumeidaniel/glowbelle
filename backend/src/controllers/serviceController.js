@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Service from '../models/Service.js';
+import Stylist from '../models/Stylist.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 
 function normalizePriceRange(body) {
@@ -16,6 +17,60 @@ function normalizePriceRange(body) {
   }
 }
 
+function serviceKey(service) {
+  return String(service._id || service.id || service.code || '');
+}
+
+function offeringMatchesService(offering, service) {
+  const linked = offering?.service;
+  const serviceId = serviceKey(service);
+  const serviceCode = String(service.code || '');
+  return String(linked?._id || linked) === serviceId || (serviceCode && String(linked?.code || '') === serviceCode);
+}
+
+async function enrichServicesForCustomers(services) {
+  const plainServices = services.map(service => typeof service.toObject === 'function' ? service.toObject() : service);
+  const ids = plainServices.map(service => service._id).filter(Boolean);
+  if (!ids.length) return plainServices;
+
+  const stylists = await Stylist.find({
+    approvalStatus: 'approved',
+    available: { $ne: false },
+    'offerings.service': { $in: ids },
+  })
+    .select('name code rating jobs available offerings')
+    .populate('offerings.service', 'code title category imageUrl shortDescription')
+    .lean();
+
+  return plainServices.map(service => {
+    const offerings = stylists
+      .map(stylist => ({
+        stylist: {
+          _id: stylist._id,
+          code: stylist.code,
+          name: stylist.name,
+          rating: stylist.rating,
+          jobs: stylist.jobs,
+        },
+        offering: (stylist.offerings || []).find(item => item.isActive !== false && offeringMatchesService(item, service)),
+      }))
+      .filter(item => item.offering)
+      .sort((a, b) => Number(a.offering.price || 0) - Number(b.offering.price || 0));
+
+    const primary = offerings[0];
+    return {
+      ...service,
+      providerCount: offerings.length,
+      primaryStylist: primary?.stylist,
+      primaryOffering: primary?.offering,
+      displayImageUrl: primary?.offering?.imageUrl || service.imageUrl || '',
+      displayPrice: primary?.offering?.price ?? service.price,
+      displayDurationMinutes: primary?.offering?.durationMinutes ?? service.durationMinutes,
+      displayDescription: primary?.offering?.description || service.shortDescription || service.description || '',
+    };
+  });
+}
+
 export const listServices = asyncHandler(async (req, res) => {
   const {
     category,
@@ -25,6 +80,7 @@ export const listServices = asyncHandler(async (req, res) => {
     minRating,
     sort = 'popular',
     featured,
+    bookableOnly,
     page = 1,
     limit = 30,
   } = req.query;
@@ -48,13 +104,18 @@ export const listServices = asyncHandler(async (req, res) => {
     rating: { rating: -1 },
   };
 
-  const skip = (Number(page) - 1) * Number(limit);
-  const [items, total] = await Promise.all([
-    Service.find(filter).sort(sortMap[sort] || sortMap.popular).skip(skip).limit(Number(limit)),
-    Service.countDocuments(filter),
-  ]);
+  const pageNumber = Math.max(Number(page) || 1, 1);
+  const limitNumber = Math.min(Math.max(Number(limit) || 30, 1), 100);
+  const allItems = await Service.find(filter).sort(sortMap[sort] || sortMap.popular);
+  const enriched = await enrichServicesForCustomers(allItems);
+  const visible = bookableOnly === 'true'
+    ? enriched.filter(service => Number(service.providerCount || 0) > 0)
+    : enriched;
+  const total = visible.length;
+  const skip = (pageNumber - 1) * limitNumber;
+  const items = visible.slice(skip, skip + limitNumber);
 
-  res.json({ success: true, data: items, meta: { total, page: Number(page), pages: Math.ceil(total / Number(limit)) } });
+  res.json({ success: true, data: items, meta: { total, page: pageNumber, pages: Math.ceil(total / limitNumber) } });
 });
 
 export const getService = asyncHandler(async (req, res) => {
