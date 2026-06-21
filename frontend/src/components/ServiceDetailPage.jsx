@@ -1,4 +1,4 @@
-import { Star, Clock, User, ChevronLeft, CheckCircle2, AlertCircle, Heart, Share2 } from 'lucide-react';
+import { Star, Clock, User, ChevronLeft, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { assetUrl, glowbelleApi } from '../api.js';
 import { primaryOfferingForService, providerCountForService } from '../marketplace.js';
@@ -37,7 +37,6 @@ export default function ServiceDetailPage({ setPage, nav }) {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
   const [providerCount, setProviderCount] = useState(0);
-  const [favorited, setFavorited] = useState(false);
   const [selectedAddon, setSelectedAddon] = useState([]);
 
   useEffect(() => {
@@ -113,10 +112,6 @@ export default function ServiceDetailPage({ setPage, nav }) {
           {/* Image / Art */}
           <div className={`detail-art ${service.cat}`}>
             {service.imageUrl ? <img src={assetUrl(service.imageUrl)} alt={service.title} /> : <span>{service.tag}</span>}
-            <div className="detail-art-actions">
-              <button onClick={() => setFavorited(!favorited)} className={favorited ? 'fav-btn active' : 'fav-btn'}><Heart size={18} /></button>
-              <button className="fav-btn"><Share2 size={18} /></button>
-            </div>
           </div>
 
           {/* Info */}
@@ -194,9 +189,6 @@ export default function ServiceDetailPage({ setPage, nav }) {
             {addonsTotal > 0 && <div className="line total"><span>Total</span><b>{money(service.price + addonsTotal)}</b></div>}
             <button disabled={providerCount === 0} onClick={() => providerCount > 0 && setPage('booking', { serviceId: service.id })} style={{ width: '100%', background: providerCount > 0 ? 'var(--brand)' : 'var(--text)', color: '#fff', border: 'none', padding: '13px', borderRadius: 'var(--radius-sm)', fontSize: 15, fontWeight: 600, cursor: providerCount > 0 ? 'pointer' : 'not-allowed', marginTop: 16, opacity: providerCount > 0 ? 1 : 0.55 }}>
               {providerCount > 0 ? 'Book This Service' : 'Opening Soon'}
-            </button>
-            <button className="secondary" style={{ width: '100%', marginTop: 8, padding: '11px', borderRadius: 'var(--radius-sm)', fontSize: 14, cursor: 'pointer' }} onClick={() => setFavorited(!favorited)}>
-              {favorited ? '❤️ Saved to Favorites' : '♡ Save to Favorites'}
             </button>
           </div>
         </aside>

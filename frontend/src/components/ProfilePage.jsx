@@ -1,13 +1,10 @@
-import { User, Bell, Star, Users, Trash2, Plus, KeyRound, Lock } from 'lucide-react';
+import { User, Bell, Users, Trash2, Plus, KeyRound, Lock } from 'lucide-react';
 import { useState } from 'react';
 import Avatar from './Avatar.jsx';
 import PageHero from './PageHero.jsx';
 import { glowbelleApi, setToken } from '../api.js';
 
-const FAMILY_MEMBERS = [
-  { id: 'fm1', name: 'Chidi Mensah', relation: 'Partner', gender: 'Male', hairType: 'Low fade' },
-  { id: 'fm2', name: 'Adaeze Jr.', relation: 'Child', gender: 'Female', age: 6, allergies: 'None', hairType: 'Natural 4C' },
-];
+const FAMILY_MEMBERS = [];
 
 // FIX: useState cannot be called inside a .map() callback — extracted to a proper component
 function NotifRow({ label, checked, onChange }) {
@@ -196,10 +193,10 @@ export default function ProfilePage({ setPage, user, setUser }) {
             <div>
               <strong>{profile.name}</strong>
               <p>{profile.email}</p>
-              <span className="loyalty-pts">🏆 {profile.points || 450} pts</span>
+              <span className="loyalty-pts">{profile.points ?? 0} pts</span>
             </div>
           </div>
-          {[['profile', <User size={16} />, 'My Profile'], ['family', <Users size={16} />, 'Family Members'], ['rewards', <Star size={16} />, 'Rewards'], ['notifications', <Bell size={16} />, 'Notifications']].map(([id, icon, label]) => (
+          {[['profile', <User size={16} />, 'My Profile'], ['family', <Users size={16} />, 'Family Members'], ['notifications', <Bell size={16} />, 'Notifications']].map(([id, icon, label]) => (
             <button key={id} className={tab === id ? 'profile-nav-btn active' : 'profile-nav-btn'} onClick={() => setTab(id)}>
               {icon} {label}
             </button>
@@ -313,6 +310,13 @@ export default function ProfilePage({ setPage, user, setUser }) {
                 <button onClick={() => setAddingMember(true)}><Plus size={16} /> Add member</button>
               </div>
               <div className="family-list">
+                {family.length === 0 && (
+                  <div className="empty-state" style={{ minHeight: 160 }}>
+                    <span>👥</span>
+                    <h3>No family members yet</h3>
+                    <p>Add a child, partner, parent, or sibling when you want to book for someone else.</p>
+                  </div>
+                )}
                 {family.map(m => (
                   <div className="family-card" key={m.id}>
                     <Avatar name={m.name} size={48} />
@@ -346,22 +350,6 @@ export default function ProfilePage({ setPage, user, setUser }) {
                   </div>
                 </div>
               )}
-            </div>
-          )}
-
-          {tab === 'rewards' && (
-            <div className="profile-section">
-              <h2>Loyalty rewards</h2>
-              <div className="rewards-card">
-                <div className="points-big">🏆 {profile.points || 450} pts</div>
-                <div className="points-tier">Silver tier · {1500 - (profile.points || 450)} pts to Gold</div>
-                <div className="points-bar"><div style={{ width: `${((profile.points || 450) / 1500) * 100}%` }}></div></div>
-              </div>
-              <div className="rewards-list">
-                {[['Earn 10 pts', 'per ₦1,000 spent'], ['Get ₦500 off', 'at 500 points'], ['Free Service', 'at 2,000 points'], ['VIP Access', 'at 5,000 points']].map(([t, d]) => (
-                  <div className="reward-item" key={t}><strong>{t}</strong><span>{d}</span></div>
-                ))}
-              </div>
             </div>
           )}
 

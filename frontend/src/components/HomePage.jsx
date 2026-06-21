@@ -1,4 +1,4 @@
-import { Sparkles, ChevronRight, Search, CalendarCheck, BadgeCheck, BriefcaseBusiness, WalletCards, MapPin, Clock3, TrendingUp } from 'lucide-react';
+import { Sparkles, ChevronRight, Search, CalendarCheck, BadgeCheck, BriefcaseBusiness, WalletCards, MapPin, Clock3 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import CategoryGrid from './CategoryGrid.jsx';
 import SectionTitle from './SectionTitle.jsx';
@@ -7,7 +7,6 @@ import { glowbelleApi } from '../api.js';
 import { money } from '../utils.js';
 
 const floatingServices = ['Silk press', 'Knotless braids', 'Fade & beard', 'Bridal glam', 'Nails', 'Massage', 'Locs', 'Facials'];
-const bookingSteps = ['Choose a service', 'Compare verified professionals', 'Pick your date and time', 'Pay at the salon'];
 
 function CustomerHomeDashboard({ user, setPage, featured, activeOffers }) {
   const firstName = user?.name?.split(' ')?.[0] || 'there';
@@ -201,17 +200,6 @@ export default function HomePage({ setPage, user }) {
 
       <section className="service-marquee" aria-label="Popular service categories">
         <div>{floatingServices.concat(floatingServices).map((item, index) => <span key={`${item}-${index}`}>{item}</span>)}</div>
-      </section>
-
-      <section className="trend-board">
-        <div className="trend-copy">
-          <span className="eyebrow"><TrendingUp size={14} /> Simple booking flow</span>
-          <h2>Find a service, choose a professional, and book with confidence.</h2>
-          <p>GlowBelle keeps the public dashboard focused: customers discover beauty services quickly, while approved professionals manage their own services, prices and availability.</p>
-        </div>
-        <div className="trend-cloud">
-          {bookingSteps.map(item => <button key={item} onClick={() => setPage(item === 'Choose a service' ? 'services' : 'booking')}>{item}</button>)}
-        </div>
       </section>
 
       <SectionTitle title="Choose a category" text="A marketplace for hair, grooming, beauty, spa and event styling." />

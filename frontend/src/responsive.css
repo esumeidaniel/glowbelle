@@ -332,6 +332,45 @@ svg {
   }
 }
 
+@media (max-width: 380px) {
+  .grid.services {
+    grid-template-columns: minmax(0, 1fr);
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .service-art {
+    height: clamp(190px, 60vw, 230px);
+  }
+
+  .service-body {
+    padding: 16px;
+  }
+
+  .service-body h3 {
+    font-size: 1rem;
+  }
+
+  .customer-dashboard-grid,
+  .customer-shortcut-grid,
+  .role-entry-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .customer-dashboard-card,
+  .customer-service-shortcut {
+    padding: 16px;
+  }
+
+  .footer-top {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 420px) {
   .header .brand {
     margin-right: 4px;
