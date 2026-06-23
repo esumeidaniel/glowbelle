@@ -25,7 +25,7 @@ import './App.css';
 import './polish.css';
 import './responsive.css';
 
-const PUBLIC_PAGES = ['home', 'login', 'booking', 'stylist-apply', 'privacy', 'terms', 'cancellation', 'refund'];
+const PUBLIC_PAGES = ['home', 'services', 'service-detail', 'gallery', 'offers', 'contact', 'stylists', 'about', 'login', 'booking', 'stylist-apply', 'privacy', 'terms', 'cancellation', 'refund'];
 const CUSTOMER_PAGES = ['home', 'services', 'service-detail', 'booking', 'bookings', 'gallery', 'offers', 'contact', 'confirm', 'success', 'stylists', 'profile', 'about', 'privacy', 'terms', 'cancellation', 'refund'];
 const STAFF_COMMON_PAGES = ['profile', 'privacy', 'terms', 'cancellation', 'refund'];
 
