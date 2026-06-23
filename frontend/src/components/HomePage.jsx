@@ -128,20 +128,20 @@ export default function HomePage({ setPage, user }) {
         <div className="market-hero-copy">
           <span className="pill"><Sparkles size={16} /> Beauty marketplace for customers and professionals</span>
           <h1>Find the right beauty professional. Book in minutes.</h1>
-          <p>Browse verified beauty professionals, compare services, and book hair, nails, spa, makeup, barbering and home appointments in one clean place.</p>
+          <p>GlowBelle connects customers with verified stylists and salon businesses. Professionals publish their services, prices and availability; customers book directly.</p>
 
           <div className="market-search-console" aria-label="Find beauty services">
             <button onClick={() => setPage('services')}>
               <Search size={18} />
-              <span><small>What</small><strong>Services and looks</strong></span>
+              <span><small>What</small><strong>Search services, looks, stylists</strong></span>
             </button>
             <button onClick={() => setPage('stylists')}>
               <MapPin size={18} />
-              <span><small>Where</small><strong>Verified professionals</strong></span>
+              <span><small>Where</small><strong>Find verified professionals nearby</strong></span>
             </button>
             <button onClick={() => setPage('booking')}>
               <Clock3 size={18} />
-              <span><small>When</small><strong>Date, time and stylist</strong></span>
+              <span><small>When</small><strong>Pick date, time and stylist</strong></span>
             </button>
             <button className="console-submit" onClick={() => setPage('services')}>Search</button>
           </div>
@@ -160,8 +160,8 @@ export default function HomePage({ setPage, user }) {
           </div>
 
           <div className="actions hero-actions">
-            <button onClick={() => setPage('services')}>Browse Services <ChevronRight size={15} /></button>
-            <button className="secondary" onClick={() => setPage('booking')}>Book Now</button>
+            <button onClick={() => setPage('services')}>Explore marketplace <ChevronRight size={15} /></button>
+            <button className="secondary" onClick={() => setPage('login')}>Sign in</button>
           </div>
 
           <div className="hero-trust-rail" aria-label="GlowBelle marketplace highlights">
@@ -175,26 +175,26 @@ export default function HomePage({ setPage, user }) {
           <div className="showcase-card booking-card-preview">
             <div className="showcase-top"><span /> <span /> <span /></div>
             <div className="booking-live-badge"><BadgeCheck size={14} /> Verified pro</div>
-            <h3>{previewService?.title || 'Service preview'}</h3>
-            <p>{previewService ? 'Available from a verified professional' : 'Verified services appear here as stylists go live'}</p>
+            <h3>{previewService?.title || 'Live service preview'}</h3>
+            <p>{previewService ? 'Pulled from your live catalog' : 'Published services will fill this card'}</p>
             <div className="preview-line"><CalendarCheck size={15} /> Today · 2:30 PM</div>
             <div className="preview-line"><WalletCards size={15} /> Pay at salon</div>
             <div className="price-row"><strong>{previewService ? money(previewService.displayPrice ?? previewService.price) : 'Live price'}</strong><span>Booking sent</span></div>
           </div>
           <div className="showcase-card pro-card-preview">
-            <h4>Trusted professional</h4>
+            <h4>Professional dashboard</h4>
             <div className="mini-stat"><span>Orders</span><strong>Live</strong></div>
-            <div className="mini-stat"><span>Services</span><strong>Verified</strong></div>
+            <div className="mini-stat"><span>Services</span><strong>Approved</strong></div>
             <div className="mini-stat"><span>Payment</span><strong>At salon</strong></div>
           </div>
           <div className="showcase-schedule">
             <span>Today</span>
             <strong>3 open slots</strong>
-            <small>Availability updates from the professional</small>
+            <small>Availability updates from stylist dashboards</small>
           </div>
-          <div className="floating-chip chip-a">Verified pro</div>
+          <div className="floating-chip chip-a">Verified ID</div>
           <div className="floating-chip chip-b">Direct booking</div>
-          <div className="floating-chip chip-c">Clear prices</div>
+          <div className="floating-chip chip-c">Custom prices</div>
         </div>
       </section>
 
