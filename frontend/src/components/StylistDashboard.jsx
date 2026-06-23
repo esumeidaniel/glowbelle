@@ -360,14 +360,14 @@ export default function StylistDashboard({ onLogout }) {
             return <div className="dash-row stylist-offering-row" key={service._id}>
               <label className="offering-toggle"><input type="checkbox" checked={Boolean(offering)} onChange={event => setOffering(service, event.target.checked)} /><span><strong>{service.title}</strong><small>{serviceCategoryLabel(service.category)} · allowed {money(service.minPrice ?? service.price)} - {money(service.maxPrice ?? service.price)}</small></span></label>
               {offering && <div className="offering-fields">
-                <label className="offering-field"><span>Your price</span><input type="number" min={service.minPrice ?? 0} max={service.maxPrice ?? undefined} value={offering.price} onChange={event => updateOffering(service._id, 'price', event.target.value)} placeholder="₦" /></label>
-                <label className="offering-field"><span>Duration</span><input type="number" min="5" value={offering.durationMinutes} onChange={event => updateOffering(service._id, 'durationMinutes', event.target.value)} placeholder="Minutes" /></label>
+                <input type="number" min={service.minPrice ?? 0} max={service.maxPrice ?? undefined} value={offering.price} onChange={event => updateOffering(service._id, 'price', event.target.value)} placeholder="Your price in ₦" />
+                <input type="number" min="5" value={offering.durationMinutes} onChange={event => updateOffering(service._id, 'durationMinutes', event.target.value)} placeholder="Minutes" />
                 <label className="mini-upload">
                   Upload service photo
                   <input type="file" accept="image/jpeg,image/png,image/webp" onChange={event => uploadServiceImage(service._id, event.target.files?.[0])} />
                 </label>
                 {offering.imageUrl && <img className="offering-image-preview" src={assetUrl(offering.imageUrl)} alt={`${service.title} preview`} />}
-                <label className="offering-field full"><span>Customer description</span><textarea value={offering.description || ''} onChange={event => updateOffering(service._id, 'description', event.target.value)} placeholder="Describe how you do this service, what is included, hair length, preparation, or package details." /></label>
+                <textarea value={offering.description || ''} onChange={event => updateOffering(service._id, 'description', event.target.value)} placeholder="Describe how you do this service, what is included, hair length, preparation, or package details." />
               </div>}
             </div>;
           })}

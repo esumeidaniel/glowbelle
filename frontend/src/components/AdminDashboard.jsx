@@ -1,4 +1,4 @@
-import { Children, cloneElement, isValidElement, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Bell, Calendar, CreditCard, LayoutDashboard, Search, Scissors, Users, ShieldCheck } from 'lucide-react';
 import { downloadAdminDocument, glowbelleApi } from '../api.js';
 import { SERVICE_CATEGORIES, SERVICE_SUGGESTIONS, serviceCategoryLabel } from '../serviceCategories.js';
@@ -51,20 +51,11 @@ function StatusPill({ status: value }) {
 }
 
 function AdminTable({ headers, children }) {
-  const labelledRows = Children.map(children, row => {
-    if (!isValidElement(row)) return row;
-    return cloneElement(row, {
-      children: Children.map(row.props.children, (cell, index) => (
-        isValidElement(cell) ? cloneElement(cell, { 'data-label': headers[index] }) : cell
-      )),
-    });
-  });
-
   return (
     <div className="admin-table-wrap">
       <table className="admin-table">
         <thead><tr>{headers.map(header => <th key={header}>{header}</th>)}</tr></thead>
-        <tbody>{labelledRows}</tbody>
+        <tbody>{children}</tbody>
       </table>
     </div>
   );
@@ -267,11 +258,11 @@ export default function AdminDashboard({ onLogout }) {
 
         {tab === 'bookings' && (
           <div>
-            <div className="admin-control-bar">
-              <label className="admin-search-field">
-                <Search size={16} /><input placeholder="Search booking number, guest name, email or phone" value={search} onChange={e => { searchRef.current = e.target.value; setSearch(e.target.value); }} onKeyDown={e => e.key === 'Enter' && loadDashboard()} />
+            <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+              <label style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, border: '1px solid var(--border)', borderRadius: 8, padding: '0 12px', background: 'var(--bg)' }}>
+                <Search size={16} /><input placeholder="Search booking number, guest name, email or phone" value={search} onChange={e => { searchRef.current = e.target.value; setSearch(e.target.value); }} onKeyDown={e => e.key === 'Enter' && loadDashboard()} style={{ border: 'none', padding: '10px 0', background: 'transparent', width: '100%' }} />
               </label>
-              <select value={status} onChange={e => setStatus(e.target.value)}>
+              <select value={status} onChange={e => setStatus(e.target.value)} style={{ padding: '10px 14px', border: '1px solid var(--border)', borderRadius: 8, background: 'var(--bg)' }}>
                 {['all', 'pending', 'confirmed', 'completed', 'cancelled', 'no-show'].map(s => <option key={s} value={s}>{s}</option>)}
               </select>
               <button onClick={loadDashboard}>Search</button>
@@ -302,7 +293,7 @@ export default function AdminDashboard({ onLogout }) {
 
         {tab === 'customers' && (
           <div>
-            <div className="admin-control-bar"><input placeholder="Search customer name, email or phone" value={search} onChange={e => setSearch(e.target.value)} /><button onClick={loadDashboard}>Search</button></div>
+            <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}><input placeholder="Search customer name, email or phone" value={search} onChange={e => setSearch(e.target.value)} style={{ flex: 1, padding: 12 }} /><button onClick={loadDashboard}>Search</button></div>
             <AdminTable headers={['Customer', 'Email', 'Phone', 'Spent', 'Points', 'Joined']}>
               {customers.map(c => <tr key={c._id}><td>{c.name}</td><td>{c.email}</td><td>{c.phone}</td><td>{money(c.totalSpent || 0)}</td><td>{c.loyaltyPoints || 0}</td><td>{new Date(c.createdAt).toLocaleDateString()}</td></tr>)}
             </AdminTable>
