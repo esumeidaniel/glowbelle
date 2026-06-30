@@ -13,6 +13,7 @@ export function setToken(token) {
 export function assetUrl(path) {
   if (!path) return '';
   if (/^https?:\/\//i.test(path)) return path;
+  if (String(path).startsWith('/images/')) return path;
   return `${API_ORIGIN}${path.startsWith('/') ? path : `/${path}`}`;
 }
 

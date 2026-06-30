@@ -1,56 +1,25 @@
-export const SERVICE_CATEGORIES = [
-  ['barbering', 'Barbering'],
-  ['braids', 'Braids'],
-  ['hair-styling', 'Hair Styling'],
-  ['hair-coloring', 'Hair Coloring'],
-  ['natural-hair', 'Natural Hair'],
-  ['locs', 'Locs'],
-  ['nails', 'Nail Services'],
-  ['makeup', 'Makeup'],
-  ['lashes', 'Lashes'],
-  ['brows', 'Brows'],
-  ['spa-massage', 'Spa & Massage'],
-  ['bridal', 'Bridal'],
-  ['kids-services', 'Kids Services'],
-  ['family-package', 'Family Package'],
-  ['home-service', 'Home Service'],
-  ['other', 'Other'],
-];
+import { MASTER_CATEGORIES, MASTER_SERVICES } from './catalog.js';
+
+export const SERVICE_CATEGORIES = MASTER_CATEGORIES.map(category => [category.id, category.title]);
 
 export function serviceCategoryLabel(value) {
   return SERVICE_CATEGORIES.find(([id]) => id === value)?.[1] || value || 'Service';
 }
 
-export const SERVICE_SUGGESTIONS = [
-  ['Classic Haircut & Fade', 'barbering', '✂️', 5000, 3000, 12000, 45],
-  ['Beard Trim & Line Up', 'barbering', '🧔', 3000, 2000, 8000, 30],
-  ['Kids Haircut', 'kids-services', '👦', 4000, 2000, 12000, 30],
-  ['Knotless Braids', 'braids', '✨', 30000, 15000, 70000, 300],
-  ['Box Braids', 'braids', '🧶', 25000, 12000, 65000, 300],
-  ['Cornrows', 'braids', '🌿', 10000, 5000, 30000, 120],
-  ['Kids Braids', 'kids-services', '👧', 10000, 5000, 30000, 120],
-  ['Silk Press', 'hair-styling', '💇', 18000, 10000, 35000, 120],
-  ['Wig Installation', 'hair-styling', '👑', 25000, 12000, 60000, 150],
-  ['Hair Coloring', 'hair-coloring', '🎨', 35000, 15000, 90000, 180],
-  ['Natural Hair Wash & Treatment', 'natural-hair', '🌱', 12000, 6000, 30000, 90],
-  ['Locs Retwist', 'locs', '🌿', 15000, 8000, 45000, 120],
-  ['Acrylic Nails', 'nails', '💅', 15000, 8000, 35000, 120],
-  ['Gel Manicure', 'nails', '💅', 8000, 4000, 20000, 60],
-  ['Soft Glam Makeup', 'makeup', '💄', 25000, 12000, 60000, 90],
-  ['Bridal Makeup & Hair', 'bridal', '💍', 90000, 50000, 250000, 240],
-  ['Lash Extensions', 'lashes', '👁️', 18000, 8000, 45000, 120],
-  ['Brow Shaping', 'brows', '✨', 5000, 2000, 15000, 30],
-  ['Glow Facial', 'spa-massage', '🌸', 15000, 8000, 40000, 60],
-  ['Full Body Massage', 'spa-massage', '💆', 25000, 12000, 60000, 90],
-  ['Family Beauty Package', 'family-package', '👨‍👩‍👧', 45000, 25000, 120000, 240],
-  ['Home Service Appointment', 'home-service', '🏠', 30000, 15000, 120000, 180],
-].map(([title, category, emoji, price, minPrice, maxPrice, durationMinutes]) => ({
-  title,
-  category,
-  emoji,
-  price,
-  minPrice,
-  maxPrice,
-  durationMinutes,
-  shortDescription: `${title} service managed by verified GlowBelle professionals.`,
-}));
+export const SERVICE_SUGGESTIONS = MASTER_SERVICES
+  .filter(service => service.isFeatured)
+  .slice(0, 18)
+  .map(service => ({
+    title: service.title,
+    category: service.categoryId,
+    emoji: '✦',
+    imageUrl: service.imageUrl,
+    price: service.minPrice,
+    minPrice: service.minPrice,
+    maxPrice: service.maxPrice,
+    durationMinutes: service.durationMin,
+    shortDescription: service.shortDescription,
+    description: service.description,
+    isFeatured: service.isFeatured,
+    isActive: true,
+  }));

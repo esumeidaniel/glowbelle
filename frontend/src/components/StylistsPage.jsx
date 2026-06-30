@@ -1,8 +1,10 @@
-import { BadgeCheck, MapPin, Star, Users, Briefcase, CalendarDays } from 'lucide-react';
+import { BadgeCheck, Star, Users, Briefcase, CalendarDays } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Avatar from './Avatar.jsx';
 import PageHero from './PageHero.jsx';
+import StylistCard from './StylistCard.jsx';
 import { assetUrl, glowbelleApi } from '../api.js';
+import { stylistsOrFallback } from '../marketplace.js';
 
 function isVideoMedia(item) {
   return item?.mediaType === 'video' || /\.(mp4|webm|mov|m4v)$/i.test(item?.imageUrl || '');
@@ -40,10 +42,10 @@ export default function StylistsPage({ setPage }) {
       setLoadError('');
       try {
         const response = await glowbelleApi.stylists({ available: true });
-        setStylists((response.data || []).map(normalizeStylist));
-      } catch (err) {
-        setStylists([]);
-        setLoadError(err.message || 'Unable to load verified professionals.');
+        setStylists(stylistsOrFallback(response.data || []).map(normalizeStylist));
+      } catch {
+        setStylists(stylistsOrFallback().map(normalizeStylist));
+        setLoadError('');
       } finally {
         setLoading(false);
       }
@@ -69,21 +71,9 @@ export default function StylistsPage({ setPage }) {
       {loading && <div className="empty-state"><span>⌛</span><h3>Loading verified professionals</h3><p>Fetching approved stylist profiles from the backend.</p></div>}
       {!loading && loadError && <div className="empty-state"><span>⚠</span><h3>Professionals could not load</h3><p>{loadError}</p></div>}
       {!loading && !loadError && !stylists.length && <div className="empty-state"><span>✦</span><h3>No approved professionals yet</h3><p>Approved stylist profiles will appear here after verification.</p></div>}
-      {!loading && !loadError && stylists.length > 0 && <div className="grid four" style={{ paddingBottom: 48 }}>
+      {!loading && !loadError && stylists.length > 0 && <div className="market-stylist-grid">
         {stylists.map(st => (
-          <div className="stylist-card" key={st.id} onClick={() => setSelected(st)}>
-            <div className="stylist-avatar-wrap">
-              <Avatar name={st.name} src={st.avatarUrl} size={72} />
-              <span><BadgeCheck size={13} /></span>
-            </div>
-            <h3>{st.name}</h3>
-            <p>{st.role || 'Beauty professional'}</p>
-            <span className="stylist-rating"><Star size={14} /> {st.rating || 'New'} · {st.jobs} bookings</span>
-            <div className="stylist-location"><MapPin size={13} /> {st.location}</div>
-            <div className="stylist-skills">{st.skills.slice(0, 4).map(s => <small key={s}>{s}</small>)}</div>
-            <div className={st.available ? 'avail-tag' : 'unavail-tag'}>{st.available ? 'Available for booking' : 'Unavailable today'}</div>
-            <button onClick={e => { e.stopPropagation(); setPage('booking', { stylistId: st.id }); }}>Book {st.name.split(' ')[0]}</button>
-          </div>
+          <StylistCard key={st.id} stylist={st} setPage={setPage} onView={setSelected} />
         ))}
       </div>}
 

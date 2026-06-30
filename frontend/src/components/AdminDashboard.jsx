@@ -1,15 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Bell, Calendar, CreditCard, LayoutDashboard, Search, Scissors, Users, ShieldCheck } from 'lucide-react';
+import { Bell, Calendar, CreditCard, ImagePlus, LayoutDashboard, Search, Scissors, Settings, UserCheck, Users, ShieldCheck, WalletCards } from 'lucide-react';
+import AdminCatalogManager from './AdminCatalogManager.jsx';
+import DashboardStatsCard from './DashboardStatsCard.jsx';
 import { downloadAdminDocument, glowbelleApi } from '../api.js';
-import { SERVICE_CATEGORIES, SERVICE_SUGGESTIONS, serviceCategoryLabel } from '../serviceCategories.js';
+import { MASTER_SERVICES } from '../catalog.js';
 import { money } from '../utils.js';
 
 const NAV = [
-  ['overview', <LayoutDashboard size={16} />, 'Overview'],
-  ['bookings', <Calendar size={16} />, 'Bookings'],
+  ['overview', <LayoutDashboard size={16} />, 'Dashboard'],
+  ['users', <Users size={16} />, 'Users'],
+  ['stylists', <UserCheck size={16} />, 'Stylists'],
   ['customers', <Users size={16} />, 'Customers'],
-  ['applications', <ShieldCheck size={16} />, 'Stylist Applications'],
-  ['services', <Scissors size={16} />, 'Services'],
+  ['services', <Scissors size={16} />, 'Service Catalog'],
+  ['bookings', <Calendar size={16} />, 'Bookings'],
+  ['payments', <WalletCards size={16} />, 'Payments'],
+  ['applications', <ShieldCheck size={16} />, 'Image Approvals'],
+  ['gallery', <ImagePlus size={16} />, 'Gallery'],
+  ['settings', <Settings size={16} />, 'Settings'],
 ];
 
 const STATUS_COL = {
@@ -95,8 +102,9 @@ export default function AdminDashboard({ onLogout }) {
       setBookings(bookingsRes.data || []);
       setCustomers(customersRes.data || []);
       setApplications(applicationsRes.data || []);
-      setServices(servicesRes.data || []);
+      setServices(servicesRes.data?.length ? servicesRes.data : MASTER_SERVICES);
     } catch (err) {
+      setServices(MASTER_SERVICES);
       setError(err.message || 'Unable to load admin data. Login as admin first.');
     } finally {
       setLoading(false);
@@ -127,14 +135,14 @@ export default function AdminDashboard({ onLogout }) {
     setServiceForm({
       _id: service._id,
       code: service.code,
-      title: service.title || '',
-      category: service.category || 'women',
+      title: service.title || service.name || '',
+      category: service.category || service.categoryId || 'hair-styling',
       emoji: service.emoji || '✦',
       imageUrl: service.imageUrl || '',
       price: service.price ?? '',
       minPrice: service.minPrice ?? service.price ?? '',
       maxPrice: service.maxPrice ?? service.price ?? '',
-      durationMinutes: service.durationMinutes || 60,
+      durationMinutes: service.durationMinutes || service.durationMin || 60,
       shortDescription: service.shortDescription || service.description || '',
       isFeatured: Boolean(service.isFeatured),
       isActive: service.isActive !== false,
@@ -189,7 +197,7 @@ export default function AdminDashboard({ onLogout }) {
   }
 
   async function removeService(service) {
-    if (!window.confirm(`Remove "${service.title}" from customer booking pages?`)) return;
+    if (!window.confirm(`Remove "${service.title || service.name}" from customer booking pages?`)) return;
     setServiceBusy(true);
     try {
       await glowbelleApi.deleteService(service._id);
@@ -208,6 +216,8 @@ export default function AdminDashboard({ onLogout }) {
     ['Approved Stylists', stats?.approvedStylists ?? 0, Scissors],
     ['Pending Stylists', stats?.pendingStylists ?? 0, ShieldCheck],
     ['Pending Bookings', stats?.pendingBookings ?? 0, Bell],
+    ['Catalog Services', services.length, Scissors],
+    ['Image Approvals', applications.filter(item => item.approvalStatus === 'pending').length, ImagePlus],
   ];
 
   return (
@@ -221,7 +231,7 @@ export default function AdminDashboard({ onLogout }) {
         <div className="dash-hero admin">
           <div>
             <span className="dashboard-kicker">Platform owner controls</span>
-            <h1>{NAV.find(n => n[0] === tab)?.[2]} {tab === 'overview' ? 'Dashboard' : ''}</h1>
+            <h1>{NAV.find(n => n[0] === tab)?.[2]}</h1>
             <p>Approve professionals, monitor bookings, protect customers and keep GlowBelle ready for public use.</p>
           </div>
           <div className="dash-hero-actions">
@@ -236,11 +246,7 @@ export default function AdminDashboard({ onLogout }) {
           <>
             <div className="dash-cards">
               {statCards.map(([label, value, Icon]) => (
-                <div className="dash-card" key={label}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><p>{label}</p><Icon size={18} style={{ color: 'var(--brand)' }} /></div>
-                  <h2>{value}</h2>
-                  <span>Live marketplace metric</span>
-                </div>
+                <DashboardStatsCard key={label} label={label} value={value} icon={Icon} helper="Live marketplace metric" />
               ))}
             </div>
             <section className="dashboard-panel">
@@ -328,63 +334,20 @@ export default function AdminDashboard({ onLogout }) {
         )}
 
         {tab === 'services' && (
-          <div className="dash-grid">
-            <section>
-              <h3>{serviceForm._id ? 'Edit service' : 'Publish a service'}</h3>
-              <div className="note-box prep" style={{ marginBottom: 12 }}>Admin job is simple: create the service option customers and stylists can choose. Stylists add their own photos, descriptions, prices and discounts.</div>
-              <div className="suggestion-panel">
-                <strong>Quick suggestions</strong>
-                <p>Optional: tap one to prefill the form, then edit anything before publishing.</p>
-                <div className="suggestion-chips">
-                  {SERVICE_SUGGESTIONS.map(suggestion => <button type="button" key={suggestion.title} onClick={() => applySuggestedService(suggestion)}>{suggestion.title}</button>)}
-                </div>
-              </div>
-              <form onSubmit={saveService} style={{ display: 'grid', gap: 12 }}>
-                <div className="two-col">
-                  <input required placeholder="Service title, e.g. Knotless Braids" value={serviceForm.title} onChange={e => setServiceForm(current => ({ ...current, title: e.target.value }))} />
-                  <input placeholder="Emoji/icon" value={serviceForm.emoji} onChange={e => setServiceForm(current => ({ ...current, emoji: e.target.value }))} />
-                </div>
-                <div className="two-col">
-                  <select value={serviceForm.category} onChange={e => setServiceForm(current => ({ ...current, category: e.target.value }))}>
-                    {SERVICE_CATEGORIES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-                  </select>
-                  <input required type="number" min="0" placeholder="Default/starting price in ₦" value={serviceForm.price} onChange={e => setServiceForm(current => ({ ...current, price: e.target.value }))} />
-                </div>
-                <div className="two-col">
-                  <input type="number" min="0" placeholder="Minimum stylist price in ₦" value={serviceForm.minPrice} onChange={e => setServiceForm(current => ({ ...current, minPrice: e.target.value }))} />
-                  <input type="number" min="0" placeholder="Maximum stylist price in ₦" value={serviceForm.maxPrice} onChange={e => setServiceForm(current => ({ ...current, maxPrice: e.target.value }))} />
-                </div>
-                <input required type="number" min="5" placeholder="Default duration in minutes" value={serviceForm.durationMinutes} onChange={e => setServiceForm(current => ({ ...current, durationMinutes: e.target.value }))} />
-                <input placeholder="Optional service image URL, e.g. https://..." value={serviceForm.imageUrl} onChange={e => setServiceForm(current => ({ ...current, imageUrl: e.target.value }))} />
-                <textarea placeholder="Short customer-facing description" value={serviceForm.shortDescription} onChange={e => setServiceForm(current => ({ ...current, shortDescription: e.target.value }))} />
-                <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-                  <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}><input type="checkbox" checked={serviceForm.isFeatured} onChange={e => setServiceForm(current => ({ ...current, isFeatured: e.target.checked }))} /> Featured on homepage</label>
-                  <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}><input type="checkbox" checked={serviceForm.isActive} onChange={e => setServiceForm(current => ({ ...current, isActive: e.target.checked }))} /> Active for customers</label>
-                </div>
-                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                  <button disabled={serviceBusy}>{serviceBusy ? 'Saving...' : serviceForm._id ? 'Save service' : 'Publish service'}</button>
-                  {serviceForm._id && <button type="button" className="secondary" onClick={() => setServiceForm(EMPTY_SERVICE)}>Cancel edit</button>}
-                </div>
-              </form>
-            </section>
-
-            <section>
-              <h3>Live customer services</h3>
-              {services.length === 0 && <div className="empty-state"><Scissors /><h3>No active services</h3><p>Create your first service to make booking useful for customers.</p></div>}
-              {services.map(service => <div className="dash-row" key={service._id}>
-                <div>
-                  <strong>{service.emoji} {service.title}</strong>
-                  <p style={{ margin: 0, fontSize: 12 }}>{serviceCategoryLabel(service.category)} · allowed {money(service.minPrice ?? service.price)} - {money(service.maxPrice ?? service.price)} · default {money(service.price)} · {service.durationMinutes} min {service.isFeatured ? '· Featured' : ''}</p>
-                </div>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  <button onClick={() => editService(service)}>Edit</button>
-                  <button onClick={() => removeService(service)}>Remove</button>
-                </div>
-              </div>)}
-            </section>
-          </div>
+          <AdminCatalogManager
+            services={services}
+            serviceForm={serviceForm}
+            setServiceForm={setServiceForm}
+            serviceBusy={serviceBusy}
+            saveService={saveService}
+            editService={editService}
+            removeService={removeService}
+            applySuggestedService={applySuggestedService}
+            resetService={() => setServiceForm(EMPTY_SERVICE)}
+          />
         )}
-        {!['overview', 'bookings', 'customers', 'applications', 'services'].includes(tab) && <div className="note-box">This dashboard section is unavailable.</div>}
+        {['users', 'stylists', 'payments', 'gallery', 'settings'].includes(tab) && <div className="dashboard-panel"><h3>{NAV.find(n => n[0] === tab)?.[2]}</h3><p>This frontend section is ready for the matching backend endpoint. Use Service Catalog, Bookings, Customers and Image Approvals for the active launch controls.</p></div>}
+        {!['overview', 'bookings', 'customers', 'applications', 'services', 'users', 'stylists', 'payments', 'gallery', 'settings'].includes(tab) && <div className="note-box">This dashboard section is unavailable.</div>}
       </main>
     </div>
   );

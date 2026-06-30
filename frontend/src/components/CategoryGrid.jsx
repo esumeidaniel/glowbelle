@@ -1,6 +1,7 @@
 import { ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { assetUrl, glowbelleApi } from '../api.js';
+import { categoriesOrFallback } from '../marketplace.js';
 
 const CATEGORY_ACCENTS = {
   barbering: ['✂', 'Precision cuts'],
@@ -30,9 +31,9 @@ export default function CategoryGrid({ setPage }) {
       setLoading(true);
       try {
         const response = await glowbelleApi.categories();
-        setCategories(response.data || []);
+        setCategories(categoriesOrFallback(response.data || []));
       } catch {
-        setCategories([]);
+        setCategories(categoriesOrFallback());
       } finally {
         setLoading(false);
       }
@@ -57,6 +58,7 @@ export default function CategoryGrid({ setPage }) {
             <small>{label}</small>
             <h3>{category.title}</h3>
             <p>{category.description || 'Browse live services in this category.'}</p>
+            {Number(category.activeServiceCount || 0) > 0 && <em>{category.activeServiceCount} bookable</em>}
             <span className="category-link">Explore <ChevronRight size={16} /></span>
           </button>
         );

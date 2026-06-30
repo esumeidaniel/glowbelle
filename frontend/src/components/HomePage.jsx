@@ -1,9 +1,13 @@
-import { Sparkles, ChevronRight, Search, CalendarCheck, BadgeCheck, BriefcaseBusiness, WalletCards, MapPin, Clock3 } from 'lucide-react';
+import { Sparkles, ChevronRight, Search, CalendarCheck, BadgeCheck, BriefcaseBusiness, ShieldCheck, Star, Headphones, WalletCards } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import CategoryGrid from './CategoryGrid.jsx';
+import HeroSlider from './HeroSlider.jsx';
 import SectionTitle from './SectionTitle.jsx';
 import ServiceGrid from './ServiceGrid.jsx';
+import StylistCard from './StylistCard.jsx';
 import { glowbelleApi } from '../api.js';
+import { ADMIN_IMAGE_ASSETS, fallbackFeaturedServices, fallbackStylists } from '../catalog.js';
+import { servicesOrFallback, stylistsOrFallback } from '../marketplace.js';
 import { money } from '../utils.js';
 
 const floatingServices = ['Silk press', 'Knotless braids', 'Fade & beard', 'Bridal glam', 'Nails', 'Massage', 'Locs', 'Facials'];
@@ -91,15 +95,18 @@ function CustomerHomeDashboard({ user, setPage, featured, activeOffers }) {
 export default function HomePage({ setPage, user }) {
   const [featured, setFeatured] = useState([]);
   const [activeOffers, setActiveOffers] = useState([]);
+  const [topStylists, setTopStylists] = useState([]);
 
   useEffect(() => {
     const id = window.setTimeout(async () => {
       try {
-        const [servicesRes, offersRes] = await Promise.all([
+        const [servicesRes, offersRes, stylistsRes] = await Promise.all([
           glowbelleApi.services({ limit: 8, sort: 'newest' }),
           glowbelleApi.offers(),
+          glowbelleApi.stylists({ available: true }).catch(() => ({ data: [] })),
         ]);
-        setFeatured(servicesRes.data || []);
+        setFeatured(servicesOrFallback(servicesRes.data || [], { featured: true }).filter(service => service.providerCount > 0).slice(0, 8));
+        setTopStylists(stylistsOrFallback(stylistsRes.data || []).slice(0, 4));
         setActiveOffers((offersRes.data || []).slice(0, 3).map(offer => ({
           id: offer._id || offer.code,
           title: offer.title,
@@ -107,14 +114,13 @@ export default function HomePage({ setPage, user }) {
           code: offer.code,
         })));
       } catch {
-        setFeatured([]);
+        setFeatured(fallbackFeaturedServices());
+        setTopStylists(fallbackStylists().slice(0, 4));
         setActiveOffers([]);
       }
     }, 0);
     return () => window.clearTimeout(id);
   }, []);
-
-  const previewService = featured[0];
 
   if (user?.role === 'customer') {
     return <CustomerHomeDashboard user={user} setPage={setPage} featured={featured} activeOffers={activeOffers} />;
@@ -122,79 +128,17 @@ export default function HomePage({ setPage, user }) {
 
   return (
     <>
-      <section className="market-hero">
-        <div className="hero-orb one" />
-        <div className="hero-orb two" />
-        <div className="market-hero-copy">
-          <span className="pill"><Sparkles size={16} /> Beauty marketplace for customers and professionals</span>
-          <h1>Find the right beauty professional. Book in minutes.</h1>
-          <p>GlowBelle connects customers with verified stylists and salon businesses. Professionals publish their services, prices and availability; customers book directly.</p>
+      <HeroSlider setPage={setPage} />
 
-          <div className="market-search-console" aria-label="Find beauty services">
-            <button onClick={() => setPage('services')}>
-              <Search size={18} />
-              <span><small>What</small><strong>Search services, looks, stylists</strong></span>
-            </button>
-            <button onClick={() => setPage('stylists')}>
-              <MapPin size={18} />
-              <span><small>Where</small><strong>Find verified professionals nearby</strong></span>
-            </button>
-            <button onClick={() => setPage('booking')}>
-              <Clock3 size={18} />
-              <span><small>When</small><strong>Pick date, time and stylist</strong></span>
-            </button>
-            <button className="console-submit" onClick={() => setPage('services')}>Search</button>
-          </div>
-
-          <div className="role-entry-grid">
-            <button className="role-entry customer" onClick={() => setPage('booking')}>
-              <span><Search size={18} /> I am a customer</span>
-              <strong>Discover and book services</strong>
-              <small>Browse verified professionals, compare prices and send your order instantly.</small>
-            </button>
-            <button className="role-entry business" onClick={() => setPage('stylist-apply')}>
-              <span><BriefcaseBusiness size={18} /> I am a professional</span>
-              <strong>Apply to grow your business</strong>
-              <small>Submit verification, publish your skills and receive bookings directly.</small>
-            </button>
-          </div>
-
-          <div className="actions hero-actions">
-            <button onClick={() => setPage('services')}>Explore marketplace <ChevronRight size={15} /></button>
-            <button className="secondary" onClick={() => setPage('login')}>Sign in</button>
-          </div>
-
-          <div className="hero-trust-rail" aria-label="GlowBelle marketplace highlights">
-            <div><strong>Verified</strong><span>Professionals reviewed before listing</span></div>
-            <div><strong>Direct</strong><span>Bookings go to the chosen stylist</span></div>
-            <div><strong>Simple</strong><span>Pay at salon after service</span></div>
-          </div>
+      <section className="marketplace-search-band">
+        <div>
+          <span className="eyebrow"><Search size={14} /> Find your service</span>
+          <h2>Search by service, stylist, category or appointment type.</h2>
         </div>
-
-        <div className="market-showcase" aria-label="GlowBelle marketplace preview">
-          <div className="showcase-card booking-card-preview">
-            <div className="showcase-top"><span /> <span /> <span /></div>
-            <div className="booking-live-badge"><BadgeCheck size={14} /> Verified pro</div>
-            <h3>{previewService?.title || 'Live service preview'}</h3>
-            <p>{previewService ? 'Pulled from your live catalog' : 'Published services will fill this card'}</p>
-            <div className="preview-line"><CalendarCheck size={15} /> Today · 2:30 PM</div>
-            <div className="preview-line"><WalletCards size={15} /> Pay at salon</div>
-            <div className="price-row"><strong>{previewService ? money(previewService.displayPrice ?? previewService.price) : 'Live price'}</strong><span>Booking sent</span></div>
-          </div>
-          <div className="showcase-card pro-card-preview">
-            <h4>Professional dashboard</h4>
-            <div className="mini-stat"><span>Orders</span><strong>Live</strong></div>
-            <div className="mini-stat"><span>Services</span><strong>Approved</strong></div>
-            <div className="mini-stat"><span>Payment</span><strong>At salon</strong></div>
-          </div>
-          <div className="showcase-schedule">
-            <span>Today</span>
-            <strong>3 open slots</strong>
-            <small>Availability updates from stylist dashboards</small>
-          </div>
-          <div className="floating-chip chip-a">Verified ID</div>
-          <div className="floating-chip chip-b">Direct booking</div>
-          <div className="floating-chip chip-c">Custom prices</div>
+        <div className="marketplace-search-actions">
+          <button onClick={() => setPage('services')}>Browse Services</button>
+          <button className="secondary" onClick={() => setPage('stylists')}>View Stylists</button>
+          <button className="secondary" onClick={() => setPage('stylist-apply')}>Join as a Stylist</button>
         </div>
       </section>
 
@@ -205,11 +149,49 @@ export default function HomePage({ setPage, user }) {
       <SectionTitle title="Choose a category" text="A marketplace for hair, grooming, beauty, spa and event styling." />
       <CategoryGrid setPage={setPage} />
 
-      <SectionTitle title="Featured services" text="Services are loaded from your backend catalog when available." />
+      <SectionTitle title="Featured bookable services" text="Only services with active approved stylist offerings appear as bookable." />
       {featured.length > 0
         ? <ServiceGrid items={featured} setPage={setPage} />
-        : <div className="empty-state"><span>✦</span><h3>Services are being prepared</h3><p>Featured services will appear here as soon as they are published.</p></div>}
+        : <div className="empty-state"><span>✦</span><h3>No stylists available for this service yet.</h3><p>Featured services appear once a verified stylist selects a published admin service and activates it.</p></div>}
       <div style={{ textAlign: 'center', padding: '0 32px 32px' }}><button className="view-all-btn" onClick={() => setPage('services')}>View all services <ChevronRight size={16} /></button></div>
+
+      <SectionTitle title="Top-rated stylists" text="Compare profiles, services, prices, portfolios and availability before you book." />
+      <div className="market-stylist-grid">
+        {topStylists.map(stylist => <StylistCard key={stylist.id || stylist._id} stylist={stylist} setPage={setPage} onView={() => setPage('stylists')} />)}
+      </div>
+
+      <section className="gallery-highlight-section">
+        <img src={ADMIN_IMAGE_ASSETS.gallery.portfolioHighlight} alt="GlowBelle portfolio highlight" />
+        <div>
+          <span className="eyebrow"><BadgeCheck size={14} /> Portfolio highlights</span>
+          <h2>Customers choose by real work, not guesswork.</h2>
+          <p>Admin can feature approved homepage gallery images while stylists continue uploading portfolio photos and videos from their dashboards.</p>
+          <button className="secondary" onClick={() => setPage('gallery')}>View Gallery</button>
+        </div>
+      </section>
+
+      <section className="how-it-works">
+        <div>
+          <span className="eyebrow"><CalendarCheck size={14} /> How GlowBelle works</span>
+          <h2>Admin builds the catalog. Stylists offer services. Customers book.</h2>
+        </div>
+        <div className="how-grid">
+          <article><BadgeCheck /><strong>1. Pick a service</strong><p>Browse admin-published categories and active stylist offerings.</p></article>
+          <article><Star /><strong>2. Choose a stylist</strong><p>Compare portfolio, rating, location, price and availability.</p></article>
+          <article><WalletCards /><strong>3. Book confidently</strong><p>Send your booking request and pay at salon or as enabled by GlowBelle.</p></article>
+        </div>
+      </section>
+
+      <section className="trust-section">
+        {[
+          [ShieldCheck, 'Verified stylists', 'Professionals are reviewed before they go public.'],
+          [WalletCards, 'Secure booking', 'Clear prices, service details and booking status.'],
+          [Headphones, 'Customer support', 'Help for customers, stylists and admin workflows.'],
+          [BriefcaseBusiness, 'Portfolio-based choice', 'Select professionals by real approved work.'],
+        ].map(([Icon, title, text]) => (
+          <div key={title}><Icon /><strong>{title}</strong><span>{text}</span></div>
+        ))}
+      </section>
 
       <section className="offers-strip premium-offers">
         <div className="offers-strip-inner">
@@ -225,6 +207,16 @@ export default function HomePage({ setPage, user }) {
               : <div className="offer-chip"><strong>No active offers yet</strong><span>GlowBelle and stylists can publish offers</span><code>LIVE</code></div>}
           </div>
         </div>
+      </section>
+
+      <section className="join-stylist-cta">
+        <div>
+          <span className="eyebrow"><BriefcaseBusiness size={14} /> For professionals</span>
+          <h2>Grow your beauty business with GlowBelle.</h2>
+          <p>Select admin-approved services, set your prices, upload portfolio work, manage availability and receive booking requests from customers.</p>
+        </div>
+        <img className="join-stylist-image" src={ADMIN_IMAGE_ASSETS.promos.joinStylist} alt="" />
+        <button onClick={() => setPage('stylist-apply')}>Join as a Stylist</button>
       </section>
     </>
   );

@@ -1,19 +1,25 @@
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import FilterSidebar from './FilterSidebar.jsx';
 import SectionTitle from './SectionTitle.jsx';
 import ServiceGrid from './ServiceGrid.jsx';
 import { glowbelleApi } from '../api.js';
-import { SERVICE_CATEGORIES } from '../serviceCategories.js';
-import { money } from '../utils.js';
+import { categoriesOrFallback, servicesOrFallback } from '../marketplace.js';
 
 export default function ServicesPage({ setPage, nav }) {
-  const [cat, setCat] = useState(nav?.cat || 'all');
   const [q, setQ] = useState('');
   const [sortBy, setSortBy] = useState('popular');
-  const [maxPrice, setMaxPrice] = useState(100000);
   const [showFilters, setShowFilters] = useState(false);
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [filters, setFilters] = useState({
+    category: nav?.cat || 'all',
+    maxPrice: 250000,
+    rating: 'all',
+    duration: 'all',
+    location: '',
+    availableToday: false,
+  });
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
 
@@ -26,16 +32,12 @@ export default function ServicesPage({ setPage, nav }) {
           glowbelleApi.services({ limit: 100, bookableOnly: true }),
           glowbelleApi.categories(),
         ]);
-        setItems(servicesResponse.data || []);
-        const liveCategories = (categoriesResponse.data || []).map(category => ({
-          id: category.slug || category.id || category._id,
-          title: category.title,
-        }));
-        setCategories(liveCategories.length ? liveCategories : SERVICE_CATEGORIES.map(([id, title]) => ({ id, title })));
-      } catch (err) {
-        setItems([]);
-        setCategories([]);
-        setLoadError(err.message || 'Unable to load live services.');
+        setItems(servicesOrFallback(servicesResponse.data || []).filter(item => item.providerCount > 0));
+        setCategories(categoriesOrFallback(categoriesResponse.data || []));
+      } catch {
+        setItems(servicesOrFallback().filter(item => item.providerCount > 0));
+        setCategories(categoriesOrFallback());
+        setLoadError('');
       } finally {
         setLoading(false);
       }
@@ -43,11 +45,21 @@ export default function ServicesPage({ setPage, nav }) {
     return () => window.clearTimeout(id);
   }, []);
 
-  let filtered = items.filter(s =>
-    (cat === 'all' || (s.cat || s.category) === cat) &&
-    s.title.toLowerCase().includes(q.toLowerCase()) &&
-    (s.displayPrice ?? s.price) <= maxPrice
-  );
+  let filtered = items.filter(s => {
+    const text = `${s.title || s.name} ${s.stylistName || ''} ${s.categoryTitle || ''} ${s.location || ''}`.toLowerCase();
+    const price = Number(s.displayPrice ?? s.price ?? s.minPrice ?? 0);
+    const rating = Number(s.rating === 'New' ? 0 : s.rating || 0);
+    const duration = Number(s.displayDurationMinutes || s.durationMinutes || s.durationMin || 0);
+    return (
+      (filters.category === 'all' || (s.cat || s.category || s.categoryId) === filters.category) &&
+      text.includes(q.toLowerCase()) &&
+      price <= filters.maxPrice &&
+      (filters.rating === 'all' || rating >= Number(filters.rating)) &&
+      (filters.duration === 'all' || duration <= Number(filters.duration)) &&
+      (!filters.location || String(s.location || '').toLowerCase().includes(filters.location.toLowerCase())) &&
+      (!filters.availableToday || s.availableToday)
+    );
+  });
 
   if (sortBy === 'price-asc') filtered = [...filtered].sort((a, b) => (a.displayPrice ?? a.price) - (b.displayPrice ?? b.price));
   if (sortBy === 'price-desc') filtered = [...filtered].sort((a, b) => (b.displayPrice ?? b.price) - (a.displayPrice ?? a.price));
@@ -72,7 +84,7 @@ export default function ServicesPage({ setPage, nav }) {
           <Search size={18} />
           <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search braids, haircut, makeup, spa..." />
         </label>
-        <select value={cat} onChange={e => setCat(e.target.value)}>
+        <select value={filters.category} onChange={e => setFilters(current => ({ ...current, category: e.target.value }))}>
           <option value="all">All categories</option>
           {categories.map(c => <option value={c.id} key={c.id}>{c.title}</option>)}
         </select>
@@ -88,23 +100,11 @@ export default function ServicesPage({ setPage, nav }) {
       </div>
 
       {showFilters && (
-        <div className="filter-bar">
-          <div className="filter-group">
-            <label>Max price: {money(maxPrice)}</label>
-            <input type="range" min={4000} max={100000} step={1000} value={maxPrice} onChange={e => setMaxPrice(+e.target.value)} style={{ width: '100%' }} />
-          </div>
-          <div className="filter-group">
-            <label>Category</label>
-            <div className="cat-pills">
-              <button className={cat === 'all' ? 'pill-btn active' : 'pill-btn'} onClick={() => setCat('all')}>All</button>
-              {categories.map(c => <button key={c.id} className={cat === c.id ? 'pill-btn active' : 'pill-btn'} onClick={() => setCat(c.id)}>{c.title}</button>)}
-            </div>
-          </div>
-        </div>
+        <FilterSidebar open={showFilters} onClose={() => setShowFilters(false)} categories={categories} filters={filters} setFilters={setFilters} />
       )}
 
       <SectionTitle title="Available services" text={`${filtered.length} service${filtered.length !== 1 ? 's' : ''} found · ${filtered.filter(item => item.providerCount > 0).length} ready to book`} />
-      {loading && <div className="empty-state"><span>⌛</span><h3>Loading live services</h3><p>Fetching the current service catalog from the backend.</p></div>}
+      {loading && <div className="empty-state"><span>⌛</span><h3>Loading live services</h3><p>Fetching active stylist services and the admin catalog.</p></div>}
       {!loading && loadError && <div className="empty-state"><span>⚠</span><h3>Services could not load</h3><p>{loadError}</p></div>}
       {!loading && !loadError && items.length > 0 && items.every(item => !item.providerCount) && (
         <div className="soft-launch-banner">
@@ -118,8 +118,8 @@ export default function ServicesPage({ setPage, nav }) {
         <div className="empty-state">
           <span>🔍</span>
           <h3>No services found</h3>
-          <p>{items.length ? 'Try adjusting your search or filters.' : 'Services will appear here as soon as stylists publish their available services.'}</p>
-          <button onClick={() => { setQ(''); setCat('all'); setMaxPrice(100000); }}>Clear filters</button>
+          <p>{items.length ? 'Try adjusting your search or filters.' : 'No stylists available for this service yet.'}</p>
+          <button onClick={() => { setQ(''); setFilters({ category: 'all', maxPrice: 250000, rating: 'all', duration: 'all', location: '', availableToday: false }); }}>Clear filters</button>
         </div>
       )}
     </>

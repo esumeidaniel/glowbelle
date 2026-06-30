@@ -72,14 +72,17 @@ export default function Header({ page, setPage, user, setUser }) {
   const customerLinks = [
     ['home', 'Home'],
     ['services', 'Services'],
+    ['stylists', 'Stylists'],
     ['booking', 'Book'],
     ['offers', 'Offers'],
     ['gallery', 'Gallery'],
   ];
   const publicLinks = [
-    ['home', 'Dashboard'],
-    ['booking', 'Book'],
-    ['login', 'Account'],
+    ['home', 'Home'],
+    ['services', 'Services'],
+    ['stylists', 'Stylists'],
+    ['offers', 'Offers'],
+    ['gallery', 'Gallery'],
   ];
   const staffLinks = [['home', 'Dashboard']];
   const links = user?.role === 'customer' ? customerLinks : user ? staffLinks : publicLinks;
@@ -136,6 +139,12 @@ export default function Header({ page, setPage, user, setUser }) {
           {(user?.role === 'admin' || user?.role === 'stylist') && <div className="nav-divider" />}
           {user?.role === 'admin' && <button onClick={() => go('admin')} className="nav-dash"><Shield size={13} /> Admin</button>}
           {user?.role === 'stylist' && <button onClick={() => go('stylist')} className="nav-dash"><LayoutDashboard size={13} /> Stylist</button>}
+          {!user && (
+            <div className="nav-mobile-actions">
+              <button onClick={() => go('login')}>Login</button>
+              <button className="book-now" onClick={() => go('booking')}>Book Now</button>
+            </div>
+          )}
         </nav>
 
         <div className="header-right">
@@ -165,7 +174,12 @@ export default function Header({ page, setPage, user, setUser }) {
                 </div>
               )}
             </div>
-          ) : null}
+          ) : (
+            <>
+              <button className="login-btn" onClick={() => go('login')}>Login</button>
+              <button className="book-now" onClick={() => go('booking')}>Book Now</button>
+            </>
+          )}
         </div>
       </header>
     </>

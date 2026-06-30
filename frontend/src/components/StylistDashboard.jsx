@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Bell, Calendar, CheckCircle2, Clock, ImagePlus, Scissors, Tag, User } from 'lucide-react';
 import Avatar from './Avatar.jsx';
+import StylistServiceSelector from './StylistServiceSelector.jsx';
 import { assetUrl, glowbelleApi } from '../api.js';
-import { serviceCategoryLabel } from '../serviceCategories.js';
+import { MASTER_SERVICES } from '../catalog.js';
 import { money } from '../utils.js';
 
 const DAYS = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
@@ -35,6 +36,10 @@ const EMPTY_OFFER = {
 
 function isVideoMedia(item) {
   return item?.mediaType === 'video' || /\.(mp4|webm|mov|m4v)$/i.test(item?.imageUrl || '');
+}
+
+function catalogServiceId(service) {
+  return service?._id || service?.id || service?.code || service;
 }
 
 export default function StylistDashboard({ onLogout }) {
@@ -70,7 +75,7 @@ export default function StylistDashboard({ onLogout }) {
           glowbelleApi.myStylistOffers(),
         ]);
         setBookings(bookingsResponse.data || []);
-        setServices(servicesResponse.data || []);
+        setServices(servicesResponse.data?.length ? servicesResponse.data : MASTER_SERVICES);
         setMyOffers(offersResponse.data || []);
         setProfileForm({
           name: stylistProfile.name || '',
@@ -79,7 +84,7 @@ export default function StylistDashboard({ onLogout }) {
           bio: stylistProfile.bio || '',
         });
         setOfferings((me.data.stylistProfile.offerings || []).map(item => ({
-          serviceId: item.service?._id || item.service,
+          serviceId: catalogServiceId(item.service),
           price: item.price,
           durationMinutes: item.durationMinutes,
           description: item.description || '',
@@ -110,9 +115,18 @@ export default function StylistDashboard({ onLogout }) {
   }
 
   function setOffering(service, checked) {
+    const serviceId = catalogServiceId(service);
     setOfferings(current => checked
-      ? [...current, { serviceId: service._id, price: service.price, durationMinutes: service.durationMinutes, description: service.shortDescription || '', imageUrl: '', isActive: true }]
-      : current.filter(item => item.serviceId !== service._id));
+      ? [...current, {
+        serviceId,
+        price: service.price ?? service.minPrice ?? '',
+        durationMinutes: service.durationMinutes || service.durationMin || 60,
+        description: service.shortDescription || service.description || '',
+        imageUrl: '',
+        isActive: true,
+        approvalStatus: 'pending',
+      }]
+      : current.filter(item => item.serviceId !== serviceId));
   }
 
   function updateOffering(serviceId, key, value) {
@@ -293,7 +307,7 @@ export default function StylistDashboard({ onLogout }) {
   const upcomingBookings = bookings.filter(booking => new Date(booking.appointmentDate) >= new Date() && !['completed', 'cancelled'].includes(booking.status));
   const activeOfferings = offerings.filter(item => item.isActive !== false);
   const activeOfferServices = activeOfferings
-    .map(item => services.find(service => service._id === item.serviceId))
+    .map(item => services.find(service => catalogServiceId(service) === item.serviceId))
     .filter(Boolean);
 
   return (
@@ -353,26 +367,16 @@ export default function StylistDashboard({ onLogout }) {
             </div>;
           })}
         </section>}
-        {tab === 'services' && <section style={{ marginTop: 24 }}>
-          <div className="note-box prep">Simple launch setup: tick a service, add your price, upload one clear photo, write a short description, then save. Customers will see this photo on the service card.</div>
-          {services.map(service => {
-            const offering = offerings.find(item => item.serviceId === service._id);
-            return <div className="dash-row stylist-offering-row" key={service._id}>
-              <label className="offering-toggle"><input type="checkbox" checked={Boolean(offering)} onChange={event => setOffering(service, event.target.checked)} /><span><strong>{service.title}</strong><small>{serviceCategoryLabel(service.category)} · allowed {money(service.minPrice ?? service.price)} - {money(service.maxPrice ?? service.price)}</small></span></label>
-              {offering && <div className="offering-fields">
-                <input type="number" min={service.minPrice ?? 0} max={service.maxPrice ?? undefined} value={offering.price} onChange={event => updateOffering(service._id, 'price', event.target.value)} placeholder="Your price in ₦" />
-                <input type="number" min="5" value={offering.durationMinutes} onChange={event => updateOffering(service._id, 'durationMinutes', event.target.value)} placeholder="Minutes" />
-                <label className="mini-upload">
-                  Upload service photo
-                  <input type="file" accept="image/jpeg,image/png,image/webp" onChange={event => uploadServiceImage(service._id, event.target.files?.[0])} />
-                </label>
-                {offering.imageUrl && <img className="offering-image-preview" src={assetUrl(offering.imageUrl)} alt={`${service.title} preview`} />}
-                <textarea value={offering.description || ''} onChange={event => updateOffering(service._id, 'description', event.target.value)} placeholder="Describe how you do this service, what is included, hair length, preparation, or package details." />
-              </div>}
-            </div>;
-          })}
-          <button onClick={saveOfferings}>Save services and prices</button>
-        </section>}
+        {tab === 'services' && (
+          <StylistServiceSelector
+            services={services}
+            offerings={offerings}
+            setOffering={setOffering}
+            updateOffering={updateOffering}
+            saveOfferings={saveOfferings}
+            uploadServiceImage={uploadServiceImage}
+          />
+        )}
         {tab === 'discounts' && <section style={{ marginTop: 24 }}>
           <div className="note-box prep">Create your own promo codes for customers. A discount can apply to all your services, or only one service you currently offer.</div>
           <form onSubmit={saveOffer} className="discount-form">
