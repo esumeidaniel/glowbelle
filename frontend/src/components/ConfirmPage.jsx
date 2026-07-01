@@ -1,4 +1,4 @@
-import { ShieldCheck, Calendar, MapPin, User, CreditCard } from 'lucide-react';
+import { ShieldCheck, Calendar, MapPin, User, CreditCard, Phone } from 'lucide-react';
 import { useState } from 'react';
 import PageHero from './PageHero.jsx';
 import { money } from '../utils.js';
@@ -12,7 +12,7 @@ export default function ConfirmPage({ setPage, nav, user }) {
   const location = nav?.location || 'Salon visit';
   const branchId = nav?.branch || '';
   const family = nav?.family || 'Me';
-  const total = nav?.total || service?.price || 0;
+  const total = nav?.total ?? service?.price ?? 0;
   const payment = nav?.payment || 'pay-salon';
   const guest = nav?.guest || {};
   const homeAddress = nav?.homeAddress || '';
@@ -26,6 +26,13 @@ export default function ConfirmPage({ setPage, nav, user }) {
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const branch = nav?.branchDetails;
+  const locationType = location === 'Home service' || location?.startsWith('Home service') ? 'home' : 'salon';
+  const servicePrice = nav?.servicePrice ?? service?.price ?? 0;
+  const addonsTotal = addons.reduce((sum, addon) => sum + Number(addon.price || 0), 0);
+  const travel = nav?.travel ?? (locationType === 'home' ? 5000 : 0);
+  const subtotal = nav?.subtotal ?? (servicePrice + addonsTotal + travel);
+  const discount = nav?.discount ?? Math.max(0, subtotal - total);
+  const locationDetail = locationType === 'home' ? homeAddress : branch?.address || branch?.name || '';
 
   const payLabels = { 'pay-salon': 'Pay at salon' };
 
@@ -49,7 +56,7 @@ export default function ConfirmPage({ setPage, nav, user }) {
         serviceId: service.id,
         stylistId: stylist?.id,
         branchId,
-        locationType: location === 'Home service' || location?.startsWith('Home service') ? 'home' : 'salon',
+        locationType,
         bookingFor: family,
         appointmentDate: date,
         startTime: time,
@@ -79,29 +86,31 @@ export default function ConfirmPage({ setPage, nav, user }) {
             <div className="conf-row"><span>{service.tag}</span><div><strong>{service.title}</strong><p>{service.duration}</p></div></div>
             <div className="conf-row"><Calendar size={18} style={{ color: 'var(--brand)' }} /><div><strong>{date}</strong><p>{time}</p></div></div>
             <div className="conf-row"><User size={18} style={{ color: 'var(--brand)' }} /><div><strong>{stylist ? stylist.name : 'Selected stylist required'}</strong><p>{stylist?.role || ''}</p></div></div>
-            <div className="conf-row"><MapPin size={18} style={{ color: 'var(--brand)' }} /><div><strong>{location}</strong><p>{branch?.address || ''}</p></div></div>
-            <div className="conf-row"><span>👤</span><div><strong>For: {family}</strong></div></div>
+            <div className="conf-row"><MapPin size={18} style={{ color: 'var(--brand)' }} /><div><strong>{location}</strong><p>{locationDetail}</p></div></div>
+            <div className="conf-row"><User size={18} style={{ color: 'var(--brand)' }} /><div><strong>For: {family}</strong></div></div>
             <div className="conf-row"><CreditCard size={18} style={{ color: 'var(--brand)' }} /><div><strong>{payLabels[payment]}</strong></div></div>
-            {!user && <div className="conf-row"><span>📞</span><div><strong>{guest.name || 'Guest customer'}</strong><p>{guest.phone} · {guest.email}</p></div></div>}
+            {!user && <div className="conf-row"><Phone size={18} style={{ color: 'var(--brand)' }} /><div><strong>{guest.name || 'Guest customer'}</strong><p>{guest.phone} · {guest.email}</p></div></div>}
           </div>
         </div>
 
         <div className="receipt">
           <h3>Payment summary</h3>
-          <div className="line"><span>Service</span><b>{money(service.price)}</b></div>
-          {total !== service.price && <div className="line" style={{ color: 'var(--green)' }}><span>Savings</span><b>-{money(service.price - total)}</b></div>}
+          <div className="line"><span>Stylist service price</span><b>{money(servicePrice)}</b></div>
+          {addons.map(addon => <div className="line" key={addon.name}><span>{addon.name}</span><b>{money(addon.price)}</b></div>)}
+          {travel > 0 && <div className="line"><span>Home service fee</span><b>{money(travel)}</b></div>}
+          {discount > 0 && <div className="line" style={{ color: 'var(--green)' }}><span>{promoCode ? `Promo (${promoCode})` : 'Discount'}</span><b>-{money(discount)}</b></div>}
           <div className="line total"><span>Total due</span><b>{money(total)}</b></div>
 
-          <div className="note-box prep">No online payment is taken. Pay the stylist directly at the salon or service location.</div>
+          <div className="note-box prep">No online payment is taken. Pay the stylist directly at the salon or service location. Free cancellation is available up to 24 hours before the appointment.</div>
           <label className="agree-check">
             <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} />
             <span>I agree to the <b>cancellation policy</b> (free cancellation up to 24hrs before).</span>
           </label>
 
           <button onClick={confirm} disabled={!agreed || loading} style={{ opacity: agreed ? 1 : 0.5 }}>
-            {loading ? '⏳ Confirming…' : '✅ Confirm Booking'}
+            {loading ? 'Confirming...' : 'Confirm Booking'}
           </button>
-          <button className="secondary" style={{ width: '100%', marginTop: 8, padding: '11px', borderRadius: 'var(--radius-sm)', fontSize: 14, cursor: 'pointer' }} onClick={() => setPage('booking', {})}>← Edit booking</button>
+          <button className="secondary" style={{ width: '100%', marginTop: 8, padding: '11px', borderRadius: 'var(--radius-sm)', fontSize: 14, cursor: 'pointer' }} onClick={() => setPage('booking', { serviceId: service.id, stylistId: stylist?.id })}>Edit booking</button>
         </div>
       </div>
     </>

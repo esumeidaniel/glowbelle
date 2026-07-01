@@ -8,9 +8,23 @@ export function offeringForService(stylist, service) {
   if (!stylist || !service) return null;
   const keys = serviceKeys(service);
   return (stylist.offerings || []).find(item => {
-    if (item.isActive === false) return false;
+    const status = String(item.status || 'active').toLowerCase();
+    const approval = String(item.approvalStatus || item.verificationStatus || 'approved').toLowerCase();
+    if (
+      item.isActive === false ||
+      item.isAvailable === false ||
+      item.available === false ||
+      ['inactive', 'draft', 'disabled', 'pending', 'rejected', 'declined'].includes(status) ||
+      ['pending', 'rejected', 'declined', 'inactive', 'draft'].includes(approval)
+    ) return false;
     const linked = item.service;
-    return keys.has(String(linked?._id || linked)) || keys.has(String(linked?.code));
+    return (
+      keys.has(String(linked?._id || linked)) ||
+      keys.has(String(linked?.code)) ||
+      keys.has(String(item.serviceId)) ||
+      keys.has(String(item.catalogServiceId)) ||
+      keys.has(String(item.serviceCode))
+    );
   }) || null;
 }
 
