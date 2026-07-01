@@ -145,14 +145,17 @@ export default function BookingPage({ setPage, nav, user }) {
     </>;
   }
 
-  const travel = location === 'Home service' ? 5000 : 0;
   const offering = offeringForService(stylist, service);
-  const servicePrice = offering?.price ?? service.price;
-  const serviceDuration = offering?.durationMinutes ? `${offering.durationMinutes} min` : service.duration;
+  const canReview = Boolean(stylist && offering);
+  const travel = canReview && location === 'Home service' ? 5000 : 0;
+  const servicePrice = canReview ? Number(offering?.price || 0) : 0;
+  const serviceDuration = canReview
+    ? (offering?.durationMinutes ? `${offering.durationMinutes} min` : service.duration)
+    : '';
   const publicDescription = offering?.description || service.shortDescription || service.description || '';
   const publicImage = offering?.imageUrl || service.imageUrl || '';
-  const addonsTotal = addons.reduce((sum, addon) => sum + addonPrice(addon), 0);
-  const subtotal = servicePrice + travel + addonsTotal;
+  const addonsTotal = canReview ? addons.reduce((sum, addon) => sum + addonPrice(addon), 0) : 0;
+  const subtotal = canReview ? servicePrice + travel + addonsTotal : 0;
   const discount = offerDiscount(promoApplied, subtotal);
   const total = subtotal - discount;
 
@@ -162,6 +165,10 @@ export default function BookingPage({ setPage, nav, user }) {
     setPromoApplied(null);
     if (!code) {
       setPromoError('Enter a promo code first.');
+      return;
+    }
+    if (!canReview) {
+      setPromoError('Choose a stylist first so GlowBelle can use that professional’s price.');
       return;
     }
     setPromoBusy(true);
@@ -197,7 +204,6 @@ export default function BookingPage({ setPage, nav, user }) {
 
   const selectedBranch = catalog.branches.find(b => b.id === branch);
   const stylistsForService = catalog.stylists.filter(st => offeringForService(st, service));
-  const canReview = Boolean(stylist && offering);
 
   return (
     <>
@@ -215,17 +221,6 @@ export default function BookingPage({ setPage, nav, user }) {
             </div>
           </Step>
 
-          {/* Add-ons */}
-          {service.addons?.length > 0 && (
-            <Step n="1b" title="Optional add-ons">
-              <div className="chip-list">
-                {service.addons.map(a => (
-                  <button key={addonLabel(a)} className={addons.includes(a) ? 'chip selected' : 'chip'} onClick={() => toggleAddon(a)}>{addonLabel(a)}</button>
-                ))}
-              </div>
-            </Step>
-          )}
-
           {/* Step 2: Stylist */}
           <Step n="2" title="Choose stylist">
             <div className="stylist-row">
@@ -242,6 +237,26 @@ export default function BookingPage({ setPage, nav, user }) {
             </div>
             {stylistsForService.length === 0 && <div className="note-box prep" style={{ marginTop: 12 }}>No approved stylist has published this service yet. Customers can browse it now, and booking opens when a stylist adds their price, image, description and availability.</div>}
           </Step>
+
+          {!canReview && (
+            <div className="note-box prep booking-next-step">
+              {stylistsForService.length
+                ? 'Choose an available stylist to see that professional’s price, duration, add-ons and booking options.'
+                : 'This service is a preview right now. Prices and booking options appear when a verified stylist offers it.'}
+            </div>
+          )}
+
+          {canReview && (
+            <>
+              {service.addons?.length > 0 && (
+                <Step n="2b" title="Optional add-ons">
+                  <div className="chip-list">
+                    {service.addons.map(a => (
+                      <button key={addonLabel(a)} className={addons.includes(a) ? 'chip selected' : 'chip'} onClick={() => toggleAddon(a)}>{addonLabel(a)}</button>
+                    ))}
+                  </div>
+                </Step>
+              )}
 
           {/* Step 3: Family & Location */}
           <Step n="3" title="For whom & location">
@@ -360,6 +375,8 @@ export default function BookingPage({ setPage, nav, user }) {
             </div>
             <div className="note-box prep" style={{ marginTop: 10 }}>GlowBelle uses Pay at Salon only. Customers book now and pay the stylist directly after the service.</div>
           </Step>
+            </>
+          )}
         </div>
 
         {/* Summary sidebar */}
@@ -369,22 +386,29 @@ export default function BookingPage({ setPage, nav, user }) {
             {publicImage ? <img src={assetUrl(publicImage)} alt={service.title} /> : <span>{service.tag}</span>}
             <div>
               <strong>{service.title}</strong>
-              <p>{serviceDuration} · {stylist ? stylist.name : 'Choose stylist'}</p>
+              <p>{canReview ? `${serviceDuration} · ${stylist.name}` : 'Choose an available stylist to see booking details'}</p>
               {publicDescription && <p>{publicDescription.slice(0, 95)}{publicDescription.length > 95 ? '...' : ''}</p>}
-              <p>{date} · {time}</p>
+              {canReview && <p>{date} · {time}</p>}
             </div>
           </div>
-          <div className="line"><span>Service</span><b>{money(servicePrice)}</b></div>
-          {addons.map(a => {
-            const p = addonPrice(a);
-            return <div className="line" key={addonLabel(a)}><span>{addonLabel(a).split('(')[0].trim()}</span><b>{money(p)}</b></div>;
-          })}
-          {travel > 0 && <div className="line"><span>Travel fee</span><b>{money(travel)}</b></div>}
-          {discount > 0 && <div className="line" style={{ color: 'var(--green)' }}><span>Promo ({promoApplied.code})</span><b>-{money(discount)}</b></div>}
-          <div className="line total"><span>Total</span><b>{money(total)}</b></div>
-          {!canReview && <div className="note-box prep" style={{ marginBottom: 12 }}>Choose a stylist first so the booking uses that stylist's own price.</div>}
-          <button disabled={!canReview} style={{ opacity: canReview ? 1 : 0.55 }} onClick={() => setPage('confirm', { service: { ...service, price: servicePrice, duration: serviceDuration }, stylist, date, time, location, branch, branchDetails: selectedBranch, family, total, payment, notes, promoCode: promoApplied?.code, addons, homeAddress, guest, inspirationImage: inspImg })}>Review & Confirm</button>
-          <p style={{ fontSize: 12, color: 'var(--text)', marginTop: 12, textAlign: 'center' }}>🔒 Secure booking. Free cancellation 24hrs before.</p>
+          {canReview ? (
+            <>
+              <div className="line"><span>Service</span><b>{money(servicePrice)}</b></div>
+              {addons.map(a => {
+                const p = addonPrice(a);
+                return <div className="line" key={addonLabel(a)}><span>{addonLabel(a).split('(')[0].trim()}</span><b>{money(p)}</b></div>;
+              })}
+              {travel > 0 && <div className="line"><span>Travel fee</span><b>{money(travel)}</b></div>}
+              {discount > 0 && <div className="line" style={{ color: 'var(--green)' }}><span>Promo ({promoApplied.code})</span><b>-{money(discount)}</b></div>}
+              <div className="line total"><span>Total</span><b>{money(total)}</b></div>
+              <button onClick={() => setPage('confirm', { service: { ...service, price: servicePrice, duration: serviceDuration }, stylist, date, time, location, branch, branchDetails: selectedBranch, family, total, payment, notes, promoCode: promoApplied?.code, addons, homeAddress, guest, inspirationImage: inspImg })}>Review & Confirm</button>
+              <p style={{ fontSize: 12, color: 'var(--text)', marginTop: 12, textAlign: 'center' }}>🔒 Secure booking. Free cancellation 24hrs before.</p>
+            </>
+          ) : (
+            <div className="note-box prep" style={{ marginBottom: 12 }}>
+              {stylistsForService.length ? 'Select a stylist to see that professional’s final price.' : 'Stylists are joining soon. Booking opens when this service is offered by a verified professional.'}
+            </div>
+          )}
         </aside>
       </div>
     </>

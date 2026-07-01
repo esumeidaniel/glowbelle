@@ -1178,6 +1178,11 @@ select:focus {
   align-items: start;
 }
 
+.booking-next-step {
+  margin: 0 0 18px;
+  border-radius: 18px;
+}
+
 .step {
   position: relative;
   overflow: hidden;

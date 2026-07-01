@@ -16,10 +16,17 @@ export default function MarketplaceServiceCard({ service, setPage }) {
 
   return (
     <article className={bookable ? 'market-service-card' : 'market-service-card preview-only'}>
-      <button className="market-service-media" onClick={() => setPage('service-detail', { serviceId: id, service })}>
-        {imageUrl ? <img src={assetUrl(imageUrl)} alt={service.title || service.name} /> : <span>{service.emoji || '✦'}</span>}
-        <em>{bookable ? 'Bookable' : 'Stylists coming soon'}</em>
-      </button>
+      {bookable ? (
+        <button className="market-service-media" onClick={() => setPage('service-detail', { serviceId: id, service })}>
+          {imageUrl ? <img src={assetUrl(imageUrl)} alt={service.title || service.name} loading="lazy" /> : <span>{service.emoji || '✦'}</span>}
+          <em>Bookable</em>
+        </button>
+      ) : (
+        <div className="market-service-media" aria-label={`${service.title || service.name} preview`}>
+          {imageUrl ? <img src={assetUrl(imageUrl)} alt={service.title || service.name} loading="lazy" /> : <span>{service.emoji || '✦'}</span>}
+          <em>Stylists coming soon</em>
+        </div>
+      )}
       <div className="market-service-body">
         <div className="market-service-heading">
           <div>

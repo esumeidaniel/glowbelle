@@ -51,7 +51,6 @@ export default function ServiceDetailPage({ setPage, nav }) {
       try {
         const response = await glowbelleApi.service(nav.serviceId);
         const nextService = normalizeService(response.data);
-        setService(nextService);
         setSelectedAddon([]);
         const [relatedResponse, stylistsResponse] = await Promise.all([
           glowbelleApi.services({ category: nextService.cat, limit: 4 }),
@@ -59,16 +58,27 @@ export default function ServiceDetailPage({ setPage, nav }) {
         ]);
         const stylists = stylistsResponse.data || [];
         const primary = primaryOfferingForService(nextService, stylists);
+        const providerTotal = providerCountForService(nextService, stylists);
         if (primary?.offering) {
           nextService.imageUrl = primary.offering.imageUrl || nextService.imageUrl;
           nextService.price = primary.offering.price ?? nextService.price;
           nextService.duration = primary.offering.durationMinutes ? `${primary.offering.durationMinutes} min` : nextService.duration;
           nextService.desc = primary.offering.description || nextService.desc;
         }
-        setProviderCount(providerCountForService(nextService, stylists));
+        setProviderCount(providerTotal);
+        setService(nextService);
         setRelatedServices((relatedResponse.data || [])
           .map(normalizeService)
           .filter(item => item.id !== nextService.id)
+          .map(item => {
+            const itemPrimary = primaryOfferingForService(item, stylists);
+            return {
+              ...item,
+              providerCount: providerCountForService(item, stylists),
+              price: itemPrimary?.offering?.price ?? item.price,
+              duration: itemPrimary?.offering?.durationMinutes ? `${itemPrimary.offering.durationMinutes} min` : item.duration,
+            };
+          })
           .slice(0, 3));
       } catch (err) {
         setService(null);
@@ -85,9 +95,10 @@ export default function ServiceDetailPage({ setPage, nav }) {
     setSelectedAddon(prev => prev.includes(addon) ? prev.filter(a => a !== addon) : [...prev, addon]);
   }
 
-  const addonsTotal = selectedAddon.reduce((sum, a) => {
+  const isBookable = providerCount > 0;
+  const addonsTotal = isBookable ? selectedAddon.reduce((sum, a) => {
     return sum + addonPrice(a);
-  }, 0);
+  }, 0) : 0;
 
   if (loading) return <div className="empty-state"><span>⌛</span><h3>Loading service details</h3><p>Fetching this service from the backend.</p></div>;
   if (loadError || !service) {
@@ -118,39 +129,50 @@ export default function ServiceDetailPage({ setPage, nav }) {
           <div className="detail-info">
             <div className="between" style={{ marginBottom: 8 }}>
               <h1 style={{ fontSize: 28, margin: 0 }}>{service.title}</h1>
-              <span className="rating"><Star size={16} />Starting from {money(service.price)}</span>
+              <span className="rating">
+                <Star size={16} />
+                {isBookable ? `Starting from ${money(service.price)}` : 'Stylists coming soon'}
+              </span>
             </div>
             <p style={{ color: 'var(--text)', marginBottom: 20, lineHeight: 1.6 }}>{service.desc}</p>
 
-            <div className="detail-meta">
-              <div className="meta-item"><Clock size={16} /><span>Duration: <b>{service.duration}</b></span></div>
-              <div className="meta-item"><User size={16} /><span>Suitable for: <b>{service.gender}</b></span></div>
-              <div className="meta-item"><span>📅</span><span>Min age: <b>{service.minAge === 0 ? 'All ages' : `${service.minAge}+`}</b></span></div>
-            </div>
+            {isBookable && (
+              <div className="detail-meta">
+                <div className="meta-item"><Clock size={16} /><span>Duration: <b>{service.duration}</b></span></div>
+                <div className="meta-item"><User size={16} /><span>Suitable for: <b>{service.gender}</b></span></div>
+                <div className="meta-item"><span>📅</span><span>Min age: <b>{service.minAge === 0 ? 'All ages' : `${service.minAge}+`}</b></span></div>
+              </div>
+            )}
 
             {/* Add-ons */}
-            <div className="detail-section">
-              <h3>Available add-ons</h3>
-              <div className="addon-list">
-                {service.addons.map(addon => (
-                  <button key={addonLabel(addon)} className={selectedAddon.includes(addon) ? 'addon-chip selected' : 'addon-chip'} onClick={() => toggleAddon(addon)}>
-                    {selectedAddon.includes(addon) && <CheckCircle2 size={14} />}
-                    {addonLabel(addon)}
-                  </button>
-                ))}
+            {isBookable && service.addons.length > 0 && (
+              <div className="detail-section">
+                <h3>Available add-ons</h3>
+                <div className="addon-list">
+                  {service.addons.map(addon => (
+                    <button key={addonLabel(addon)} className={selectedAddon.includes(addon) ? 'addon-chip selected' : 'addon-chip'} onClick={() => toggleAddon(addon)}>
+                      {selectedAddon.includes(addon) && <CheckCircle2 size={14} />}
+                      {addonLabel(addon)}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Prep notes */}
-            <div className="detail-section">
-              <h3><AlertCircle size={16} /> Preparation notes</h3>
-              <div className="note-box prep">{service.prep}</div>
-            </div>
+            {isBookable && (
+              <div className="detail-section">
+                <h3><AlertCircle size={16} /> Preparation notes</h3>
+                <div className="note-box prep">{service.prep}</div>
+              </div>
+            )}
 
-            <div className="detail-section">
-              <h3>✨ Aftercare</h3>
-              <div className="note-box after">{service.aftercare}</div>
-            </div>
+            {isBookable && (
+              <div className="detail-section">
+                <h3>✨ Aftercare</h3>
+                <div className="note-box after">{service.aftercare}</div>
+              </div>
+            )}
 
             <div className="detail-section">
               <h3>Verified professionals</h3>
@@ -167,7 +189,7 @@ export default function ServiceDetailPage({ setPage, nav }) {
                       <span className="related-tag">{s.tag}</span>
                       <div>
                         <strong>{s.title}</strong>
-                        <span>{money(s.price)} · {s.duration}</span>
+                        <span>{s.providerCount > 0 ? `${money(s.price)} · ${s.duration}` : 'Coming soon'}</span>
                       </div>
                     </button>
                   ))}
@@ -180,15 +202,21 @@ export default function ServiceDetailPage({ setPage, nav }) {
         {/* Sidebar */}
         <aside className="detail-sidebar">
           <div className="summary sticky-sum">
-            <h3>Book this service</h3>
-            <div className="line"><span>Base price</span><b>{money(service.price)}</b></div>
-            {selectedAddon.map(a => {
-              const price = addonPrice(a);
-              return <div className="line" key={addonLabel(a)}><span>{addonLabel(a).split('(')[0].trim()}</span><b>{money(price)}</b></div>;
-            })}
-            {addonsTotal > 0 && <div className="line total"><span>Total</span><b>{money(service.price + addonsTotal)}</b></div>}
-            <button disabled={providerCount === 0} onClick={() => providerCount > 0 && setPage('booking', { serviceId: service.id })} style={{ width: '100%', background: providerCount > 0 ? 'var(--brand)' : 'var(--text)', color: '#fff', border: 'none', padding: '13px', borderRadius: 'var(--radius-sm)', fontSize: 15, fontWeight: 600, cursor: providerCount > 0 ? 'pointer' : 'not-allowed', marginTop: 16, opacity: providerCount > 0 ? 1 : 0.55 }}>
-              {providerCount > 0 ? 'Book This Service' : 'Opening Soon'}
+            <h3>{isBookable ? 'Book this service' : 'Service preview'}</h3>
+            {isBookable ? (
+              <>
+                <div className="line"><span>Base price</span><b>{money(service.price)}</b></div>
+                {selectedAddon.map(a => {
+                  const price = addonPrice(a);
+                  return <div className="line" key={addonLabel(a)}><span>{addonLabel(a).split('(')[0].trim()}</span><b>{money(price)}</b></div>;
+                })}
+                {addonsTotal > 0 && <div className="line total"><span>Total</span><b>{money(service.price + addonsTotal)}</b></div>}
+              </>
+            ) : (
+              <div className="note-box prep">Prices, duration and booking open when a verified stylist publishes this service.</div>
+            )}
+            <button disabled={!isBookable} onClick={() => isBookable && setPage('booking', { serviceId: service.id })} style={{ width: '100%', background: isBookable ? 'var(--brand)' : 'var(--text)', color: '#fff', border: 'none', padding: '13px', borderRadius: 'var(--radius-sm)', fontSize: 15, fontWeight: 600, cursor: isBookable ? 'pointer' : 'not-allowed', marginTop: 16, opacity: isBookable ? 1 : 0.55 }}>
+              {isBookable ? 'Book This Service' : 'Opening Soon'}
             </button>
           </div>
         </aside>
