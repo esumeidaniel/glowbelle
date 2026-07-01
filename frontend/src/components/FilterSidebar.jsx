@@ -1,7 +1,7 @@
 import { SlidersHorizontal, X } from 'lucide-react';
 import { money } from '../utils.js';
 
-export default function FilterSidebar({ open, onClose, categories, filters, setFilters }) {
+export default function FilterSidebar({ open, onClose, onClear, categories, filters, setFilters }) {
   function update(key, value) {
     setFilters(current => ({ ...current, [key]: value }));
   }
@@ -48,6 +48,14 @@ export default function FilterSidebar({ open, onClose, categories, filters, setF
         <input type="checkbox" checked={filters.availableToday} onChange={event => update('availableToday', event.target.checked)} />
         Available today
       </label>
+      <label className="filter-check">
+        <input type="checkbox" checked={filters.homeService} onChange={event => update('homeService', event.target.checked)} />
+        Home service
+      </label>
+      <div className="filter-actions">
+        <button className="secondary" onClick={onClear}>Clear filters</button>
+        <button onClick={onClose}>Apply filters</button>
+      </div>
     </aside>
   );
 }

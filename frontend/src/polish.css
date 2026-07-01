@@ -54,11 +54,17 @@ select:focus {
 }
 
 .header {
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  z-index: 3000;
+  isolation: isolate;
+  background: rgba(255, 255, 255, .98);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 10px 30px rgba(31, 18, 45, .08);
 }
 
 .header.scrolled {
-  box-shadow: 0 12px 34px rgba(28, 18, 43, .08);
+  background: rgba(255, 255, 255, .99);
+  box-shadow: 0 16px 42px rgba(28, 18, 43, .12);
 }
 
 .book-now,
@@ -1155,15 +1161,47 @@ select:focus {
 .toolbar {
   border: 1px solid color-mix(in srgb, var(--border) 80%, var(--brand-border));
   border-radius: 24px;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  background: rgba(255, 255, 255, .96);
   box-shadow: 0 16px 42px rgba(28,18,43,.07);
   backdrop-filter: blur(14px);
   margin-top: 14px;
 }
 
-.toolbar .search-label {
-  border-radius: 18px;
+.services-page-shell {
+  position: relative;
+  z-index: 0;
+  padding-top: clamp(12px, 2vw, 24px);
+}
+
+.services-page-shell .toolbar {
+  width: min(1120px, calc(100% - 32px));
+  margin: 16px auto 8px;
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(170px, .32fr) minmax(160px, .26fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+}
+
+.toolbar .search-label,
+.services-page-shell .toolbar select,
+.services-page-shell .filter-toggle {
+  min-height: 46px;
+  border-radius: 16px;
   background: var(--bg);
+}
+
+.services-page-shell .toolbar select {
+  width: 100%;
+  max-width: none;
+  border-color: var(--border);
+}
+
+.services-page-shell .filter-toggle {
+  justify-content: center;
+  border-color: var(--brand-border);
+  color: var(--brand);
+  font-weight: 850;
 }
 
 .filter-bar {
@@ -1949,16 +1987,16 @@ select:focus {
 .services-compact-head {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
-  padding: clamp(28px, 5vw, 54px) 0 12px;
+  padding: clamp(24px, 4vw, 44px) 0 8px;
 }
 
 .services-compact-head h1 {
-  max-width: 720px;
-  margin: 8px 0 10px;
+  max-width: 680px;
+  margin: 8px 0 8px;
   color: var(--text-h);
-  font-size: clamp(2.1rem, 6vw, 4.2rem);
-  line-height: .95;
-  letter-spacing: -.055em;
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  line-height: 1.02;
+  letter-spacing: -.045em;
 }
 
 .services-compact-head p {
@@ -1971,18 +2009,34 @@ select:focus {
 .services-quick-stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 18px;
+  gap: 7px;
+  margin-top: 12px;
 }
 
 .services-quick-stats span {
-  padding: 8px 12px;
+  padding: 7px 10px;
   border: 1px solid var(--border);
   border-radius: 999px;
-  background: var(--bg);
-  color: var(--text-h);
-  font-size: .85rem;
-  font-weight: 800;
+  background: var(--brand-light);
+  color: var(--brand);
+  font-size: .82rem;
+  font-weight: 850;
+}
+
+.services-page-shell .section-title {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 12px;
+}
+
+.services-page-shell .section-title h2 {
+  font-size: clamp(1.55rem, 3vw, 2.35rem);
+  letter-spacing: -.035em;
+}
+
+.services-page-shell .section-title p {
+  max-width: none;
+  margin-bottom: 0;
 }
 
 .profile-summary-card {
@@ -2464,8 +2518,9 @@ select:focus {
 
 .market-service-grid {
   width: min(100% - 40px, 1180px);
-  margin: 0 auto clamp(36px, 6vw, 76px);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr));
+  margin: 0 auto clamp(52px, 7vw, 92px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
 }
 
 .market-service-card,
@@ -2491,6 +2546,20 @@ select:focus {
   border-radius: 22px;
 }
 
+.market-service-card {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+.market-service-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--brand-border);
+  box-shadow: 0 22px 58px rgba(31, 18, 45, .12);
+}
+
 .market-service-media,
 .market-stylist-cover {
   position: relative;
@@ -2503,7 +2572,7 @@ select:focus {
 }
 
 .market-service-media {
-  height: 220px;
+  height: 214px;
 }
 
 .market-service-media img,
@@ -2511,6 +2580,7 @@ select:focus {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
   transition: transform .25s ease;
 }
 
@@ -2537,6 +2607,12 @@ select:focus {
   padding: 18px;
 }
 
+.market-service-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
 .market-service-heading {
   display: flex;
   justify-content: space-between;
@@ -2561,6 +2637,10 @@ select:focus {
   line-height: 1.18;
 }
 
+.market-service-heading h3 {
+  font-size: 1.12rem;
+}
+
 .market-service-heading > span,
 .market-stylist-meta span,
 .market-service-facts span {
@@ -2581,6 +2661,11 @@ select:focus {
   line-height: 1.55;
 }
 
+.market-service-body > p {
+  min-height: 3.1em;
+  margin-bottom: 14px;
+}
+
 .market-service-facts,
 .market-stylist-meta {
   display: grid;
@@ -2594,7 +2679,7 @@ select:focus {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  margin-top: 18px;
+  margin-top: auto;
   padding-top: 16px;
   border-top: 1px solid var(--border);
 }
@@ -2610,6 +2695,28 @@ select:focus {
 .market-service-bottom strong,
 .market-stylist-actions strong {
   color: var(--text-h);
+}
+
+.market-service-bottom strong {
+  flex: 0 0 auto;
+  font-size: 1.02rem;
+  white-space: nowrap;
+}
+
+.market-service-actions {
+  justify-content: flex-end;
+}
+
+.market-service-bottom button {
+  min-height: 42px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.market-service-bottom button.secondary {
+  border: 1px solid var(--brand-border);
+  background: var(--bg);
+  color: var(--brand);
 }
 
 .market-stylist-grid {
@@ -2794,10 +2901,10 @@ select:focus {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
   gap: 14px;
   padding: 18px;
-  border: 1px solid var(--border);
+  border: 1px solid color-mix(in srgb, var(--border) 76%, var(--brand-border));
   border-radius: 22px;
-  background: var(--bg);
-  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, .98);
+  box-shadow: 0 18px 52px rgba(31, 18, 45, .1);
 }
 
 .filter-sidebar-head {
@@ -2815,6 +2922,11 @@ select:focus {
   font-weight: 800;
 }
 
+.filter-sidebar input,
+.filter-sidebar select {
+  min-height: 44px;
+}
+
 .filter-sidebar label span {
   font-size: .84rem;
 }
@@ -2827,6 +2939,34 @@ select:focus {
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 14px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  justify-content: flex-end;
+}
+
+.filter-actions button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.filter-actions button.secondary {
+  border: 1px solid var(--brand-border);
+  background: var(--bg);
+  color: var(--brand);
+}
+
+.filter-drawer-backdrop {
+  display: none;
 }
 
 .catalog-manager {
