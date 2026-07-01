@@ -412,6 +412,19 @@ export default function ProfilePage({ setPage, user, setUser }) {
 
   return (
     <div className="profile-page-shell">
+      <section className="profile-hero">
+        <div>
+          <span className="eyebrow"><User size={14} /> Account</span>
+          <h1>My profile</h1>
+          <p>Manage your personal details, bookings, family members and notification settings.</p>
+        </div>
+        <div className="profile-hero-card">
+          <ShieldCheck size={20} />
+          <strong>{emailStatus}</strong>
+          <span>{profile.email}</span>
+        </div>
+      </section>
+
       <div className="profile-layout enhanced-profile-layout">
         <aside className="profile-nav enhanced-profile-nav">
           <div className="profile-avatar-block">
