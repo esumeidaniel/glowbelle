@@ -225,7 +225,7 @@ export default function BookingPage({ setPage, nav, user }) {
   const [time, setTime] = useState('');
   const [notes, setNotes] = useState('');
   const [addons, setAddons] = useState([]);
-  const [promo, setPromo] = useState('');
+  const [promo, setPromo] = useState(nav?.offerCode || nav?.promoCode || '');
   const [promoApplied, setPromoApplied] = useState(null);
   const [promoError, setPromoError] = useState('');
   const [promoBusy, setPromoBusy] = useState(false);
@@ -693,7 +693,7 @@ export default function BookingPage({ setPage, nav, user }) {
           )}
 
           <Step n="6" title="Payment">
-            <details className="promo-details">
+            <details className="promo-details" defaultOpen={Boolean(nav?.offerCode || nav?.promoCode)}>
               <summary><Tag size={15} /> Have a promo code?</summary>
               <div className="promo-row">
                 <input placeholder="Promo code" value={promo} onChange={e => setPromo(e.target.value)} style={{ flex: 1 }} />

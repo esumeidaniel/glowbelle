@@ -126,6 +126,7 @@ svg {
   .market-hero,
   .stylist-market-hero,
   .booking-hero,
+  .offers-market-hero,
   .trend-board,
   .experience-board,
   .split-feature-section,
@@ -205,6 +206,10 @@ svg {
 
   .booking-page-shell .summary {
     position: static;
+  }
+
+  .offers-market-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -331,6 +336,10 @@ svg {
   .booking-stylist-cover {
     height: 154px;
   }
+
+  .offers-market-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 640px) {
@@ -384,22 +393,46 @@ svg {
   }
 
   .booking-hero,
+  .offers-market-hero,
   .booking-progress,
-  .booking-page-shell .booking-layout {
+  .booking-page-shell .booking-layout,
+  .offers-grid-section,
+  .offers-page-shell .offers-filters,
+  .offers-trust-section {
     width: min(100% - 28px, 1180px);
   }
 
-  .booking-hero {
+  .booking-hero,
+  .offers-market-hero {
     padding: 22px;
     border-radius: 22px;
   }
 
-  .booking-hero h1 {
+  .booking-hero h1,
+  .offers-market-hero h1 {
     font-size: clamp(2rem, 12vw, 3rem);
   }
 
   .booking-hero-card {
     padding: 14px;
+  }
+
+  .offers-hero-visual {
+    min-height: 160px;
+  }
+
+  .offers-market-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .offer-actions,
+  .offer-detail-modal .offer-actions {
+    flex-direction: column;
+  }
+
+  .market-offer-card button,
+  .offer-detail-modal .offer-actions button {
+    width: 100%;
   }
 
   .booking-service-option {
