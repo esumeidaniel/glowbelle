@@ -279,8 +279,11 @@ svg {
   }
 
   .services-page-shell .toolbar {
+    position: sticky;
+    top: 68px;
     width: min(100% - 24px, 1120px);
     grid-template-columns: minmax(0, 1fr);
+    border-radius: 0 0 20px 20px;
   }
 
   .toolbar > *,
@@ -415,6 +418,11 @@ svg {
 
   .booking-hero-card {
     padding: 14px;
+  }
+
+  .gallery-card-actions,
+  .gallery-card-actions button {
+    width: 100%;
   }
 
   .offers-hero-visual {
@@ -987,5 +995,144 @@ svg {
 
   .public-skill-card small {
     display: none;
+  }
+}
+
+/* Profile page final responsive pass */
+.enhanced-profile-nav {
+  position: sticky;
+  top: 92px;
+}
+
+@media (max-width: 900px) {
+  .profile-hero,
+  .enhanced-profile-layout {
+    width: min(100% - 28px, 1180px);
+  }
+
+  .profile-hero {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    padding: 24px;
+  }
+
+  .enhanced-profile-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .enhanced-profile-nav {
+    display: none;
+    position: static;
+  }
+
+  .profile-mobile-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding: 8px;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--bg);
+    box-shadow: var(--shadow-sm);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .profile-mobile-tabs button {
+    flex: 0 0 auto;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 0;
+    border-radius: 999px;
+    padding: 8px 12px;
+    background: transparent;
+    color: var(--text);
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .profile-mobile-tabs button.active {
+    background: var(--brand-light);
+    color: var(--brand);
+  }
+
+  .security-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-page-shell {
+    padding-top: 18px;
+  }
+
+  .profile-hero,
+  .enhanced-profile-layout {
+    width: min(100% - 24px, 1180px);
+  }
+
+  .profile-hero,
+  .enhanced-profile-section {
+    border-radius: 22px;
+  }
+
+  .profile-hero {
+    padding: 20px;
+  }
+
+  .profile-hero-card {
+    padding: 14px;
+  }
+
+  .enhanced-profile-section {
+    padding: 18px;
+  }
+
+  .section-header,
+  .enhanced-summary-card,
+  .enhanced-family-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .section-header button,
+  .profile-photo-actions,
+  .profile-photo-actions button,
+  .profile-form-actions,
+  .profile-form-actions button,
+  .settings-save-btn,
+  .family-actions,
+  .family-actions button,
+  .security-card button {
+    width: 100%;
+  }
+
+  .profile-summary-card .avatar {
+    width: 72px !important;
+    height: 72px !important;
+    flex: 0 0 72px;
+  }
+
+  .profile-toggle-row {
+    padding: 14px;
+  }
+
+  .profile-modal {
+    max-height: 88svh;
+    padding: 22px;
+    border-radius: 22px;
+  }
+}
+
+@media (max-width: 380px) {
+  .profile-hero,
+  .enhanced-profile-section {
+    padding: 16px;
+  }
+
+  .profile-mobile-tabs {
+    margin-inline: -2px;
   }
 }

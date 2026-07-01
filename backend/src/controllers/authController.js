@@ -264,10 +264,10 @@ export const requestPasswordChange = asyncHandler(async (req, res) => {
 });
 
 export const confirmPasswordChange = asyncHandler(async (req, res) => {
-  const { code, password } = req.body;
-  if (!code || !password) {
+  const { code, currentPassword, password } = req.body;
+  if (!code || !currentPassword || !password) {
     res.status(400);
-    throw new Error('Verification code and new password are required');
+    throw new Error('Current password, verification code and new password are required');
   }
 
   if (String(password).length < 6) {
@@ -279,6 +279,10 @@ export const confirmPasswordChange = asyncHandler(async (req, res) => {
   if (!user || !user.verifyPasswordResetCode(code)) {
     res.status(400);
     throw new Error('Invalid or expired password change code');
+  }
+  if (user.password && !(await user.matchPassword(currentPassword))) {
+    res.status(401);
+    throw new Error('Current password is incorrect');
   }
 
   user.password = password;
@@ -355,7 +359,7 @@ export const me = asyncHandler(async (req, res) => {
 });
 
 export const updateProfile = asyncHandler(async (req, res) => {
-  const allowed = ['name', 'phone', 'avatarUrl', 'addresses', 'children', 'notificationPreferences'];
+  const allowed = ['name', 'phone', 'avatarUrl', 'gender', 'birthday', 'addresses', 'preferredLocationArea', 'children', 'notificationPreferences', 'preferences'];
   for (const key of allowed) {
     if (req.body[key] !== undefined) req.user[key] = req.body[key];
   }
@@ -382,9 +386,13 @@ export const confirmAccountDeletion = asyncHandler(async (req, res) => {
   user.name = 'Deleted user';
   user.email = `deleted-${user._id}@deleted.glowbelle.local`;
   user.phone = undefined;
+  user.gender = undefined;
+  user.birthday = undefined;
   user.avatarUrl = undefined;
   user.addresses = [];
+  user.preferredLocationArea = undefined;
   user.children = [];
+  user.preferences = undefined;
   user.googleId = undefined;
   user.notificationPreferences = undefined;
   user.emailVerificationCode = undefined;

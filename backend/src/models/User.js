@@ -4,7 +4,12 @@ import mongoose from 'mongoose';
 
 const childProfileSchema = new mongoose.Schema({
   name: String,
+  relationship: String,
+  ageGroup: String,
   age: Number,
+  hairType: String,
+  allergies: String,
+  preferredServices: [String],
   notes: String,
 }, { _id: false });
 
@@ -24,6 +29,8 @@ const userSchema = new mongoose.Schema({
   authProvider: { type: String, enum: ['local', 'google'], default: 'local' },
   googleId: { type: String, index: true, sparse: true },
   emailVerified: { type: Boolean, default: false },
+  gender: String,
+  birthday: Date,
   emailVerificationCode: { type: String, select: false },
   emailVerificationExpires: { type: Date, select: false },
   passwordResetCode: { type: String, select: false },
@@ -32,15 +39,27 @@ const userSchema = new mongoose.Schema({
   accountDeletionExpires: { type: Date, select: false },
   avatarUrl: String,
   addresses: [{ label: String, street: String, city: String, state: String, isDefault: Boolean }],
+  preferredLocationArea: String,
   children: [childProfileSchema],
+  preferences: {
+    preferredServiceLocation: { type: String, enum: ['Salon visit', 'Home service', 'Either'], default: 'Salon visit' },
+    preferredBranch: String,
+    preferredCategories: [String],
+    preferredStylist: String,
+    language: { type: String, default: 'English' },
+    currency: { type: String, default: 'NGN' },
+  },
   loyaltyPoints: { type: Number, default: 0 },
   totalSpent: { type: Number, default: 0 },
   notificationPreferences: {
     emailConfirmations: { type: Boolean, default: true },
     smsReminders: { type: Boolean, default: true },
     whatsappUpdates: { type: Boolean, default: true },
+    bookingCancellations: { type: Boolean, default: true },
+    stylistMessages: { type: Boolean, default: true },
     promotions: { type: Boolean, default: false },
     stylistAvailability: { type: Boolean, default: false },
+    emailUpdates: { type: Boolean, default: true },
   },
   status: { type: String, enum: ['active', 'suspended', 'deleted'], default: 'active' },
 }, { timestamps: true });
