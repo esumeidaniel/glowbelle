@@ -56,7 +56,7 @@ export default function AdminCatalogManager({
             <strong>Quick catalog templates</strong>
             <p>Tap one to prefill the form, then adjust images, range, duration or status.</p>
             <div className="suggestion-chips">
-              {SERVICE_SUGGESTIONS.map(suggestion => <button type="button" key={suggestion.title} onClick={() => applySuggestedService(suggestion)}>{suggestion.title}</button>)}
+              {SERVICE_SUGGESTIONS.map(suggestion => <button type="button" key={suggestion.id || suggestion.title} onClick={() => applySuggestedService(suggestion)}>{suggestion.title}</button>)}
             </div>
           </div>
           <form onSubmit={saveService} className="catalog-form">

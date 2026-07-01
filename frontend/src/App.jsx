@@ -108,7 +108,7 @@ export default function App() {
 
     switch (page) {
       case 'home':           return <HomePage          setPage={navigate} user={user} />;
-      case 'services':       return <ServicesPage      setPage={navigate} nav={nav} />;
+      case 'services':       return <ServicesPage      setPage={navigate} nav={nav} user={user} />;
       case 'service-detail': return <ServiceDetailPage setPage={navigate} nav={nav} />;
       case 'booking':        return <BookingPage       setPage={navigate} nav={nav} user={user} />;
       case 'bookings':       return user ? <BookingsPage setPage={navigate} /> : <LoginPage setPage={navigate} setUser={setUser} />;
@@ -117,7 +117,7 @@ export default function App() {
       case 'contact':        return <ContactPage />;
       case 'confirm':        return <ConfirmPage       setPage={navigate} nav={nav} user={user} />;
       case 'success':        return <SuccessPage       setPage={navigate} booking={nav?.booking} />;
-      case 'stylists':       return <StylistsPage      setPage={navigate} />;
+      case 'stylists':       return <StylistsPage      setPage={navigate} user={user} />;
       case 'login':          return <LoginPage         setPage={navigate} setUser={setUser} />;
       case 'profile':        return user ? <ProfilePage setPage={navigate} user={user} setUser={setUser} /> : <LoginPage setPage={navigate} setUser={setUser} />;
       case 'about':          return <AboutPage         setPage={navigate} />;

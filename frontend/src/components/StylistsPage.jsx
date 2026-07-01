@@ -30,7 +30,8 @@ function normalizeStylist(item) {
   };
 }
 
-export default function StylistsPage({ setPage }) {
+export default function StylistsPage({ setPage, user }) {
+  const isPublic = !user;
   const [selected, setSelected] = useState(null);
   const [stylists, setStylists] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,16 +43,17 @@ export default function StylistsPage({ setPage }) {
       setLoadError('');
       try {
         const response = await glowbelleApi.stylists({ available: true });
-        setStylists(stylistsOrFallback(response.data || []).map(normalizeStylist));
+        const liveStylists = response.data || [];
+        setStylists((isPublic ? liveStylists : stylistsOrFallback(liveStylists)).map(normalizeStylist));
       } catch {
-        setStylists(stylistsOrFallback().map(normalizeStylist));
+        setStylists(isPublic ? [] : stylistsOrFallback().map(normalizeStylist));
         setLoadError('');
       } finally {
         setLoading(false);
       }
     }, 0);
     return () => window.clearTimeout(id);
-  }, []);
+  }, [isPublic]);
 
   return (
     <>
@@ -60,7 +62,7 @@ export default function StylistsPage({ setPage }) {
         <div>
           <span className="eyebrow">Verified professional network</span>
           <h2>Compare work, availability and services before booking.</h2>
-          <p>Each public profile is built from the stylist dashboard: services, prices, gallery media, availability and business details stay connected.</p>
+          <p>Browse verified beauty professionals by specialty, portfolio work and availability.</p>
         </div>
         <div className="intro-stats">
           <div><strong>{stylists.length || '0'}</strong><span>Approved profiles</span></div>
@@ -70,10 +72,10 @@ export default function StylistsPage({ setPage }) {
       </section>
       {loading && <div className="empty-state"><span>⌛</span><h3>Loading verified professionals</h3><p>Fetching approved stylist profiles from the backend.</p></div>}
       {!loading && loadError && <div className="empty-state"><span>⚠</span><h3>Professionals could not load</h3><p>{loadError}</p></div>}
-      {!loading && !loadError && !stylists.length && <div className="empty-state"><span>✦</span><h3>No approved professionals yet</h3><p>Approved stylist profiles will appear here after verification.</p></div>}
+      {!loading && !loadError && !stylists.length && <div className="empty-state"><span>✦</span><h3>Professional stylists are joining GlowBelle soon.</h3><p>Approved stylist profiles will appear here after verification.</p><button onClick={() => setPage('stylist-apply')}>Join as a Stylist</button></div>}
       {!loading && !loadError && stylists.length > 0 && <div className="market-stylist-grid">
         {stylists.map(st => (
-          <StylistCard key={st.id} stylist={st} setPage={setPage} onView={setSelected} />
+          <StylistCard key={st.id} stylist={st} setPage={setPage} onView={setSelected} previewOnly={isPublic} />
         ))}
       </div>}
 
@@ -95,7 +97,7 @@ export default function StylistsPage({ setPage }) {
                   <span><CalendarDays size={14} /> {selected.experience} years exp.</span>
                 </div>
                 <p style={{ lineHeight: 1.6, margin: '12px 0' }}>{selected.bio}</p>
-                <p><strong>Price range:</strong> {selected.priceRange}</p>
+                {!isPublic && <p><strong>Price range:</strong> {selected.priceRange}</p>}
                 <div style={{ marginTop: 12 }}>
                   <strong>Skills:</strong>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6 }}>
@@ -125,7 +127,8 @@ export default function StylistsPage({ setPage }) {
                 </div>
                 {!selected.available && <div className="note-box prep" style={{ marginTop: 12 }}>This stylist is not available today. You can still book for a future date.</div>}
                 <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-                  <button onClick={() => { setSelected(null); setPage('booking', { stylistId: selected.id }); }}>Book {selected.name.split(' ')[0]}</button>
+                  {!isPublic && <button onClick={() => { setSelected(null); setPage('booking', { stylistId: selected.id }); }}>Book {selected.name.split(' ')[0]}</button>}
+                  {isPublic && <button onClick={() => { setSelected(null); setPage('login'); }}>Log in to book</button>}
                   <button className="secondary" onClick={() => setSelected(null)}>Close</button>
                 </div>
               </div>

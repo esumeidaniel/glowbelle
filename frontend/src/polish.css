@@ -2773,3 +2773,220 @@ select:focus {
   max-height: 170px;
   object-fit: cover;
 }
+
+/* Public marketing page cleanup */
+.public-skill-preview-section,
+.customer-gallery-card {
+  width: min(100% - 40px, 1180px);
+  margin: 0 auto clamp(36px, 6vw, 76px);
+}
+
+.public-section-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.public-section-head h2 {
+  margin: 8px 0 0;
+  color: var(--text-h);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.02;
+  letter-spacing: -.045em;
+}
+
+.public-section-head p {
+  max-width: 440px;
+  margin: 0;
+  color: var(--text);
+  line-height: 1.65;
+}
+
+.public-skill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 16px;
+}
+
+.public-skill-card {
+  position: relative;
+  min-height: 260px;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  background: #180d24;
+  box-shadow: 0 18px 50px rgba(31, 18, 45, .13);
+  text-align: left;
+}
+
+.public-skill-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .25s ease;
+}
+
+.public-skill-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(18, 9, 30, .05), rgba(18, 9, 30, .82));
+}
+
+.public-skill-card:hover img {
+  transform: scale(1.04);
+}
+
+.public-skill-card span {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  color: #fff;
+}
+
+.public-skill-card strong {
+  font-size: 1.22rem;
+}
+
+.public-skill-card small {
+  color: rgba(255, 255, 255, .82);
+  line-height: 1.45;
+}
+
+.public-skill-card em,
+.market-service-preview-note {
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .16);
+  color: #fff;
+  font-size: .75rem;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.market-service-card.preview-only .market-service-preview-note {
+  margin-top: 14px;
+  background: var(--brand-light);
+  color: var(--brand);
+}
+
+.customer-action-grid {
+  width: min(100%, 960px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  gap: 12px;
+  margin: -6px 0 22px;
+}
+
+.customer-action-grid button {
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.customer-gallery-card {
+  display: grid;
+  grid-template-columns: minmax(260px, .86fr) minmax(0, 1fr);
+  gap: clamp(18px, 4vw, 32px);
+  align-items: center;
+  padding: clamp(18px, 4vw, 30px);
+  border: 1px solid color-mix(in srgb, var(--border) 82%, var(--brand-border));
+  border-radius: 24px;
+  background: var(--bg);
+  box-shadow: 0 18px 52px rgba(31, 18, 45, .08);
+}
+
+.customer-gallery-card img {
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  object-fit: cover;
+  border-radius: 18px;
+}
+
+.customer-gallery-card h2 {
+  margin: 8px 0 10px;
+  color: var(--text-h);
+  font-size: clamp(1.65rem, 4vw, 2.6rem);
+  line-height: 1.04;
+  letter-spacing: -.04em;
+}
+
+.customer-gallery-card p {
+  color: var(--text);
+  line-height: 1.65;
+}
+
+.market-stylist-grid.compact {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.join-stylist-cta {
+  flex-wrap: wrap;
+}
+
+.join-stylist-cta > div {
+  flex: 1 1 360px;
+}
+
+.join-benefits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.join-benefits span {
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: .82rem;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+}
+
+.hero-slide-actions button:not(.secondary),
+.marketplace-search-actions button:not(.secondary),
+.customer-home-actions button:not(.secondary),
+.customer-action-grid button,
+.customer-dashboard-card button,
+.customer-gallery-card button,
+.join-stylist-cta > button,
+.empty-state button,
+.market-service-bottom button:not(.secondary),
+.market-stylist-actions button:not(.secondary),
+.view-all-btn {
+  border: 0;
+  border-radius: 999px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 12px 26px rgba(155, 77, 202, .18);
+}
+
+.hero-slide-actions button:not(.secondary):hover,
+.marketplace-search-actions button:not(.secondary):hover,
+.customer-home-actions button:not(.secondary):hover,
+.customer-action-grid button:hover,
+.customer-dashboard-card button:hover,
+.customer-gallery-card button:hover,
+.join-stylist-cta > button:hover,
+.empty-state button:hover,
+.market-service-bottom button:not(.secondary):hover,
+.market-stylist-actions button:not(.secondary):hover,
+.view-all-btn:hover {
+  background: var(--brand-2);
+  transform: translateY(-1px);
+}

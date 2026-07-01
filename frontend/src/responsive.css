@@ -429,9 +429,15 @@ svg {
   .marketplace-search-band,
   .catalog-overview,
   .gallery-highlight-section,
+  .customer-gallery-card,
   .trust-section,
   .join-stylist-cta {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .public-section-head {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .marketplace-search-actions,
@@ -506,7 +512,9 @@ svg {
   .market-service-grid,
   .market-stylist-grid,
   .how-it-works,
+  .public-skill-preview-section,
   .gallery-highlight-section,
+  .customer-gallery-card,
   .trust-section,
   .join-stylist-cta,
   .filter-sidebar {
@@ -534,9 +542,18 @@ svg {
   .market-service-bottom button,
   .market-stylist-actions button,
   .gallery-highlight-section button,
+  .customer-gallery-card button,
   .filter-sidebar-head button,
   .stylist-service-selector > button {
     width: 100%;
+  }
+
+  .public-skill-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .public-skill-card {
+    min-height: 220px;
   }
 
   .join-stylist-image {
@@ -592,7 +609,29 @@ svg {
   .stylist-service-group,
   .stylist-catalog-service,
   .catalog-overview,
-  .catalog-category-panel {
+  .catalog-category-panel,
+  .customer-gallery-card {
     padding: 14px;
+  }
+
+  .public-skill-grid {
+    gap: 10px;
+  }
+
+  .public-skill-card {
+    min-height: 188px;
+    border-radius: 18px;
+  }
+
+  .public-skill-card span {
+    padding: 12px;
+  }
+
+  .public-skill-card strong {
+    font-size: 1rem;
+  }
+
+  .public-skill-card small {
+    display: none;
   }
 }

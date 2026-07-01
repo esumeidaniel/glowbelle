@@ -15,10 +15,10 @@ export default function MarketplaceServiceCard({ service, setPage }) {
   const rating = service.rating || service.primaryStylist?.rating || 'New';
 
   return (
-    <article className="market-service-card">
+    <article className={bookable ? 'market-service-card' : 'market-service-card preview-only'}>
       <button className="market-service-media" onClick={() => setPage('service-detail', { serviceId: id, service })}>
         {imageUrl ? <img src={assetUrl(imageUrl)} alt={service.title || service.name} /> : <span>{service.emoji || '✦'}</span>}
-        <em>{bookable ? 'Bookable' : 'Coming soon'}</em>
+        <em>{bookable ? 'Bookable' : 'Stylists coming soon'}</em>
       </button>
       <div className="market-service-body">
         <div className="market-service-heading">
@@ -26,22 +26,28 @@ export default function MarketplaceServiceCard({ service, setPage }) {
             <small>{service.categoryTitle || serviceCategoryLabel(categoryId)}</small>
             <h3>{service.title || service.name}</h3>
           </div>
-          <span><Star size={14} /> {rating}</span>
+          {bookable && <span><Star size={14} /> {rating}</span>}
         </div>
         <p>{(service.displayDescription || service.shortDescription || service.description || 'Verified GlowBelle service.').slice(0, 112)}</p>
-        <div className="market-service-facts">
-          <span><User size={13} /> {stylistName || 'No stylist yet'}</span>
-          <span><Clock size={13} /> {duration} min</span>
-          <span><MapPin size={13} /> {location}</span>
-          <span><CalendarCheck size={13} /> {service.availableToday ? 'Available today' : 'Future bookings'}</span>
-        </div>
-        <div className="market-service-bottom">
-          <strong>{bookable ? `From ${money(price)}` : 'No stylists available yet'}</strong>
-          <div>
-            <button className="secondary" onClick={() => setPage('stylists', { serviceId: id })}><BadgeCheck size={14} /> View Stylist</button>
-            <button disabled={!bookable} onClick={() => bookable && setPage('booking', { serviceId: id })}>Book Now</button>
-          </div>
-        </div>
+        {bookable ? (
+          <>
+            <div className="market-service-facts">
+              <span><User size={13} /> {stylistName || 'Verified stylist'}</span>
+              <span><Clock size={13} /> {duration} min</span>
+              <span><MapPin size={13} /> {location}</span>
+              <span><CalendarCheck size={13} /> {service.availableToday ? 'Available today' : 'Future bookings'}</span>
+            </div>
+            <div className="market-service-bottom">
+              <strong>From {money(price)}</strong>
+              <div>
+                <button className="secondary" onClick={() => setPage('stylists', { serviceId: id })}><BadgeCheck size={14} /> View Stylist</button>
+                <button onClick={() => setPage('booking', { serviceId: id })}>Book Now</button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="market-service-preview-note">Prices appear when a verified stylist offers this service.</div>
+        )}
       </div>
     </article>
   );

@@ -208,6 +208,36 @@ export const MASTER_SERVICES = Object.entries(SERVICE_GROUPS).flatMap(([category
   });
 });
 
+export const PUBLIC_SERVICE_PREVIEWS = [
+  ['barbering', 'Barbering', 'Sharp cuts, fades and beard grooming.', ADMIN_IMAGE_ASSETS.categories.barbering],
+  ['braids', 'Braids', 'Protective styles, cornrows, twists and braids.', ADMIN_IMAGE_ASSETS.categories.braidsWigsNatural],
+  ['wigs-extensions', 'Wig Installation', 'Installs, revamps and extension styling.', ADMIN_IMAGE_ASSETS.categories.braidsWigsNatural],
+  ['nails', 'Nails', 'Manicure, pedicure, acrylics and nail art.', ADMIN_IMAGE_ASSETS.categories.nailsMakeupLashes],
+  ['makeup', 'Makeup', 'Soft glam, bridal glam and event looks.', ADMIN_IMAGE_ASSETS.categories.nailsMakeupLashes],
+  ['spa-wellness', 'Spa', 'Facials, massage and wellness treatments.', ADMIN_IMAGE_ASSETS.categories.spaWellness],
+  ['childrens-salon', 'Children Hair', 'Kids haircuts, braids and family care.', ADMIN_IMAGE_ASSETS.categories.bridalHomeFamily],
+  ['bridal-events', 'Bridal Styling', 'Hair, makeup and styling for special days.', ADMIN_IMAGE_ASSETS.categories.bridalHomeFamily],
+  ['home-service', 'Home Service', 'Beauty appointments at home or events.', ADMIN_IMAGE_ASSETS.categories.bridalHomeFamily],
+].map(([categoryId, title, subtitle, imageUrl]) => ({
+  id: `preview-${categoryId}`,
+  _id: `preview-${categoryId}`,
+  code: `preview-${categoryId}`,
+  categoryId,
+  category: categoryId,
+  title,
+  name: title,
+  shortDescription: subtitle,
+  description: subtitle,
+  imageUrl,
+  displayImageUrl: imageUrl,
+  providerCount: 0,
+  isPreview: true,
+}));
+
+export function publicServicePreviews() {
+  return PUBLIC_SERVICE_PREVIEWS.map(item => ({ ...item }));
+}
+
 export const MOCK_STYLISTS = [
   {
     id: 'stylist-amaka',
@@ -327,26 +357,26 @@ export const HERO_SLIDES = [
   {
     id: 1,
     title: 'Book trusted beauty professionals',
-    subtitle: 'Find hairstylists, barbers, makeup artists, nail techs and spa professionals near you.',
+    subtitle: 'Find hairstylists, barbers, nail techs, makeup artists and spa professionals near you.',
     image: ADMIN_IMAGE_ASSETS.hero.marketplace,
-    ctaText: 'Book a Service',
+    ctaText: 'Get Started',
     secondaryText: 'Join as a Stylist',
   },
   {
     id: 2,
-    title: 'Braids, wigs and natural hair care',
-    subtitle: 'Compare verified stylists by service, price, portfolio and availability.',
+    title: 'Beauty services for every occasion',
+    subtitle: 'Explore braids, wigs, natural hair, bridal styling and home service.',
     image: ADMIN_IMAGE_ASSETS.hero.braidsWigs,
-    ctaText: 'Browse Services',
-    secondaryText: 'View Stylists',
+    ctaText: 'Explore Services',
+    secondaryText: 'Join as a Stylist',
   },
   {
     id: 3,
     title: 'Barbering, nails, makeup and spa',
-    subtitle: 'Book the right professional for salon visits, events or home service appointments.',
+    subtitle: 'A cleaner way to discover trusted beauty professionals.',
     image: ADMIN_IMAGE_ASSETS.hero.beautyServices,
-    ctaText: 'Explore Marketplace',
-    secondaryText: 'How It Works',
+    ctaText: 'Get Started',
+    secondaryText: 'Join as a Stylist',
   },
 ];
 

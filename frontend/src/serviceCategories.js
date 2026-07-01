@@ -10,6 +10,8 @@ export const SERVICE_SUGGESTIONS = MASTER_SERVICES
   .filter(service => service.isFeatured)
   .slice(0, 18)
   .map(service => ({
+    id: service.id,
+    code: service.code,
     title: service.title,
     category: service.categoryId,
     emoji: '✦',

@@ -3,7 +3,7 @@ import Avatar from './Avatar.jsx';
 import { assetUrl } from '../api.js';
 import { money } from '../utils.js';
 
-export default function StylistCard({ stylist, setPage, onView }) {
+export default function StylistCard({ stylist, setPage, onView, previewOnly = false }) {
   const id = stylist.code || stylist.id || stylist._id;
   const firstName = String(stylist.name || 'Stylist').split(' ')[0];
   const startingPrice = stylist.startingPrice ? money(stylist.startingPrice) : stylist.priceRange || 'Prices by service';
@@ -29,9 +29,9 @@ export default function StylistCard({ stylist, setPage, onView }) {
           {(stylist.skills || []).slice(0, 4).map(skill => <small key={skill}>{skill}</small>)}
         </div>
         <div className="market-stylist-actions">
-          <strong>From {startingPrice}</strong>
+          <strong>{previewOnly ? 'Profile preview' : `From ${startingPrice}`}</strong>
           <button className="secondary" onClick={() => onView?.(stylist)}>View Profile</button>
-          <button onClick={() => setPage('booking', { stylistId: id })}>Book {firstName}</button>
+          {!previewOnly && <button onClick={() => setPage('booking', { stylistId: id })}>Book {firstName}</button>}
         </div>
       </div>
     </article>
