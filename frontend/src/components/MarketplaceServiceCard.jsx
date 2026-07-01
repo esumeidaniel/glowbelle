@@ -18,6 +18,34 @@ const SERVICE_IMAGE_FALLBACKS = {
   'home-service': ADMIN_IMAGE_ASSETS.categories.bridalHomeFamily,
 };
 
+const SERVICE_IMAGE_BY_NAME = {
+  'fade cut': 'https://images.unsplash.com/photo-1622287162716-f311baa1a2b8?auto=format&fit=crop&w=900&q=80',
+  'beard trim': 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=900&q=80',
+  'line up': 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=900&q=80',
+  'knotless braids': 'https://images.unsplash.com/photo-1595425964076-2c1ec25b152f?auto=format&fit=crop&w=900&q=80',
+  'ghana weaving': 'https://images.unsplash.com/photo-1605980776566-0486c3ac7617?auto=format&fit=crop&w=900&q=80',
+  'wig installation': 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?auto=format&fit=crop&w=900&q=80',
+  'bridal hair': 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80',
+  'facial treatment': 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=900&q=80',
+  massage: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=900&q=80',
+  'gel nails': 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=900&q=80',
+  'acrylic nails': 'https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=900&q=80',
+  'kids haircut': 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=900&q=80',
+  'children haircut': 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=900&q=80',
+};
+
+function serviceImage(service, categoryId) {
+  const title = String(service.title || service.name || '').toLowerCase();
+  return service.approvedImageUrl ||
+    service.stylistApprovedImageUrl ||
+    service.adminImageUrl ||
+    service.displayImageUrl ||
+    SERVICE_IMAGE_BY_NAME[title] ||
+    service.imageUrl ||
+    SERVICE_IMAGE_FALLBACKS[categoryId] ||
+    ADMIN_IMAGE_ASSETS.hero.beautyServices;
+}
+
 function statusBadge(service, bookable, categoryId) {
   if (!bookable) return 'Coming soon';
   if (service.availableToday) return 'Available today';
@@ -34,22 +62,31 @@ export default function MarketplaceServiceCard({ service, setPage }) {
   const bookable = Number(service.providerCount || 0) > 0;
   const duration = service.displayDurationMinutes || service.durationMinutes || service.durationMin || 60;
   const price = service.displayPrice ?? service.price ?? service.minPrice;
-  const imageUrl = service.displayImageUrl || service.imageUrl || SERVICE_IMAGE_FALLBACKS[categoryId] || ADMIN_IMAGE_ASSETS.hero.beautyServices;
+  const imageUrl = serviceImage(service, categoryId);
   const stylistName = service.stylistName || service.primaryStylist?.name || (bookable ? 'Verified stylist' : '');
   const location = service.location || service.primaryStylist?.location || 'Lagos';
   const rating = service.rating || service.primaryStylist?.rating || 'New';
   const badge = statusBadge(service, bookable, categoryId);
+  const genericFallback = assetUrl(ADMIN_IMAGE_ASSETS.hero.beautyServices);
+  const imageProps = {
+    src: assetUrl(imageUrl),
+    alt: service.title || service.name,
+    loading: 'lazy',
+    onError: event => {
+      if (event.currentTarget.src !== genericFallback) event.currentTarget.src = genericFallback;
+    },
+  };
 
   return (
     <article className={bookable ? 'market-service-card' : 'market-service-card preview-only'}>
       {bookable ? (
         <button className="market-service-media" onClick={() => setPage('service-detail', { serviceId: id, service })}>
-          {imageUrl ? <img src={assetUrl(imageUrl)} alt={service.title || service.name} loading="lazy" /> : <span>{service.emoji || '✦'}</span>}
+          <img {...imageProps} />
           {badge && <em className="market-service-badge">{badge}</em>}
         </button>
       ) : (
         <div className="market-service-media" aria-label={`${service.title || service.name} preview`}>
-          {imageUrl ? <img src={assetUrl(imageUrl)} alt={service.title || service.name} loading="lazy" /> : <span>{service.emoji || '✦'}</span>}
+          <img {...imageProps} />
           <em className="market-service-badge">Coming soon</em>
         </div>
       )}
@@ -71,7 +108,7 @@ export default function MarketplaceServiceCard({ service, setPage }) {
               <span><CalendarCheck size={13} /> {service.availableToday ? 'Available today' : 'Future bookings'}</span>
             </div>
             <div className="market-service-bottom">
-              <strong>From {money(price)}</strong>
+              <strong>{price ? `From ${money(price)}` : 'View services for pricing'}</strong>
               <div className="market-service-actions">
                 <button className="secondary" onClick={() => setPage('stylists', { serviceId: id })}><BadgeCheck size={14} /> View Stylist</button>
                 <button onClick={() => setPage('booking', { serviceId: id })}>Book Now</button>
@@ -79,7 +116,7 @@ export default function MarketplaceServiceCard({ service, setPage }) {
             </div>
           </>
         ) : (
-          <div className="market-service-preview-note">Prices appear when a verified stylist offers this service.</div>
+          <div className="market-service-preview-note">Pricing not listed yet</div>
         )}
       </div>
     </article>

@@ -1,7 +1,6 @@
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import FilterSidebar from './FilterSidebar.jsx';
-import SectionTitle from './SectionTitle.jsx';
 import ServiceGrid from './ServiceGrid.jsx';
 import { glowbelleApi } from '../api.js';
 import { publicServicePreviews } from '../catalog.js';
@@ -80,8 +79,6 @@ export default function ServicesPage({ setPage, nav, user }) {
   if (hasBookableServices && sortBy === 'price-desc') filtered = [...filtered].sort((a, b) => (b.displayPrice ?? b.price) - (a.displayPrice ?? a.price));
   if (hasBookableServices && sortBy === 'rating') filtered = [...filtered].sort((a, b) => (b.rating || 0) - (a.rating || 0));
   if (hasBookableServices && sortBy === 'popular') filtered = [...filtered].sort((a, b) => (b.reviews || b.reviewsCount || 0) - (a.reviews || a.reviewsCount || 0));
-  const previewMode = isPublic && !hasBookableServices;
-
   function clearFilters() {
     setQ('');
     setSortBy('popular');
@@ -100,17 +97,6 @@ export default function ServicesPage({ setPage, nav, user }) {
 
   return (
     <div className="services-page-shell">
-      <section className="services-compact-head">
-        <span className="eyebrow">Services</span>
-        <h1>{previewMode ? 'Explore GlowBelle services.' : 'Find a service and book a professional.'}</h1>
-        <p>{previewMode ? 'Preview beauty services while verified stylists join GlowBelle.' : 'Search, filter by category or price, then choose the service card you want.'}</p>
-        <div className="services-quick-stats">
-          <span>{items.length || 0} services</span>
-          <span>{previewMode ? 'Preview mode' : `${items.filter(item => item.providerCount > 0).length} ready to book`}</span>
-          <span>{hasBookableServices ? 'Pay at salon' : 'Stylists coming soon'}</span>
-        </div>
-      </section>
-      
       <div className="toolbar">
         <label className="search-label">
           <Search size={18} />
@@ -147,10 +133,9 @@ export default function ServicesPage({ setPage, nav, user }) {
         />
       )}
 
-      <SectionTitle
-        title={previewMode ? 'Service previews' : 'Available services'}
-        text={previewMode ? 'Images and skill names only. Prices appear after a stylist publishes an active service.' : `${filtered.length} service${filtered.length !== 1 ? 's' : ''} found · ${filtered.filter(item => item.providerCount > 0).length} ready to book`}
-      />
+      <div className="services-results-summary">
+        {filtered.length} service{filtered.length !== 1 ? 's' : ''} found · {filtered.filter(item => item.providerCount > 0).length} ready to book
+      </div>
       {loading && <div className="empty-state"><span>⌛</span><h3>Loading services</h3><p>Fetching current service previews and active bookable services.</p></div>}
       {!loading && loadError && <div className="empty-state"><span>⚠</span><h3>Services could not load</h3><p>{loadError}</p></div>}
       {!loading && !loadError && items.length > 0 && items.every(item => !item.providerCount) && (

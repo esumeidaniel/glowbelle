@@ -1,9 +1,8 @@
-import { BadgeCheck, Star, Users, Briefcase, CalendarDays, Search, SlidersHorizontal, MapPin, X } from 'lucide-react';
+import { BadgeCheck, Star, Briefcase, CalendarDays, Search, SlidersHorizontal, MapPin, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Avatar from './Avatar.jsx';
 import StylistCard from './StylistCard.jsx';
 import { assetUrl, glowbelleApi } from '../api.js';
-import { ADMIN_IMAGE_ASSETS } from '../catalog.js';
 import { activeStylistOfferings, stylistCanBook, stylistIsApproved, stylistPriceSummary, stylistRatingText, stylistServiceLabels } from '../stylistUtils.js';
 import { money } from '../utils.js';
 
@@ -138,33 +137,6 @@ export default function StylistsPage({ setPage, user }) {
 
   return (
     <div className="stylists-page-shell">
-      <section className="stylist-market-hero">
-        <div>
-          <span className="eyebrow"><Users size={14} /> Our professionals</span>
-          <h1>Find trusted beauty professionals</h1>
-          <p>Compare stylists, barbers, makeup artists, nail techs, and spa professionals before booking.</p>
-        </div>
-        <div className="stylist-hero-collage" aria-hidden="true">
-          <img src={ADMIN_IMAGE_ASSETS.categories.braidsWigsNatural} alt="" loading="lazy" />
-          <img src={ADMIN_IMAGE_ASSETS.categories.barbering} alt="" loading="lazy" />
-          <img src={ADMIN_IMAGE_ASSETS.categories.nailsMakeupLashes} alt="" loading="lazy" />
-        </div>
-      </section>
-
-      <section className="market-page-intro stylists-intro">
-        <div>
-          <span className="eyebrow">Verified professional network</span>
-          <h2>Compare portfolios, services and availability before booking.</h2>
-          <p>Browse approved professionals by specialty, location, rating and active services.</p>
-        </div>
-        <div className="intro-stats">
-          <div><strong>{stylists.length || '0'}</strong><span>Approved professionals</span></div>
-          <div><strong>{stylists.filter(item => item.available).length || '0'}</strong><span>Available now</span></div>
-          <div><strong>{serviceCount || '0'}</strong><span>Services listed</span></div>
-          <div><strong>{bookableCount || '0'}</strong><span>Direct Booking</span><small>Book your preferred professional</small></div>
-        </div>
-      </section>
-
       <div className="stylist-filter-toolbar">
         <button className="stylist-filter-toggle" onClick={() => setShowFilters(true)}>
           <SlidersHorizontal size={16} /> Filters{activeFilterCount ? ` (${activeFilterCount})` : ''}
@@ -208,6 +180,15 @@ export default function StylistsPage({ setPage, user }) {
         <div className="filter-actions">
           <button className="secondary" onClick={clearFilters}>Clear filters</button>
           <button onClick={() => setShowFilters(false)}>Apply filters</button>
+        </div>
+      </section>
+
+      <section className="market-page-intro stylists-intro">
+        <div className="intro-stats">
+          <div><strong>{stylists.length || '0'}</strong><span>Approved professionals</span></div>
+          <div><strong>{stylists.filter(item => item.available).length || '0'}</strong><span>Available now</span></div>
+          <div><strong>{serviceCount || '0'}</strong><span>Services listed</span></div>
+          <div><strong>{bookableCount || '0'}</strong><span>Direct Booking</span><small>Book your preferred professional</small></div>
         </div>
       </section>
 

@@ -1,4 +1,4 @@
-import { Check, Copy, Gift, Info, Sparkles, Tag, X } from 'lucide-react';
+import { Check, Copy, Gift, Info, Tag, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { assetUrl, glowbelleApi } from '../api.js';
 import { ADMIN_IMAGE_ASSETS } from '../catalog.js';
@@ -15,7 +15,7 @@ const CATEGORIES = [
   ['first-time', 'First-time'],
   ['referral', 'Referral'],
   ['seasonal', 'Seasonal'],
-  ['stylist', 'Stylist Offers'],
+  ['stylist', 'Professional'],
 ];
 
 const OFFER_IMAGES = {
@@ -150,18 +150,6 @@ export default function OffersPage({ setPage }) {
 
   return (
     <div className="offers-page-shell">
-      <section className="offers-market-hero">
-        <div>
-          <span className="eyebrow"><Gift size={14} /> Customer savings</span>
-          <h1>Offers & packages</h1>
-          <p>Save more with family bundles, bridal packages, first-time discounts and seasonal deals.</p>
-        </div>
-        <div className="offers-hero-visual" aria-hidden="true">
-          <img src={ADMIN_IMAGE_ASSETS.categories.bridalHomeFamily} alt="" loading="lazy" />
-          <span><Sparkles size={18} /> Active deals</span>
-        </div>
-      </section>
-
       <div className="offers-filters offers-category-tabs">
         {CATEGORIES.map(([id, label]) => (
           <button key={id} className={cat === id ? 'pill-btn active' : 'pill-btn'} onClick={() => setCat(id)}>{label}</button>
@@ -205,7 +193,7 @@ export default function OffersPage({ setPage }) {
                 </div>
                 <div className="offer-content">
                   <div className="offer-topline">
-                    <span>{offer.sourceType === 'stylist' ? 'Stylist offer' : 'GlowBelle offer'}</span>
+                    <span>{offer.sourceType === 'stylist' ? 'Professional offer' : 'GlowBelle offer'}</span>
                     <strong>{offer.discount}</strong>
                   </div>
                   <h3>{offer.title}</h3>
@@ -231,16 +219,6 @@ export default function OffersPage({ setPage }) {
           </div>
         </section>
       )}
-
-      <section className="loyalty-section offers-trust-section">
-        <div className="loyalty-inner">
-          <div>
-            <span className="pill">Marketplace offers</span>
-            <h2>Real discounts from GlowBelle and verified stylists</h2>
-            <p>Platform offers can apply across eligible services. Stylist offers apply to that professional’s approved services only.</p>
-          </div>
-        </div>
-      </section>
 
       {selectedOffer && (
         <div className="modal-overlay" onClick={() => setSelectedOffer(null)}>

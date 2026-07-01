@@ -15,7 +15,7 @@ function normalizeStylist(item) {
     rating: item.rating || 0,
     jobs: item.jobs || 0,
     available: item.available !== false,
-    location: location || 'Location added after approval',
+    location: location || 'Location not added yet',
   };
 }
 
@@ -59,7 +59,7 @@ export default function Stylists({ setPage, preview }) {
           <div className="stylist-location"><MapPin size={13} /> {st.location}</div>
           <div className="stylist-skills">{st.skills.slice(0, 3).map(s => <small key={s}>{s}</small>)}</div>
           <div className={st.available ? 'avail-tag' : 'unavail-tag'}>{st.available ? 'Available for booking' : 'Unavailable today'}</div>
-          <button onClick={() => setPage('booking', { stylistId: st.id })}>Book {st.name.split(' ')[0]}</button>
+          <button onClick={() => setPage('booking', { stylistId: st.id })}>Book Appointment</button>
         </div>
       ))}
     </div>

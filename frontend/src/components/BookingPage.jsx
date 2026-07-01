@@ -1,7 +1,6 @@
 import {
   AlertCircle,
   BadgeCheck,
-  CalendarDays,
   CheckCircle2,
   Clock,
   CreditCard,
@@ -310,11 +309,6 @@ export default function BookingPage({ setPage, nav, user }) {
   if (catalogLoading) {
     return (
       <div className="booking-page-shell">
-        <section className="booking-hero compact">
-          <span className="eyebrow"><CalendarDays size={14} /> Booking</span>
-          <h1>Book appointment</h1>
-          <p>Loading live services, stylists and branches.</p>
-        </section>
         <div className="empty-state"><span>⌛</span><h3>Loading booking catalog</h3><p>Fetching current services and verified professionals from the backend.</p></div>
       </div>
     );
@@ -323,11 +317,6 @@ export default function BookingPage({ setPage, nav, user }) {
   if (catalogError || !service) {
     return (
       <div className="booking-page-shell">
-        <section className="booking-hero compact">
-          <span className="eyebrow"><CalendarDays size={14} /> Booking</span>
-          <h1>Book appointment</h1>
-          <p>Choose your service, stylist, date, time and location.</p>
-        </section>
         <div className="empty-state">
           <span>{catalogError ? '⚠' : '✦'}</span>
           <h3>{catalogError ? 'Booking catalog could not load' : 'No active services yet'}</h3>
@@ -458,18 +447,6 @@ export default function BookingPage({ setPage, nav, user }) {
 
   return (
     <div className="booking-page-shell">
-      <section className="booking-hero">
-        <div>
-          <span className="eyebrow"><CalendarDays size={14} /> Booking</span>
-          <h1>Book appointment</h1>
-          <p>Choose your service, stylist, date, time and location.</p>
-        </div>
-        <div className="booking-hero-card">
-          <strong>Direct professional booking</strong>
-          <span>Prices come from the stylist service you select.</span>
-        </div>
-      </section>
-
       <nav className="booking-progress" aria-label="Booking progress">
         {PROGRESS_STEPS.map((label, index) => (
           <span key={label} className={index < activeProgressIndex ? 'done' : index === activeProgressIndex ? 'active' : ''}>
