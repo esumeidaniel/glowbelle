@@ -352,13 +352,17 @@ svg {
   }
 
   .customer-dashboard-grid,
+  .customer-recommended-grid,
+  .customer-category-grid,
+  .customer-gallery-preview-grid,
   .customer-shortcut-grid,
   .role-entry-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .customer-dashboard-card,
-  .customer-service-shortcut {
+  .customer-service-shortcut,
+  .customer-empty-panel {
     padding: 16px;
   }
 
@@ -429,6 +433,7 @@ svg {
   .marketplace-search-band,
   .catalog-overview,
   .gallery-highlight-section,
+  .customer-home-hero,
   .customer-gallery-card,
   .trust-section,
   .join-stylist-cta {
@@ -451,6 +456,21 @@ svg {
   }
 
   .catalog-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .customer-dashboard-grid,
+  .customer-recommended-grid,
+  .customer-category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .customer-dashboard-card.highlight,
+  .customer-dashboard-card.wide {
+    grid-column: span 2;
+  }
+
+  .customer-gallery-preview-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
@@ -526,6 +546,23 @@ svg {
     padding: 14px;
   }
 
+  .customer-action-grid,
+  .customer-recommended-grid,
+  .customer-category-grid,
+  .customer-gallery-preview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .customer-dashboard-grid,
+  .customer-empty-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .customer-dashboard-card.highlight,
+  .customer-dashboard-card.wide {
+    grid-column: auto;
+  }
+
   .hero-market-search {
     min-height: 48px;
   }
@@ -584,6 +621,10 @@ svg {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .customer-empty-panel {
+    grid-template-columns: minmax(140px, .4fr) minmax(0, 1fr);
+  }
+
   .catalog-actions button,
   .catalog-category-card button,
   .catalog-service-row button {
@@ -610,8 +651,26 @@ svg {
   .stylist-catalog-service,
   .catalog-overview,
   .catalog-category-panel,
-  .customer-gallery-card {
+  .customer-gallery-card,
+  .customer-service-shortcuts {
     padding: 14px;
+  }
+
+  .customer-dashboard-grid,
+  .customer-recommended-grid,
+  .customer-category-grid,
+  .customer-gallery-preview-grid,
+  .customer-empty-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .customer-dashboard-card.highlight,
+  .customer-dashboard-card.wide {
+    grid-column: auto;
+  }
+
+  .customer-category-card {
+    min-height: 204px;
   }
 
   .public-skill-grid {

@@ -1,21 +1,31 @@
 import { BadgeCheck, CalendarCheck, MapPin, Star } from 'lucide-react';
 import Avatar from './Avatar.jsx';
 import { assetUrl } from '../api.js';
+import { ADMIN_IMAGE_ASSETS } from '../catalog.js';
 import { money } from '../utils.js';
+
+const FALLBACK_AVATAR = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80';
 
 export default function StylistCard({ stylist, setPage, onView, previewOnly = false }) {
   const id = stylist.code || stylist.id || stylist._id;
-  const firstName = String(stylist.name || 'Stylist').split(' ')[0];
-  const startingPrice = stylist.startingPrice ? money(stylist.startingPrice) : stylist.priceRange || 'Prices by service';
+  const coverImage = stylist.coverImageUrl
+    || stylist.portfolioItems?.find(item => item.imageUrl)?.imageUrl
+    || ADMIN_IMAGE_ASSETS.hero.beautyServices;
+  const avatarImage = stylist.avatarUrl || stylist.profileImageUrl || stylist.photoUrl || FALLBACK_AVATAR;
+  const startingPrice = Number(stylist.startingPrice || 0) > 0
+    ? `From ${money(stylist.startingPrice)}`
+    : stylist.priceRange && !/prices by service/i.test(stylist.priceRange)
+      ? stylist.priceRange
+      : 'Prices vary by service';
 
   return (
     <article className="market-stylist-card">
       <button className="market-stylist-cover" onClick={() => onView?.(stylist)}>
-        {stylist.coverImageUrl ? <img src={assetUrl(stylist.coverImageUrl)} alt="" /> : null}
+        <img src={assetUrl(coverImage)} alt={`${stylist.name || 'Stylist'} portfolio preview`} loading="lazy" />
       </button>
       <div className="market-stylist-body">
         <div className="market-stylist-avatar">
-          <Avatar name={stylist.name} src={stylist.avatarUrl} size={76} />
+          <Avatar name={stylist.name} src={avatarImage} size={76} />
           <span><BadgeCheck size={13} /> Verified</span>
         </div>
         <h3>{stylist.name}</h3>
@@ -29,9 +39,9 @@ export default function StylistCard({ stylist, setPage, onView, previewOnly = fa
           {(stylist.skills || []).slice(0, 4).map(skill => <small key={skill}>{skill}</small>)}
         </div>
         <div className="market-stylist-actions">
-          <strong>{previewOnly ? 'Profile preview' : `From ${startingPrice}`}</strong>
+          <strong>{previewOnly ? 'Profile preview' : startingPrice}</strong>
           <button className="secondary" onClick={() => onView?.(stylist)}>View Profile</button>
-          {!previewOnly && <button onClick={() => setPage('booking', { stylistId: id })}>Book {firstName}</button>}
+          {!previewOnly && <button onClick={() => setPage('booking', { stylistId: id })}>Book Appointment</button>}
         </div>
       </div>
     </article>
